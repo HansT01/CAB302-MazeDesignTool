@@ -1,5 +1,5 @@
 public class Maze {
-    int sizeRow;
-    int sizeCol;
+    int sizeX;
+    int sizeY;
     Cell[][] cells;
 }

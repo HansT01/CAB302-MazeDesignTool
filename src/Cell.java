@@ -1,5 +1,5 @@
 public class Cell {
     int[] walls;
-    int row;
-    int col;
+    int x;
+    int y;
 }
