@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Stack;
+import java.util.*;
 
 public class Maze {
     private int sizeX;
@@ -95,10 +93,82 @@ public class Maze {
      * @return
      * An array of the cell path from startCell to endCell.
      * An empty Cell array if no path was found.
+     * TODO Code is untested atm
      */
-    public Cell[] Solve(Cell startCell, Cell endCell)
+    public ArrayList<CellNode> Solve(Cell startCell, Cell endCell)
     {
-        return new Cell[GetArea()];
+        /*
+        AStar pseudocode:
+
+
+        create a CellPQueue priority queue containing only the StartCell
+        create a VisitedCells array list
+        while (the destination node has not been reached)
+          dequeue CellQueue as CurrentCell
+          if CurrentCell is the EndCell
+            trace back the parents of all cells from EndCell to StartCell
+            store it in an array
+            return array
+          if not:
+            put CurrentCell in VisitedCells and find its neighbours
+            set NeighbourCells as the neighbours
+            for each NeighbourCell in NeighbourCells
+              PathCost = NeighbourCell.parent.PathCost + 1
+              CombinedCost = PathCost + NeighbourCell.DistanceTo(EndCell)
+              if PathCost is less than the current path cost of NeighbourCell
+                set the path cost of NeighbourCell to PathCost
+                set the combined cost of NeighbourCell to CombinedCost
+                set NeighbourCell's parent as CurrentCell
+              if NeighbourCell is not in VisitedCells
+                enqueue NeighbourCell
+        */
+
+        PriorityQueue<CellNode> cellPQueue = new PriorityQueue();
+        cellPQueue.add(new CellNode(startCell));
+
+        ArrayList<CellNode> visitedNodes = new ArrayList();
+
+        while (true)
+        {
+            CellNode currentNode = cellPQueue.remove();
+            if (currentNode.getCell() == endCell)
+            {
+                ArrayList<CellNode> solution = new ArrayList();
+                solution.add(currentNode);
+                while (currentNode.getCell() != startCell)
+                {
+                    currentNode = currentNode.getParent();
+                    solution.add(currentNode);
+                }
+                Collections.reverse(solution);
+                return solution;
+            } else {
+                visitedNodes.add(currentNode);
+                ArrayList<Cell> neighbourCells = currentNode.getCell().GetOpenNeighbours(this);
+
+                ArrayList<CellNode> neighbourNodes = new ArrayList();
+                for (int i = 0; i < neighbourCells.size(); i++) {
+                    neighbourNodes.add(new CellNode(neighbourCells.get(i)));
+                }
+
+                for (int i = 0; i < neighbourNodes.size(); i++) {
+                    CellNode neighbourNode = neighbourNodes.get(i);
+                    int pathCost = neighbourNode.getParent().getPathCost() + 1;
+                    double combinedCost = pathCost + neighbourNode.getCell().DistanceTo(endCell);
+
+                    if (pathCost < neighbourNode.getPathCost())
+                    {
+                        neighbourNode.setPathCost(pathCost);
+                        neighbourNode.setCombinedCost(combinedCost);
+                        neighbourNode.setParent(currentNode);
+                    }
+                    if (visitedNodes.contains(neighbourNode))
+                    {
+                        cellPQueue.add(neighbourNode);
+                    }
+                }
+            }
+        }
     }
 
     /**
