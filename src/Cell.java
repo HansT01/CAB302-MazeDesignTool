@@ -5,6 +5,11 @@ public class Cell {
     private int y;
     private int[] walls = {1, 1, 1, 1};  // North, East, South, West
 
+    public Cell(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
     /**
      * Getter for x.
      * @return x.
