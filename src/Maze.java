@@ -12,7 +12,15 @@ public class Maze {
      */
     public Maze(int sizeX, int sizeY)
     {
+        this.sizeX = sizeX;
+        this.sizeY = sizeY;
+        cells = new Cell[sizeX][sizeY];
 
+        for (int y = 0; y < sizeY; y++) {
+            for (int x = 0; x < sizeX; x++) {
+                cells[x][y] = new Cell(x, y);
+            }
+        }
     }
 
     /**
@@ -202,5 +210,17 @@ public class Maze {
      */
     public int getSizeY() {
         return sizeY;
+    }
+
+    public void Print() {
+        for (int y = 0; y < sizeY; y++)
+        {
+            StringBuilder str = new StringBuilder();
+            for (int x = 0; x < sizeX; x++)
+            {
+                str.append(String.format("(%s,%s)  ", cells[x][y].getX(), cells[x][y].getY()));
+            }
+            System.out.format(str + "\n");
+        }
     }
 }
