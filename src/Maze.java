@@ -26,7 +26,7 @@ public class Maze {
     /**
      * Generates a maze.
      */
-    public void GenerateMaze(Cell startCell)
+    public void GenerateMaze()
     {
         /*
         Maze generation pseudocode:
@@ -52,16 +52,17 @@ public class Maze {
         Stack<Cell> cellStack = new Stack<>();
         int totalCells = GetArea();
 
-        Cell currentCell = startCell;
+        Random r = new Random();
+        Cell currentCell = cells[r.nextInt(sizeX)][r.nextInt(sizeY)];
+
         int visitedCells = 1;
 
         while (visitedCells < totalCells) {
-            ArrayList<Cell> neighbourCells = currentCell.GetNeighbours(this);
+            ArrayList<Cell> neighbourCells = currentCell.GetClosedNeighbours(this);
+
             if (neighbourCells.size() != 0)
             {
-                Random r = new Random();
-                int random = r.nextInt() % neighbourCells.size();
-                Cell neighbourCell = neighbourCells.get(random);
+                Cell neighbourCell = neighbourCells.get(r.nextInt(neighbourCells.size()));
 
                 // Positive x is EAST, negative x is WEST
                 // Positive y is SOUTH, negative y is NORTH
@@ -72,7 +73,7 @@ public class Maze {
                 int neighbourY = neighbourCell.getY();
 
                 currentCell.RemoveWallX(neighbourX - currentX);
-                currentCell.RemoveWallX(neighbourY - currentY);
+                currentCell.RemoveWallY(neighbourY - currentY);
                 neighbourCell.RemoveWallX(currentX - neighbourX);
                 neighbourCell.RemoveWallY(currentY - neighbourY);
 
@@ -87,27 +88,20 @@ public class Maze {
     }
 
     /**
-     * Prints the maze to console.
-     */
-    public void PrintMaze()
-    {
-
-    }
-
-    /**
-     * Solves maze from the startCell to endCell.
+     * Solves maze from the startCell to endCell using the AStar algorithm.
      * @param startCell The starting cell.
      * @param endCell The ending cell.
      * @return
      * An array of the cell path from startCell to endCell.
      * An empty Cell array if no path was found.
-     * TODO Code is untested atm
+     * TODO Priority queue seems to place items in the wrong order, temporary fix in cell node compareTo
+     * TODO Visited cells are not updated, this may be a problem for graphs that are not mazes (with single unit moves)
+     * TODO hash maps O(1) or hash trees O(log(n)) may be a better replacement for VisitedCells collection type
      */
-    public ArrayList<CellNode> Solve(Cell startCell, Cell endCell)
+    public ArrayList<CellNode> Solve(int startX, int startY, int endX, int endY)
     {
         /*
         AStar pseudocode:
-
 
         create a CellPQueue priority queue containing only the StartCell
         create a VisitedCells array list
@@ -121,26 +115,40 @@ public class Maze {
             put CurrentCell in VisitedCells and find its neighbours
             set NeighbourCells as the neighbours
             for each NeighbourCell in NeighbourCells
-              PathCost = NeighbourCell.parent.PathCost + 1
-              CombinedCost = PathCost + NeighbourCell.DistanceTo(EndCell)
-              if PathCost is less than the current path cost of NeighbourCell
-                set the path cost of NeighbourCell to PathCost
-                set the combined cost of NeighbourCell to CombinedCost
-                set NeighbourCell's parent as CurrentCell
               if NeighbourCell is not in VisitedCells
+                PathCost = NeighbourCell.parent.PathCost + 1
+                CombinedCost = PathCost + NeighbourCell.DistanceTo(EndCell)
+                if PathCost is less than the current path cost of NeighbourCell
+                  set the path cost of NeighbourCell to PathCost
+                  set the combined cost of NeighbourCell to CombinedCost
+                  set NeighbourCell's parent as CurrentCell
                 enqueue NeighbourCell
         */
 
+        Cell startCell = cells[startX][startY];
+        Cell endCell = cells[endX][endY];
+
+        CellNode startNode = new CellNode(startCell);
+        startNode.setParent(startNode);
+        startNode.setPathCost(0);
+
         PriorityQueue<CellNode> cellPQueue = new PriorityQueue();
-        cellPQueue.add(new CellNode(startCell));
+        cellPQueue.add(startNode);
 
         ArrayList<CellNode> visitedNodes = new ArrayList();
 
         while (true)
         {
+            for (CellNode element:cellPQueue)
+            {
+                System.out.print(element.toString() + " ");
+            }
+            System.out.println();
+
             CellNode currentNode = cellPQueue.remove();
             if (currentNode.getCell() == endCell)
             {
+                System.out.println("Finished");
                 ArrayList<CellNode> solution = new ArrayList();
                 solution.add(currentNode);
                 while (currentNode.getCell() != startCell)
@@ -153,7 +161,6 @@ public class Maze {
             } else {
                 visitedNodes.add(currentNode);
                 ArrayList<Cell> neighbourCells = currentNode.getCell().GetOpenNeighbours(this);
-
                 ArrayList<CellNode> neighbourNodes = new ArrayList();
                 for (int i = 0; i < neighbourCells.size(); i++) {
                     neighbourNodes.add(new CellNode(neighbourCells.get(i)));
@@ -161,17 +168,19 @@ public class Maze {
 
                 for (int i = 0; i < neighbourNodes.size(); i++) {
                     CellNode neighbourNode = neighbourNodes.get(i);
-                    int pathCost = neighbourNode.getParent().getPathCost() + 1;
-                    double combinedCost = pathCost + neighbourNode.getCell().DistanceTo(endCell);
 
-                    if (pathCost < neighbourNode.getPathCost())
+                    // Prevents algorithm from being stuck on dead ends
+                    if (!visitedNodes.contains(neighbourNode))
                     {
-                        neighbourNode.setPathCost(pathCost);
-                        neighbourNode.setCombinedCost(combinedCost);
-                        neighbourNode.setParent(currentNode);
-                    }
-                    if (visitedNodes.contains(neighbourNode))
-                    {
+                        int pathCost = currentNode.getPathCost() + 1;
+                        double combinedCost = pathCost + neighbourNode.getCell().DistanceTo(endCell);
+
+                        if (pathCost < neighbourNode.getPathCost())
+                        {
+                            neighbourNode.setPathCost(pathCost);
+                            neighbourNode.setCombinedCost(combinedCost);
+                            neighbourNode.setParent(currentNode);
+                        }
                         cellPQueue.add(neighbourNode);
                     }
                 }
@@ -185,7 +194,7 @@ public class Maze {
      */
     public int GetArea()
     {
-        return 0;
+        return sizeX * sizeY;
     }
 
     /**
@@ -212,15 +221,28 @@ public class Maze {
         return sizeY;
     }
 
+    /**
+     * Prints the maze to console.
+     */
     public void Print() {
         for (int y = 0; y < sizeY; y++)
         {
             StringBuilder str = new StringBuilder();
             for (int x = 0; x < sizeX; x++)
             {
-                str.append(String.format("(%s,%s)  ", cells[x][y].getX(), cells[x][y].getY()));
+                System.out.format("1  %d  1  ", cells[x][y].getWalls()[0]);
             }
-            System.out.format(str + "\n");
+            System.out.println();
+            for (int x = 0; x < sizeX; x++)
+            {
+                System.out.format("%d     %d  ", cells[x][y].getWalls()[3], cells[x][y].getWalls()[1]);
+            }
+            System.out.println();
+            for (int x = 0; x < sizeX; x++)
+            {
+                System.out.format("1  %d  1  ", cells[x][y].getWalls()[2]);
+            }
+            System.out.println();
         }
     }
 }
