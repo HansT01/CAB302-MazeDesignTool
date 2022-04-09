@@ -1,3 +1,4 @@
+import java.security.KeyPair;
 import java.util.*;
 
 public class Maze {
@@ -96,7 +97,6 @@ public class Maze {
      * An empty Cell array if no path was found.
      * TODO Priority queue seems to place items in the wrong order, temporary fix in cell node compareTo
      * TODO Visited cells are not updated, this may be a problem for graphs that are not mazes (with single unit moves)
-     * TODO hash maps O(1) or hash trees O(log(n)) may be a better replacement for VisitedCells collection type
      */
     public ArrayList<CellNode> Solve(int startX, int startY, int endX, int endY)
     {
@@ -135,7 +135,7 @@ public class Maze {
         PriorityQueue<CellNode> cellPQueue = new PriorityQueue();
         cellPQueue.add(startNode);
 
-        ArrayList<CellNode> visitedNodes = new ArrayList();
+        HashMap<Integer, CellNode> visitedNodes = new HashMap();
 
         while (true)
         {
@@ -159,7 +159,7 @@ public class Maze {
                 Collections.reverse(solution);
                 return solution;
             } else {
-                visitedNodes.add(currentNode);
+                visitedNodes.put(currentNode.hashCode(), currentNode);
                 ArrayList<Cell> neighbourCells = currentNode.getCell().GetOpenNeighbours(this);
                 ArrayList<CellNode> neighbourNodes = new ArrayList();
                 for (int i = 0; i < neighbourCells.size(); i++) {
@@ -170,7 +170,7 @@ public class Maze {
                     CellNode neighbourNode = neighbourNodes.get(i);
 
                     // Prevents algorithm from being stuck on dead ends
-                    if (!visitedNodes.contains(neighbourNode))
+                    if (!visitedNodes.containsKey(neighbourNode.hashCode()))
                     {
                         int pathCost = currentNode.getPathCost() + 1;
                         double combinedCost = pathCost + neighbourNode.getCell().DistanceTo(endCell);
