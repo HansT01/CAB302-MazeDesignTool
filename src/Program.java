@@ -25,7 +25,7 @@ public class Program {
         System.out.println();
 
         startTime = System.nanoTime();
-        ArrayList<CellNode> solution = testMaze.Solve(0, 0, sizeX - 1, 0);
+        ArrayList<CellNode> solution = testMaze.Solve(sizeX/2-1, sizeY/2-1, sizeX - 1, 0);
         endTime = System.nanoTime();
         long solveTime = endTime - startTime;
 
@@ -36,9 +36,9 @@ public class Program {
         System.out.println();
         System.out.println();
 
-        System.out.format("Construction time: %f\n", constructTime/1000000.0);
-        System.out.format("Generation time: %f\n", generateTime/1000000.0);
-        System.out.format("Solve time: %f\n", solveTime/1000000.0);
+        System.out.format("Construction time (ms): %f\n", constructTime/1000000.0);
+        System.out.format("Generation time (ms): %f\n", generateTime/1000000.0);
+        System.out.format("Solve time (ms): %f\n", solveTime/1000000.0);
 
     }
 }

@@ -84,9 +84,9 @@ public class CellNode implements Comparable<CellNode> {
         if (combinedCost == targetNode.combinedCost) {
             return 0;
         } else if (combinedCost < targetNode.combinedCost) {
-            return 1;
-        } else {
             return -1;
+        } else {
+            return 1;
         }
     }
 

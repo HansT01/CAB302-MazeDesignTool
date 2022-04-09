@@ -48,7 +48,9 @@ public class Cell {
      */
     public double DistanceTo(Cell targetCell)
     {
-        return 0;
+        double xDiff = targetCell.getX()-x;
+        double yDiff = targetCell.getY()-y;
+        return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
     }
 
     /**

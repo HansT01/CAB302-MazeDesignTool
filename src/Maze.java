@@ -97,9 +97,7 @@ public class Maze {
      * @return
      * An array of the cell path from startCell to endCell.
      * An empty Cell array if no path was found.
-     * TODO Priority queue seems to place items in the wrong order, temporary fix in cell node compareTo
      * TODO Does not implement image blocks
-     * TODO If there are string collisions for hash maps it's possible for this method to fail
      */
     public ArrayList<CellNode> Solve(int startX, int startY, int endX, int endY)
     {
@@ -166,7 +164,6 @@ public class Maze {
                 for (int i = 0; i < neighbourNodes.size(); i++) {
                     CellNode neighbourNode = neighbourNodes.get(i);
 
-                    // Prevents algorithm from being stuck on dead ends
                     if (visitedNodes.get(neighbourNode.toString()) == null)
                     {
                         int pathCost = currentNode.getPathCost() + 1;
@@ -179,6 +176,15 @@ public class Maze {
                             neighbourNode.setParent(currentNode);
                         }
                         cellPQueue.add(neighbourNode);
+
+                        /*
+                        for (CellNode item:cellPQueue)
+                        {
+                            System.out.format("%s ", item.getCell());
+                            System.out.format("%,.2f ", item.getCombinedCost());
+                        }
+                        System.out.println();
+                         */
                     }
                 }
             }
