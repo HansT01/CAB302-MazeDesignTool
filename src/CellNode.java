@@ -57,11 +57,6 @@ public class CellNode implements Comparable<CellNode> {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(cell);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o.getClass() == this.getClass())
         {

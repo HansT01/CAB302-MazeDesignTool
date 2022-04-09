@@ -1,29 +1,44 @@
 import java.util.ArrayList;
-import java.util.PriorityQueue;
 
 public class Program {
     public static void main(String[] args)
     {
-        System.out.println();
-
         int sizeX = 10;
-        int sizeY = 5;
+        int sizeY = 6;
+        long startTime;
+        long endTime;
+
+        startTime = System.nanoTime();
         Maze testMaze = new Maze(sizeX, sizeY);
-        testMaze.Print();
+        endTime = System.nanoTime();
+        long constructTime = endTime - startTime;
 
+        testMaze.Print();
         System.out.println();
 
+        startTime = System.nanoTime();
         testMaze.GenerateMaze();
-        testMaze.Print();
+        endTime = System.nanoTime();
+        long generateTime = endTime - startTime;
 
+        testMaze.Print();
         System.out.println();
 
+        startTime = System.nanoTime();
         ArrayList<CellNode> solution = testMaze.Solve(0, 0, sizeX - 1, 0);
+        endTime = System.nanoTime();
+        long solveTime = endTime - startTime;
+
         for (CellNode node:solution)
         {
             System.out.print(node.toString() + " ");
         }
         System.out.println();
+        System.out.println();
+
+        System.out.format("Construction time: %f\n", constructTime/1000000.0);
+        System.out.format("Generation time: %f\n", generateTime/1000000.0);
+        System.out.format("Solve time: %f\n", solveTime/1000000.0);
 
     }
 }

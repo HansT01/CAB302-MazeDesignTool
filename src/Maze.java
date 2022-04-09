@@ -1,9 +1,9 @@
-import java.security.KeyPair;
 import java.util.*;
 
 public class Maze {
     private int sizeX;
     private int sizeY;
+    private int area;
     private Cell[][] cells;
 
     /**
@@ -15,6 +15,7 @@ public class Maze {
     {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
+        this.area = sizeX * sizeY;
         cells = new Cell[sizeX][sizeY];
 
         for (int y = 0; y < sizeY; y++) {
@@ -26,6 +27,7 @@ public class Maze {
 
     /**
      * Generates a maze.
+     * TODO Does not implement image blocks
      */
     public void GenerateMaze()
     {
@@ -51,7 +53,7 @@ public class Maze {
          */
 
         Stack<Cell> cellStack = new Stack<>();
-        int totalCells = GetArea();
+        int totalCells = getArea();
 
         Random r = new Random();
         Cell currentCell = cells[r.nextInt(sizeX)][r.nextInt(sizeY)];
@@ -96,7 +98,7 @@ public class Maze {
      * An array of the cell path from startCell to endCell.
      * An empty Cell array if no path was found.
      * TODO Priority queue seems to place items in the wrong order, temporary fix in cell node compareTo
-     * TODO Visited cells are not updated, this may be a problem for graphs that are not mazes (with single unit moves)
+     * TODO Does not implement image blocks or manually added "blocks"
      */
     public ArrayList<CellNode> Solve(int startX, int startY, int endX, int endY)
     {
@@ -105,7 +107,7 @@ public class Maze {
 
         create a CellPQueue priority queue containing only the StartCell
         create a VisitedCells array list
-        while (the destination node has not been reached)
+        while there are still nodes to be visited
           dequeue CellQueue as CurrentCell
           if CurrentCell is the EndCell
             trace back the parents of all cells from EndCell to StartCell
@@ -123,6 +125,7 @@ public class Maze {
                   set the combined cost of NeighbourCell to CombinedCost
                   set NeighbourCell's parent as CurrentCell
                 enqueue NeighbourCell
+        return null
         */
 
         Cell startCell = cells[startX][startY];
@@ -135,20 +138,13 @@ public class Maze {
         PriorityQueue<CellNode> cellPQueue = new PriorityQueue();
         cellPQueue.add(startNode);
 
-        HashMap<Integer, CellNode> visitedNodes = new HashMap();
+        HashMap<String, CellNode> visitedNodes = new HashMap();
 
-        while (true)
+        while (visitedNodes.size() < area)
         {
-            for (CellNode element:cellPQueue)
-            {
-                System.out.print(element.toString() + " ");
-            }
-            System.out.println();
-
             CellNode currentNode = cellPQueue.remove();
             if (currentNode.getCell() == endCell)
             {
-                System.out.println("Finished");
                 ArrayList<CellNode> solution = new ArrayList();
                 solution.add(currentNode);
                 while (currentNode.getCell() != startCell)
@@ -159,7 +155,7 @@ public class Maze {
                 Collections.reverse(solution);
                 return solution;
             } else {
-                visitedNodes.put(currentNode.hashCode(), currentNode);
+                visitedNodes.put(currentNode.toString(), currentNode);
                 ArrayList<Cell> neighbourCells = currentNode.getCell().GetOpenNeighbours(this);
                 ArrayList<CellNode> neighbourNodes = new ArrayList();
                 for (int i = 0; i < neighbourCells.size(); i++) {
@@ -170,7 +166,7 @@ public class Maze {
                     CellNode neighbourNode = neighbourNodes.get(i);
 
                     // Prevents algorithm from being stuck on dead ends
-                    if (!visitedNodes.containsKey(neighbourNode.hashCode()))
+                    if (visitedNodes.get(neighbourNode.toString()) == null)
                     {
                         int pathCost = currentNode.getPathCost() + 1;
                         double combinedCost = pathCost + neighbourNode.getCell().DistanceTo(endCell);
@@ -186,15 +182,16 @@ public class Maze {
                 }
             }
         }
+        return null;
     }
 
     /**
      * Calculates the area of the maze.
      * @return The area of the maze.
      */
-    public int GetArea()
+    public int getArea()
     {
-        return sizeX * sizeY;
+        return area;
     }
 
     /**

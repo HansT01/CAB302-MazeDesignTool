@@ -163,9 +163,4 @@ public class Cell {
         Cell cell = (Cell) o;
         return x == cell.x && y == cell.y;
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y);
-    }
 }
