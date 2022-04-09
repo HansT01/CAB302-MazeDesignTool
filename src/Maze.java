@@ -98,7 +98,8 @@ public class Maze {
      * An array of the cell path from startCell to endCell.
      * An empty Cell array if no path was found.
      * TODO Priority queue seems to place items in the wrong order, temporary fix in cell node compareTo
-     * TODO Does not implement image blocks or manually added "blocks"
+     * TODO Does not implement image blocks
+     * TODO If there are string collisions for hash maps it's possible for this method to fail
      */
     public ArrayList<CellNode> Solve(int startX, int startY, int endX, int endY)
     {

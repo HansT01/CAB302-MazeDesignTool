@@ -7,6 +7,11 @@ public class Cell {
     private int y;
     private int[] walls = {1, 1, 1, 1};  // North, East, South, West
 
+    /**
+     * Constructs and initializes a cell object
+     * @param x x coordinate of the cell
+     * @param y y coordinate of the cell
+     */
     public Cell(int x, int y) {
         this.x = x;
         this.y = y;
@@ -28,6 +33,10 @@ public class Cell {
         return y;
     }
 
+    /**
+     * Getter for walls.
+     * @return walls.
+     */
     public int[] getWalls() {
         return walls;
     }
@@ -60,9 +69,9 @@ public class Cell {
     }
 
     /**
-     * Finds all neighbouring cells.
+     * Finds all neighbouring cells with all walls intact.
      * @param maze The maze the cell is located inside.
-     * @return An array of cells that are adjacent to this cell.
+     * @return An array of all cells with intact walls.
      */
     public ArrayList<Cell> GetClosedNeighbours(Maze maze)
     {
@@ -91,6 +100,11 @@ public class Cell {
         return neighbours;
     }
 
+    /**
+     * Finds all neighbours that are open to this cell.
+     * @param maze The maze the cell is located inside.
+     * @return ArrayList of open cell neighbours.
+     */
     public ArrayList<Cell> GetOpenNeighbours(Maze maze)
     {
         ArrayList<Cell> neighbours = new ArrayList<>();
@@ -151,11 +165,20 @@ public class Cell {
         }
     }
 
+    /**
+     * String representation of a cell.
+     * @return the x and y coordinates of the cell.
+     */
     @Override
     public String toString() {
         return String.format("(%s,%s)", x, y);
     }
 
+    /**
+     * Equals method.
+     * @param o comparison object
+     * @return true if both cells have same coordinates
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
