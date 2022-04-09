@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
 
 public class Cell {
     private int x;
@@ -46,8 +44,7 @@ public class Cell {
      * @param targetCell The target cell.
      * @return The distance between current cell and target cell in cells.
      */
-    public double DistanceTo(Cell targetCell)
-    {
+    public double DistanceTo(Cell targetCell) {
         double xDiff = targetCell.getX()-x;
         double yDiff = targetCell.getY()-y;
         return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
@@ -57,8 +54,7 @@ public class Cell {
      * Checks if this cell has all walls intact.
      * @return True if all walls are intact.
      */
-    public Boolean HasAllWalls()
-    {
+    public Boolean HasAllWalls() {
         Boolean hasAllWalls = true;
         for (int i = 0; i < 4; i++)
         {
@@ -75,8 +71,7 @@ public class Cell {
      * @param maze The maze the cell is located inside.
      * @return An array of all cells with intact walls.
      */
-    public ArrayList<Cell> GetClosedNeighbours(Maze maze)
-    {
+    public ArrayList<Cell> GetClosedNeighbours(Maze maze) {
         ArrayList<Cell> neighbours = new ArrayList<>();
         Cell[][] cells = maze.getCells();
         int sizeX = maze.getSizeX();
@@ -107,8 +102,7 @@ public class Cell {
      * @param maze The maze the cell is located inside.
      * @return ArrayList of open cell neighbours.
      */
-    public ArrayList<Cell> GetOpenNeighbours(Maze maze)
-    {
+    public ArrayList<Cell> GetOpenNeighbours(Maze maze) {
         ArrayList<Cell> neighbours = new ArrayList<>();
         Cell[][] cells = maze.getCells();
         int sizeX = maze.getSizeX();
@@ -134,19 +128,14 @@ public class Cell {
         return neighbours;
     }
 
-
     /**
      * Removes a wall on the x-axis.
      * @param wall Wall to be removed: 1 is East wall, -1 is West wall.
      */
-    public void RemoveWallX(int wall)
-    {
-        if (wall == 1)
-        {
+    public void RemoveWallX(int wall) {
+        if (wall == 1) {
             walls[1] = 0;
-        }
-        else if (wall == -1)
-        {
+        } else if (wall == -1) {
             walls[3] = 0;
         }
     }
@@ -155,14 +144,10 @@ public class Cell {
      * Removes a wall on the y-axis.
      * @param wall Wall to be removed: 1 is South wall, -1 is North wall.
      */
-    public void RemoveWallY(int wall)
-    {
-        if (wall == 1)
-        {
+    public void RemoveWallY(int wall) {
+        if (wall == 1) {
             walls[2] = 0;
-        }
-        else if (wall == -1)
-        {
+        } else if (wall == -1) {
             walls[0] = 0;
         }
     }

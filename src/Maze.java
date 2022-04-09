@@ -39,6 +39,38 @@ public class Maze {
     }
 
     /**
+     * Getter for title.
+     * @return Maze title.
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Getter for author.
+     * @return Maze author.
+     */
+    public String getAuthor() {
+        return author;
+    }
+
+    /**
+     * Getter for date created.
+     * @return Maze date creation time.
+     */
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    /**
+     * Getter for date last edited
+     * @return Maze date last edited.
+     */
+    public Date getDateLastEdited() {
+        return dateLastEdited;
+    }
+
+    /**
      * Getter for maze width.
      * @return maze width.
      */
@@ -235,7 +267,7 @@ public class Maze {
      * @param x x location of image.
      * @param y y location of image.
      */
-    public void AddImage(MazeImage image, int x, int y) {
+    public void PlaceImage(MazeImage image, int x, int y) {
         image.setX(x);
         image.setY(y);
         images.add(image);
