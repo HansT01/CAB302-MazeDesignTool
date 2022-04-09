@@ -1,5 +1,3 @@
-import java.util.Objects;
-
 public class CellNode implements Comparable<CellNode> {
     private Cell cell;
     private CellNode parent = null;
@@ -99,8 +97,8 @@ public class CellNode implements Comparable<CellNode> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CellNode cellNode = (CellNode) o;
-        return cell == cellNode.cell;
+        CellNode node = (CellNode) o;
+        return cell == node.cell;
     }
 
     /**

@@ -1,18 +1,23 @@
 import java.util.*;
 
 public class Maze {
+    private String title;
+    private String author;
+    private Date dateCreated;
+    private Date dateLastEdited;
+
     private int sizeX;
     private int sizeY;
     private int area;
     private Cell[][] cells;
+    private ArrayList<MazeImage> images;
 
     /**
      * Constructs and initialises a new Maze.
      * @param sizeX The width of the maze in cells.
      * @param sizeY The height of the maze in cells.
      */
-    public Maze(int sizeX, int sizeY)
-    {
+    public Maze(int sizeX, int sizeY) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.area = sizeX * sizeY;
@@ -26,11 +31,42 @@ public class Maze {
     }
 
     /**
+     * Getter for 2D cell array.
+     * @return The 2D cell array.
+     */
+    public Cell[][] getCells() {
+        return cells;
+    }
+
+    /**
+     * Getter for maze width.
+     * @return maze width.
+     */
+    public int getSizeX() {
+        return sizeX;
+    }
+
+    /**
+     * Getter for maze height.
+     * @return maze height.
+     */
+    public int getSizeY() {
+        return sizeY;
+    }
+
+    /**
+     * Calculates the area of the maze.
+     * @return The area of the maze.
+     */
+    public int getArea() {
+        return area;
+    }
+
+    /**
      * Generates a maze.
      * TODO Does not implement image blocks
      */
-    public void GenerateMaze()
-    {
+    public void GenerateMaze() {
         /*
         Maze generation pseudocode:
 
@@ -92,15 +128,16 @@ public class Maze {
 
     /**
      * Solves maze from the startCell to endCell using the AStar algorithm.
-     * @param startCell The starting cell.
-     * @param endCell The ending cell.
+     * @param startX The x position of the starting cell.
+     * @param startY The y position of the starting cell.
+     * @param endX The x position of the ending cell.
+     * @param endY The y position of the ending cell.
      * @return
      * An array of the cell path from startCell to endCell.
      * An empty Cell array if no path was found.
      * TODO Does not implement image blocks
      */
-    public ArrayList<CellNode> Solve(int startX, int startY, int endX, int endY)
-    {
+    public ArrayList<CellNode> Solve(int startX, int startY, int endX, int endY) {
         /*
         AStar pseudocode:
 
@@ -193,36 +230,15 @@ public class Maze {
     }
 
     /**
-     * Calculates the area of the maze.
-     * @return The area of the maze.
+     * Adds an image to images field.
+     * @param image object of class MazeImage.
+     * @param x x location of image.
+     * @param y y location of image.
      */
-    public int getArea()
-    {
-        return area;
-    }
-
-    /**
-     * Getter for 2D cell array.
-     * @return The 2D cell array.
-     */
-    public Cell[][] getCells() {
-        return cells;
-    }
-
-    /**
-     * Getter for maze width.
-     * @return maze width.
-     */
-    public int getSizeX() {
-        return sizeX;
-    }
-
-    /**
-     * Getter for maze height.
-     * @return maze height.
-     */
-    public int getSizeY() {
-        return sizeY;
+    public void AddImage(MazeImage image, int x, int y) {
+        image.setX(x);
+        image.setY(y);
+        images.add(image);
     }
 
     /**
@@ -248,5 +264,24 @@ public class Maze {
             }
             System.out.println();
         }
+    }
+
+    /**
+     * Calculates the percentage of cells in maze covered by a solution.
+     * @param solution Path solution.
+     * @return Percentage of cells in maze covered by a solution.
+     */
+    public double SolutionPct(ArrayList<CellNode> solution)
+    {
+        return 0;
+    }
+
+    /**
+     * Calculates the percentage of cells in maze that are dead ends.
+     * @return Percentage of cells in maze that are dead ends.
+     */
+    public double DeadEndPct()
+    {
+        return 0;
     }
 }
