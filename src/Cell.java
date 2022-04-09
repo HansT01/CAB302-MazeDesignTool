@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Cell {
     private int x;
@@ -26,6 +27,10 @@ public class Cell {
         return y;
     }
 
+    public int[] getWalls() {
+        return walls;
+    }
+
     /**
      * Calculates the distance between this and the target cell.
      * @param targetCell The target cell.
@@ -42,7 +47,15 @@ public class Cell {
      */
     public Boolean HasAllWalls()
     {
-        return false;
+        Boolean hasAllWalls = true;
+        for (int i = 0; i < 4; i++)
+        {
+            if (walls[i] == 0)
+            {
+                hasAllWalls = false;
+            }
+        }
+        return hasAllWalls;
     }
 
     /**
@@ -50,28 +63,28 @@ public class Cell {
      * @param maze The maze the cell is located inside.
      * @return An array of cells that are adjacent to this cell.
      */
-    public ArrayList<Cell> GetNeighbours(Maze maze)
+    public ArrayList<Cell> GetClosedNeighbours(Maze maze)
     {
         ArrayList<Cell> neighbours = new ArrayList<>();
         Cell[][] cells = maze.getCells();
         int sizeX = maze.getSizeX();
         int sizeY = maze.getSizeY();
 
-        if (y > 0)
+        if (y > 0 && cells[x][y-1].HasAllWalls())
         {
-            neighbours.add(cells[y-1][x]);
+            neighbours.add(cells[x][y-1]);
         }
-        if (x < sizeX)
+        if (x < sizeX - 1 && cells[x+1][y].HasAllWalls())
         {
-            neighbours.add(cells[y][x+1]);
+            neighbours.add(cells[x+1][y]);
         }
-        if (y < sizeY)
+        if (y < sizeY - 1 && cells[x][y+1].HasAllWalls())
         {
-            neighbours.add(cells[y+1][x]);
+            neighbours.add(cells[x][y+1]);
         }
-        if (x > 0)
+        if (x > 0 && cells[x-1][y].HasAllWalls())
         {
-            neighbours.add(cells[y][x-1]);
+            neighbours.add(cells[x-1][y]);
         }
 
         return neighbours;
@@ -86,19 +99,19 @@ public class Cell {
 
         if (y > 0 && walls[0] == 0)
         {
-            neighbours.add(cells[y-1][x]);
+            neighbours.add(cells[x][y-1]);
         }
         if (x < sizeX && walls[1] == 0)
         {
-            neighbours.add(cells[y][x+1]);
+            neighbours.add(cells[x+1][y]);
         }
         if (y < sizeY && walls[2] == 0)
         {
-            neighbours.add(cells[y+1][x]);
+            neighbours.add(cells[x][y+1]);
         }
         if (x > 0 && walls[3] == 0)
         {
-            neighbours.add(cells[y][x-1]);
+            neighbours.add(cells[x-1][y]);
         }
 
         return neighbours;
@@ -137,10 +150,8 @@ public class Cell {
         }
     }
 
-    public void Print()
-    {
-        System.out.format("1  %d  1\n", walls[0]);
-        System.out.format("%d     %d\n", walls[3], walls[1]);
-        System.out.format("1  %d  1\n", walls[2]);
+    @Override
+    public String toString() {
+        return String.format("(%s,%s)", x, y);
     }
 }
