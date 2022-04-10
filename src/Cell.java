@@ -1,9 +1,9 @@
 import java.util.ArrayList;
 
 public class Cell {
-    private int x;
-    private int y;
-    private int[] walls = {1, 1, 1, 1};  // North, East, South, West
+    private final int x;
+    private final int y;
+    private boolean[] walls = {true, true, true, true};  // North, East, South, West
 
     /**
      * Constructs and initializes a cell object
@@ -35,7 +35,7 @@ public class Cell {
      * Getter for walls.
      * @return walls.
      */
-    public int[] getWalls() {
+    public boolean[] getWalls() {
         return walls;
     }
 
@@ -54,16 +54,23 @@ public class Cell {
      * Checks if this cell has all walls intact.
      * @return True if all walls are intact.
      */
-    public Boolean HasAllWalls() {
-        Boolean hasAllWalls = true;
+    public boolean HasAllWalls() {
+        boolean hasAllWalls = true;
         for (int i = 0; i < 4; i++)
         {
-            if (walls[i] == 0)
-            {
+            if (!walls[i]) {
                 hasAllWalls = false;
+                break;
             }
         }
         return hasAllWalls;
+    }
+
+    /**
+     * Sets all walls to false.
+     */
+    public void RemoveAllWalls() {
+        walls = new boolean[] {false, false, false, false};
     }
 
     /**
@@ -108,19 +115,19 @@ public class Cell {
         int sizeX = maze.getSizeX();
         int sizeY = maze.getSizeY();
 
-        if (y > 0 && walls[0] == 0)
+        if (y > 0 && !walls[0])
         {
             neighbours.add(cells[x][y-1]);
         }
-        if (x < sizeX && walls[1] == 0)
+        if (x < sizeX && !walls[1])
         {
             neighbours.add(cells[x+1][y]);
         }
-        if (y < sizeY && walls[2] == 0)
+        if (y < sizeY && !walls[2])
         {
             neighbours.add(cells[x][y+1]);
         }
-        if (x > 0 && walls[3] == 0)
+        if (x > 0 && !walls[3])
         {
             neighbours.add(cells[x-1][y]);
         }
@@ -134,9 +141,9 @@ public class Cell {
      */
     public void RemoveWallX(int wall) {
         if (wall == 1) {
-            walls[1] = 0;
+            walls[1] = false;
         } else if (wall == -1) {
-            walls[3] = 0;
+            walls[3] = false;
         }
     }
 
@@ -146,9 +153,9 @@ public class Cell {
      */
     public void RemoveWallY(int wall) {
         if (wall == 1) {
-            walls[2] = 0;
+            walls[2] = false;
         } else if (wall == -1) {
-            walls[0] = 0;
+            walls[0] = false;
         }
     }
 

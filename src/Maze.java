@@ -6,11 +6,12 @@ public class Maze {
     private Date dateCreated;
     private Date dateLastEdited;
 
-    private int sizeX;
-    private int sizeY;
-    private int area;
+    private final int sizeX;
+    private final int sizeY;
+    private final int area;
     private Cell[][] cells;
     private MazeImage[] images;
+    private int imageCells = 0;
 
     /**
      * Constructs and initialises a new Maze.
@@ -102,56 +103,67 @@ public class Maze {
         /*
         Recursive Backtracking algorithm pseudocode:
 
-        create a CellStack to hold a list of cell locations
-        set TotalCells to the number of cells in grid
-        choose a starting cell location and call it CurrentCell
-        set VisitedCells as 1
+        create a cell stack for backtracking
+        create a visited cells count variable
+        pick a random starting cell as the current cell
 
-        while VisitedCells < TotalCells
-          find all neighbours of CurrentCell with all walls intact
+        while there are still cells to be visited
+          find current cell neighbours with all walls intact
           if at least one is found
-            choose one at random
-            knock down the wall between it and CurrentCell
-            push CurrentCell location onto the CellStack
-            set CurrentCell as the new cell
-            add 1 to VisitedCells
+            choose one neighbour cell at random
+            knock down the wall between it and current cell
+            push current cell onto the cell stack
+            increment visited cells
+            set current cell as the neighbour cell
           else
-            pop CellStack
-            set CurrentCell as the new cell
+            pop the cell stack and set it as current cell
          */
 
+        // Create cell stack.
         Stack<Cell> cellStack = new Stack<>();
-        int totalCells = getArea();
-
+        
+        // Construct random object.
         Random r = new Random();
+        
+        // Pick a random starting point.
         Cell currentCell = cells[r.nextInt(sizeX)][r.nextInt(sizeY)];
 
-        int visitedCells = 1;
+        // Visited cells include cells covered by an image.
+        int visitedCellsCount = 1 + imageCells;
+        int totalCells = getArea();
 
-        while (visitedCells < totalCells) {
+        // Loop until all cells have been visited.
+        while (visitedCellsCount < totalCells) {
+            // Find all neighbours of current cell with all walls intact.
             ArrayList<Cell> neighbourCells = currentCell.GetClosedNeighbours(this);
 
+            // If any neighbour cells are available.
             if (neighbourCells.size() != 0)
             {
+                // Pick a random neighbour cell
                 Cell neighbourCell = neighbourCells.get(r.nextInt(neighbourCells.size()));
 
-                // Positive x is EAST, negative x is WEST
-                // Positive y is SOUTH, negative y is NORTH
-
+                // Positive x direction is EAST, negative x direction is WEST.
+                // Positive y direction is SOUTH, negative y direction is NORTH.
                 int currentX = currentCell.getX();
                 int currentY = currentCell.getY();
                 int neighbourX = neighbourCell.getX();
                 int neighbourY = neighbourCell.getY();
 
+                // Break down the walls between the current and neighbour cell.
                 currentCell.RemoveWallX(neighbourX - currentX);
                 currentCell.RemoveWallY(neighbourY - currentY);
                 neighbourCell.RemoveWallX(currentX - neighbourX);
                 neighbourCell.RemoveWallY(currentY - neighbourY);
 
+                // Push the current cell onto the stack and increment visited cells count.
                 cellStack.add(currentCell);
+                visitedCellsCount++;
+
+                // Set the current cell as the neighbour cell.
                 currentCell = neighbourCell;
-                visitedCells++;
             } else {
+                // Pop the cell stack as the current cell.
                 currentCell = cellStack.pop();
             }
         }
@@ -171,47 +183,61 @@ public class Maze {
      */
     public CellNode[] Solve(int startX, int startY, int endX, int endY) {
         /*
-        AStar pseudocode:
+        AStar pathfinding pseudocode:
 
-        create a CellPQueue priority queue containing only the StartCell
-        create a VisitedCells array list
+        create a priority queue that sorts by the combined cost
+        create a visited cells hash map
+        enqueue the start cell to the priority queue
         while there are still nodes to be visited
-          dequeue CellQueue as CurrentCell
-          if CurrentCell is the EndCell
-            trace back the parents of all cells from EndCell to StartCell
-            store it in an array
+          dequeue priority queue as current cell
+          if current cell is the end cell
+            trace back the parents of all cells from end to start cell
+            store it in an array and reverse it
             return array
-          if not:
-            put CurrentCell in VisitedCells and find its neighbours
-            set NeighbourCells as the neighbours
-            for each NeighbourCell in NeighbourCells
-              if NeighbourCell is not in VisitedCells
-                PathCost = NeighbourCell.parent.PathCost + 1
-                CombinedCost = PathCost + NeighbourCell.DistanceTo(EndCell)
-                if PathCost is less than the current path cost of NeighbourCell
-                  set the path cost of NeighbourCell to PathCost
-                  set the combined cost of NeighbourCell to CombinedCost
-                  set NeighbourCell's parent as CurrentCell
-                enqueue NeighbourCell
+          else
+            put current cell in visited cells
+            find current cell neighbours as neighbour cells
+            for each neighbour cell
+              if the neighbour cell is not in visited cells
+                calculate path and combined cost of the neighbour cell
+                if the path cost is less than the neighbour cell's path cost
+                  update the neighbour cell's path and combined cost
+                  set the neighbour cell's parent as the current cell
+                enqueue the neighbour cell to the priority queue
         return null
         */
 
+        // Start and end cells.
         Cell startCell = cells[startX][startY];
         Cell endCell = cells[endX][endY];
 
+        // Construct a node on the start cell.
         CellNode startNode = new CellNode(startCell);
         startNode.setParent(startNode);
         startNode.setPathCost(0);
 
+        // Create a priority queue, sorted by the combined cost of a node.
+        // The combined cost of the node is its displacement to the end node added to its path cost.
         PriorityQueue<CellNode> cellPQueue = new PriorityQueue<>();
         cellPQueue.add(startNode);
 
+        // Create a hash map to store visited nodes.
         HashMap<String, CellNode> visitedNodes = new HashMap<>();
 
+        // Loop until all nodes have been checked.
         while (visitedNodes.size() < area)
         {
-            CellNode currentNode = cellPQueue.remove();
+            // Dequeue first node in queue as current node.
+            CellNode currentNode = cellPQueue.poll();
+
+            // Break queue if all accessible nodes have been checked.
+            if (currentNode == null) {
+                break;
+            }
+
+            // Check if cell in the node is the end cell.
             if (currentNode.getCell() == endCell) {
+                // Generate and return the solution.
                 ArrayList<CellNode> solution = new ArrayList<>();
                 solution.add(currentNode);
                 while (currentNode.getCell() != startCell) {
@@ -221,7 +247,10 @@ public class Maze {
                 Collections.reverse(solution);
                 return solution.toArray(new CellNode[0]);
             } else {
+                // Mark current node as complete by putting it in the hash map.
                 visitedNodes.put(currentNode.toString(), currentNode);
+
+                // Get all neighbour nodes of current node.
                 ArrayList<Cell> neighbourCells = currentNode.getCell().GetOpenNeighbours(this);
                 ArrayList<CellNode> neighbourNodes = new ArrayList<>();
                 for (Cell neighbourCell : neighbourCells) {
@@ -229,41 +258,53 @@ public class Maze {
                 }
 
                 for (CellNode neighbourNode : neighbourNodes) {
+                    // Skip visited neighbour nodes by checking hash map.
                     if (visitedNodes.get(neighbourNode.toString()) == null) {
+                        // Calculate path and combined cost of the neighbour node.
                         int pathCost = currentNode.getPathCost() + 1;
                         double combinedCost = pathCost + neighbourNode.getCell().DistanceTo(endCell);
 
+                        // If the cost is lower than its current cost, update it and
+                        // set its parent to the current node.
                         if (pathCost < neighbourNode.getPathCost()) {
                             neighbourNode.setPathCost(pathCost);
                             neighbourNode.setCombinedCost(combinedCost);
                             neighbourNode.setParent(currentNode);
                         }
+                        // Add the neighbour node to the priority queue.
                         cellPQueue.add(neighbourNode);
-
-                        /*
-                        for (CellNode item:cellPQueue)
-                        {
-                            System.out.format("%s ", item.getCell());
-                            System.out.format("%,.2f ", item.getCombinedCost());
-                        }
-                        System.out.println();
-                         */
                     }
                 }
             }
         }
+        // No solution was found.
         return null;
     }
 
     /**
-     * Adds an image to images field.
+     * Adds an image to images field, increments the imageCells, removes all walls under image cells
      * @param image object of class MazeImage.
-     * @param x x location of image.
-     * @param y y location of image.
+     * @param xPos x position of image.
+     * @param yPos y position of image.
      */
-    public void PlaceImage(MazeImage image, int x, int y) {
-        image.setX(x);
-        image.setY(y);
+    public void PlaceImage(MazeImage image, int xPos, int yPos) {
+        int imageSizeX = image.getSizeX();
+        int imageSizeY = image.getSizeY();
+        boolean fitsX = (xPos >= 0 && xPos + imageSizeX < sizeX);
+        boolean fitsY = (yPos >= 0 && yPos + imageSizeY < sizeY);
+        if (fitsX && fitsY)
+        {
+            image.setX(xPos);
+            image.setY(yPos);
+
+            for (int y = yPos; y < yPos + imageSizeY; y++) {
+                for (int x = xPos; x < xPos + imageSizeX; x++) {
+                    cells[x][y].RemoveAllWalls();
+                }
+            }
+
+            imageCells += imageSizeX * imageSizeY;
+        }
     }
 
     /**
@@ -272,20 +313,19 @@ public class Maze {
     public void Print() {
         for (int y = 0; y < sizeY; y++)
         {
-            StringBuilder str = new StringBuilder();
             for (int x = 0; x < sizeX; x++)
             {
-                System.out.format("1  %d  1  ", cells[x][y].getWalls()[0]);
+                System.out.format("1  %s  1  ", cells[x][y].getWalls()[0] ? "1" : " ");
             }
             System.out.println();
             for (int x = 0; x < sizeX; x++)
             {
-                System.out.format("%d     %d  ", cells[x][y].getWalls()[3], cells[x][y].getWalls()[1]);
+                System.out.format("%s     %s  ", cells[x][y].getWalls()[3] ? "1" : " ", cells[x][y].getWalls()[1] ? "1" : " ");
             }
             System.out.println();
             for (int x = 0; x < sizeX; x++)
             {
-                System.out.format("1  %d  1  ", cells[x][y].getWalls()[2]);
+                System.out.format("1  %s  1  ", cells[x][y].getWalls()[2] ? "1" : " ");
             }
             System.out.println();
         }
@@ -296,8 +336,7 @@ public class Maze {
      * @param solution Path solution.
      * @return Percentage of cells in maze covered by a solution.
      */
-    public double SolutionPct(ArrayList<CellNode> solution)
-    {
+    public double SolutionPct(ArrayList<CellNode> solution) {
         return 0;
     }
 
@@ -305,8 +344,7 @@ public class Maze {
      * Calculates the percentage of cells in maze that are dead ends.
      * @return Percentage of cells in maze that are dead ends.
      */
-    public double DeadEndPct()
-    {
+    public double DeadEndPct() {
         return 0;
     }
 }

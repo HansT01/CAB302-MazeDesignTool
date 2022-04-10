@@ -20,6 +20,7 @@ public class MazeTest {
     public void TestGenerateTwice() {}
     public void TestSolveSameStartEnd() {}
     public void TestSolveBadIndex() {}
+    public void TestSolveNoSolution() {}
     public void TestGenerateWithImage() {}
     public void TestGenerateWithTwoImages() {}
     public void TestPlaceImage() {}

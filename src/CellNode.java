@@ -1,5 +1,5 @@
 public class CellNode implements Comparable<CellNode> {
-    private Cell cell;
+    private final Cell cell;
     private CellNode parent = null;
     private int pathCost = Integer.MAX_VALUE;
     private double combinedCost = Integer.MAX_VALUE;

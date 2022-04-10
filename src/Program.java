@@ -3,8 +3,8 @@ import java.util.ArrayList;
 public class Program {
     public static void main(String[] args)
     {
-        int sizeX = 8;
-        int sizeY = 5;
+        int sizeX = 20;
+        int sizeY = 10;
         long startTime;
         long endTime;
 
@@ -12,6 +12,9 @@ public class Program {
         Maze testMaze = new Maze(sizeX, sizeY);
         endTime = System.nanoTime();
         long constructTime = endTime - startTime;
+
+        MazeImage testImage = new MazeImage(0, 3, 3);
+        testMaze.PlaceImage(testImage, 2, 2);
 
         testMaze.Print();
         System.out.println();
