@@ -4,6 +4,7 @@ public class Cell {
     private final int x;
     private final int y;
     private boolean[] walls = {true, true, true, true};  // North, East, South, West
+    private boolean coveredByImage = false;
 
     /**
      * Constructs and initializes a cell object
@@ -37,6 +38,22 @@ public class Cell {
      */
     public boolean[] getWalls() {
         return walls;
+    }
+
+    /**
+     * Getter for coveredByImage.
+     * @return True if covered by image.
+     */
+    public boolean isCoveredByImage() {
+        return coveredByImage;
+    }
+
+    /**
+     * Setter for coveredByImage.
+     * @param coveredByImage Covered by image boolean value.
+     */
+    public void setCoveredByImage(boolean coveredByImage) {
+        this.coveredByImage = coveredByImage;
     }
 
     /**

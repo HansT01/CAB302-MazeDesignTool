@@ -9,8 +9,8 @@ public class Maze {
     private final int sizeX;
     private final int sizeY;
     private final int area;
-    private Cell[][] cells;
-    private MazeImage[] images;
+    private final Cell[][] cells;
+    private ArrayList<MazeImage> images = new ArrayList<>();
     private int imageCells = 0;
 
     /**
@@ -97,7 +97,6 @@ public class Maze {
 
     /**
      * Generates a maze.
-     * TODO Does not implement image blocks
      */
     public void GenerateMaze() {
         /*
@@ -124,13 +123,22 @@ public class Maze {
         
         // Construct random object.
         Random r = new Random();
-        
-        // Pick a random starting point.
-        Cell currentCell = cells[r.nextInt(sizeX)][r.nextInt(sizeY)];
 
         // Visited cells include cells covered by an image.
         int visitedCellsCount = 1 + imageCells;
         int totalCells = getArea();
+
+        // TODO This is a stupid idea.
+        Cell currentCell;
+        if (imageCells < totalCells) {
+            // Pick a random starting point.
+            do {
+                currentCell = cells[r.nextInt(sizeX)][r.nextInt(sizeY)];
+            }
+            while (currentCell.isCoveredByImage());
+        } else {
+            throw new RuntimeException();
+        }
 
         // Loop until all cells have been visited.
         while (visitedCellsCount < totalCells) {
@@ -290,20 +298,21 @@ public class Maze {
     public void PlaceImage(MazeImage image, int xPos, int yPos) {
         int imageSizeX = image.getSizeX();
         int imageSizeY = image.getSizeY();
-        boolean fitsX = (xPos >= 0 && xPos + imageSizeX < sizeX);
-        boolean fitsY = (yPos >= 0 && yPos + imageSizeY < sizeY);
+        boolean fitsX = (xPos >= 0 && xPos + imageSizeX <= sizeX);
+        boolean fitsY = (yPos >= 0 && yPos + imageSizeY <= sizeY);
         if (fitsX && fitsY)
         {
             image.setX(xPos);
             image.setY(yPos);
 
+            images.add(image);
+            imageCells += imageSizeX * imageSizeY;
             for (int y = yPos; y < yPos + imageSizeY; y++) {
                 for (int x = xPos; x < xPos + imageSizeX; x++) {
                     cells[x][y].RemoveAllWalls();
+                    cells[x][y].setCoveredByImage(true);
                 }
             }
-
-            imageCells += imageSizeX * imageSizeY;
         }
     }
 
