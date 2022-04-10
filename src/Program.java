@@ -3,8 +3,8 @@ import java.util.ArrayList;
 public class Program {
     public static void main(String[] args)
     {
-        int sizeX = 10;
-        int sizeY = 6;
+        int sizeX = 8;
+        int sizeY = 5;
         long startTime;
         long endTime;
 
@@ -25,7 +25,7 @@ public class Program {
         System.out.println();
 
         startTime = System.nanoTime();
-        ArrayList<CellNode> solution = testMaze.Solve(sizeX/2-1, sizeY/2-1, sizeX - 1, 0);
+        CellNode[] solution = testMaze.Solve(0, 0, sizeX - 1, sizeY - 1);
         endTime = System.nanoTime();
         long solveTime = endTime - startTime;
 

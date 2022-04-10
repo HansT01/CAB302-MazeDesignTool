@@ -10,7 +10,7 @@ public class Maze {
     private int sizeY;
     private int area;
     private Cell[][] cells;
-    private ArrayList<MazeImage> images;
+    private MazeImage[] images;
 
     /**
      * Constructs and initialises a new Maze.
@@ -100,7 +100,7 @@ public class Maze {
      */
     public void GenerateMaze() {
         /*
-        Maze generation pseudocode:
+        Recursive Backtracking algorithm pseudocode:
 
         create a CellStack to hold a list of cell locations
         set TotalCells to the number of cells in grid
@@ -169,7 +169,7 @@ public class Maze {
      * An empty Cell array if no path was found.
      * TODO Does not implement image blocks
      */
-    public ArrayList<CellNode> Solve(int startX, int startY, int endX, int endY) {
+    public CellNode[] Solve(int startX, int startY, int endX, int endY) {
         /*
         AStar pseudocode:
 
@@ -203,43 +203,37 @@ public class Maze {
         startNode.setParent(startNode);
         startNode.setPathCost(0);
 
-        PriorityQueue<CellNode> cellPQueue = new PriorityQueue();
+        PriorityQueue<CellNode> cellPQueue = new PriorityQueue<>();
         cellPQueue.add(startNode);
 
-        HashMap<String, CellNode> visitedNodes = new HashMap();
+        HashMap<String, CellNode> visitedNodes = new HashMap<>();
 
         while (visitedNodes.size() < area)
         {
             CellNode currentNode = cellPQueue.remove();
-            if (currentNode.getCell() == endCell)
-            {
-                ArrayList<CellNode> solution = new ArrayList();
+            if (currentNode.getCell() == endCell) {
+                ArrayList<CellNode> solution = new ArrayList<>();
                 solution.add(currentNode);
-                while (currentNode.getCell() != startCell)
-                {
+                while (currentNode.getCell() != startCell) {
                     currentNode = currentNode.getParent();
                     solution.add(currentNode);
                 }
                 Collections.reverse(solution);
-                return solution;
+                return solution.toArray(new CellNode[0]);
             } else {
                 visitedNodes.put(currentNode.toString(), currentNode);
                 ArrayList<Cell> neighbourCells = currentNode.getCell().GetOpenNeighbours(this);
-                ArrayList<CellNode> neighbourNodes = new ArrayList();
-                for (int i = 0; i < neighbourCells.size(); i++) {
-                    neighbourNodes.add(new CellNode(neighbourCells.get(i)));
+                ArrayList<CellNode> neighbourNodes = new ArrayList<>();
+                for (Cell neighbourCell : neighbourCells) {
+                    neighbourNodes.add(new CellNode(neighbourCell));
                 }
 
-                for (int i = 0; i < neighbourNodes.size(); i++) {
-                    CellNode neighbourNode = neighbourNodes.get(i);
-
-                    if (visitedNodes.get(neighbourNode.toString()) == null)
-                    {
+                for (CellNode neighbourNode : neighbourNodes) {
+                    if (visitedNodes.get(neighbourNode.toString()) == null) {
                         int pathCost = currentNode.getPathCost() + 1;
                         double combinedCost = pathCost + neighbourNode.getCell().DistanceTo(endCell);
 
-                        if (pathCost < neighbourNode.getPathCost())
-                        {
+                        if (pathCost < neighbourNode.getPathCost()) {
                             neighbourNode.setPathCost(pathCost);
                             neighbourNode.setCombinedCost(combinedCost);
                             neighbourNode.setParent(currentNode);
@@ -270,7 +264,6 @@ public class Maze {
     public void PlaceImage(MazeImage image, int x, int y) {
         image.setX(x);
         image.setY(y);
-        images.add(image);
     }
 
     /**
