@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 public class Cell {
+    private final Maze parentMaze;
     private final int x;
     private final int y;
     private boolean[] walls = {true, true, true, true};  // North, East, South, West
@@ -11,9 +12,10 @@ public class Cell {
      * @param x x coordinate of the cell
      * @param y y coordinate of the cell
      */
-    public Cell(int x, int y) {
+    public Cell(int x, int y, Maze maze) {
         this.x = x;
         this.y = y;
+        this.parentMaze = maze;
     }
 
     /**
@@ -87,33 +89,34 @@ public class Cell {
      * Sets all walls to false.
      */
     public void RemoveAllWalls() {
-        walls = new boolean[] {false, false, false, false};
+        for (int i = 0; i < 4; i++) {
+            walls[i] = false;
+        }
     }
 
     /**
      * Finds all neighbouring cells with all walls intact.
-     * @param maze The maze the cell is located inside.
      * @return An array of all cells with intact walls.
      */
-    public ArrayList<Cell> GetClosedNeighbours(Maze maze) {
+    public ArrayList<Cell> GetClosedNeighbours() {
         ArrayList<Cell> neighbours = new ArrayList<>();
-        Cell[][] cells = maze.getCells();
-        int sizeX = maze.getSizeX();
-        int sizeY = maze.getSizeY();
+        Cell[][] cells = parentMaze.getCells();
+        int sizeX = parentMaze.getSizeX();
+        int sizeY = parentMaze.getSizeY();
 
-        if (y > 0 && cells[x][y-1].HasAllWalls())
+        if (y > 0 && cells[x][y-1].HasAllWalls() && !cells[x][y-1].isCoveredByImage())
         {
             neighbours.add(cells[x][y-1]);
         }
-        if (x < sizeX - 1 && cells[x+1][y].HasAllWalls())
+        if (x < sizeX - 1 && cells[x+1][y].HasAllWalls() && !cells[x+1][y].isCoveredByImage())
         {
             neighbours.add(cells[x+1][y]);
         }
-        if (y < sizeY - 1 && cells[x][y+1].HasAllWalls())
+        if (y < sizeY - 1 && cells[x][y+1].HasAllWalls() && !cells[x][y+1].isCoveredByImage())
         {
             neighbours.add(cells[x][y+1]);
         }
-        if (x > 0 && cells[x-1][y].HasAllWalls())
+        if (x > 0 && cells[x-1][y].HasAllWalls() && !cells[x-1][y].isCoveredByImage())
         {
             neighbours.add(cells[x-1][y]);
         }
@@ -123,14 +126,13 @@ public class Cell {
 
     /**
      * Finds all neighbours that are open to this cell.
-     * @param maze The maze the cell is located inside.
      * @return ArrayList of open cell neighbours.
      */
-    public ArrayList<Cell> GetOpenNeighbours(Maze maze) {
+    public ArrayList<Cell> GetOpenNeighbours() {
         ArrayList<Cell> neighbours = new ArrayList<>();
-        Cell[][] cells = maze.getCells();
-        int sizeX = maze.getSizeX();
-        int sizeY = maze.getSizeY();
+        Cell[][] cells = parentMaze.getCells();
+        int sizeX = parentMaze.getSizeX();
+        int sizeY = parentMaze.getSizeY();
 
         if (y > 0 && !walls[0])
         {
@@ -193,8 +195,6 @@ public class Cell {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Cell cell = (Cell) o;
-        return x == cell.x && y == cell.y;
+        return false;
     }
 }

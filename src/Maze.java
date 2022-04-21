@@ -26,7 +26,7 @@ public class Maze {
 
         for (int y = 0; y < sizeY; y++) {
             for (int x = 0; x < sizeX; x++) {
-                cells[x][y] = new Cell(x, y);
+                cells[x][y] = new Cell(x, y, this);
             }
         }
     }
@@ -143,7 +143,7 @@ public class Maze {
         // Loop until all cells have been visited.
         while (visitedCellsCount < totalCells) {
             // Find all neighbours of current cell with all walls intact.
-            ArrayList<Cell> neighbourCells = currentCell.GetClosedNeighbours(this);
+            ArrayList<Cell> neighbourCells = currentCell.GetClosedNeighbours();
 
             // If any neighbour cells are available.
             if (neighbourCells.size() != 0)
@@ -259,7 +259,7 @@ public class Maze {
                 visitedNodes.put(currentNode.toString(), currentNode);
 
                 // Get all neighbour nodes of current node.
-                ArrayList<Cell> neighbourCells = currentNode.getCell().GetOpenNeighbours(this);
+                ArrayList<Cell> neighbourCells = currentNode.getCell().GetOpenNeighbours();
                 ArrayList<CellNode> neighbourNodes = new ArrayList<>();
                 for (Cell neighbourCell : neighbourCells) {
                     neighbourNodes.add(new CellNode(neighbourCell));
@@ -309,7 +309,6 @@ public class Maze {
             imageCells += imageSizeX * imageSizeY;
             for (int y = yPos; y < yPos + imageSizeY; y++) {
                 for (int x = xPos; x < xPos + imageSizeX; x++) {
-                    cells[x][y].RemoveAllWalls();
                     cells[x][y].setCoveredByImage(true);
                 }
             }
