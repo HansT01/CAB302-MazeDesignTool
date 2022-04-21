@@ -1,32 +1,31 @@
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class MazePanel extends JFrame {
+public class MazePanel extends JPanel {
     private Maze maze;
     private Cell[][] cells;
     private int cellSize;
-    private Insets inset;
     private boolean drawSolution = true;
 
 
     public MazePanel(Maze maze, int cellSize) {
-        super("Maze prototype");
+        super();
         this.maze = maze;
         this.cells = maze.getCells();
         this.cellSize = cellSize;
+
+        setPreferredSize(new Dimension(maze.getSizeX()*cellSize + 1, maze.getSizeY()*cellSize + 1));
+
         setBackground(Color.white);
-        JPanel panel = new JPanel();
-        add(panel);
-        panel.addMouseListener(new MouseAdapter() {
+        addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 ToggleWall(e.getX(), e.getY());
             }
         });
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
     }
 
     @Override
@@ -37,7 +36,7 @@ public class MazePanel extends JFrame {
 
         Insets insets = getInsets();
         g2d.clearRect(0, 0, maze.getSizeX() * cellSize + insets.left + insets.right + 1, maze.getSizeY() * cellSize + insets.top + insets.bottom + 1);
-        setSize(maze.getSizeX() * cellSize + insets.left + insets.right + 1, maze.getSizeY() * cellSize + insets.top + insets.bottom + 1);
+        // setSize(maze.getSizeX() * cellSize + insets.left + insets.right + 1, maze.getSizeY() * cellSize + insets.top + insets.bottom + 1);
 
         if (drawSolution) {
             int offset = cellSize / 2;
@@ -130,9 +129,17 @@ public class MazePanel extends JFrame {
     }
 
     public static void main(String[] args) {
-        Maze testMaze = new Maze(50,50);
+        Maze testMaze = new Maze(32,32);
         testMaze.GenerateMaze();
         testMaze.Solve();
-        MazePanel testWindow = new MazePanel(testMaze, 16);
+        MazePanel testPanel = new MazePanel(testMaze, 16);
+
+        JFrame testWindow = new JFrame();
+        testWindow.add(testPanel);
+        testWindow.pack();
+
+        testWindow.setLayout(null);
+        testWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        testWindow.setVisible(true);
     }
 }
