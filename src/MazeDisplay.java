@@ -9,39 +9,18 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.LayoutStyle;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 public class MazeDisplay {
 
-    /**
-     * Exports maze to image file
-     */
-    private JLabel dbar;
+    JFrame window = new JFrame("Maze Generator");
+    JPanel menuPanel = new JPanel();
+    boolean userStatus = false;
 
-    public void itemStateChanged(ItemEvent e) {
-
-        int sel = e.getStateChange();
-
-        if (sel == ItemEvent.SELECTED) {
-
-            JRadioButton button = (JRadioButton) e.getSource();
-            String text = button.getText();
-
-            StringBuilder sb = new StringBuilder("Selected: ");
-            sb.append(text);
-
-            dbar.setText(sb.toString());
-        }
-    }
-
-    private void initializeUI() {
-        // Creating and displaying the program
-        JFrame window = new JFrame("Maze Generator");
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setVisible(true);
-        window.setPreferredSize(new Dimension(400, 400)); // desired size of window
-
+    private void menuBar() {
         // Setting up the menu bar
         JMenuBar menuBar = new JMenuBar();
 
@@ -52,47 +31,34 @@ public class MazeDisplay {
         menuBar.add(exportMenu);
 
         // Open Button
-        JMenu openMenu = new JMenu("Open File");
-        menuBar.add(openMenu);
+        JMenu openButton = new JMenu("Open File");
+        menuBar.add(openButton);
 
         // Login Button
         JMenu loginMenu = new JMenu("Login");
         menuBar.add(loginMenu);
-
         window.setJMenuBar(menuBar);
 
-        // Radio buttons for choosing difficulty
-        JPanel difficultyPanel = new JPanel();
-        JLabel lbl = new JLabel("Difficulty:");
+        openButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("pls login");
+                if (!userStatus) {
 
-        ButtonGroup difficultyGroup = new ButtonGroup();
-        JRadioButton easy = new JRadioButton("Easy");
-        JRadioButton medium = new JRadioButton("Medium");
-        JRadioButton hard = new JRadioButton("Hard");
+//                    JFrame frame = new JFrame("JOptionPane showMessageDialog component example");
+//                    JOptionPane.showMessageDialog(frame, window);
 
-        difficultyGroup.add(easy);
-        difficultyGroup.add(medium);
-        difficultyGroup.add(hard);
-        window.add(difficultyPanel);
-        easy.setBounds(75,50,100,30);
-        medium.setBounds(75,75,100,30);
-        hard.setBounds(75,100,100,30);
-        lbl.setBounds(75,450,100,30);
+                }
+            }
+        });
+    }
 
-
-
-        dbar = new JLabel("Selected: ");
-
-
-        window.add(easy);
-        window.add(medium);
-        window.add(hard);
-        window.add(dbar);
-
-
-
-
+    private void initializeUI() {
+        // Creating and displaying the program
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setVisible(true);
+        window.setPreferredSize(new Dimension(400, 400)); // desired size of window
         // Compile and place window on screen
+        menuBar();
         window.pack();
         window.setLocationRelativeTo(null);
     }
@@ -100,20 +66,54 @@ public class MazeDisplay {
     private void setVisible(boolean b) {
     }
 
-    public void difficultyButtonStatus(ItemEvent e) {
 
-        int sel = e.getStateChange();
+    private void preGenerateUI() {
+        menuPanel.removeAll();
+        // Generate Button
+        Button generate = new Button("Generate!");
 
-        if (sel == ItemEvent.SELECTED) {
+        generate.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("anyone listening?");
+                postGenerationUI();
+                initializeUI();
+            }
+        });
 
-            JRadioButton button = (JRadioButton) e.getSource();
-            String text = button.getText();
+        // Radio buttons for choosing difficulty
+        Label difficultyLabel = new Label("Choose Maze Difficulty:");
 
-            StringBuilder sb = new StringBuilder("Selected: ");
-            sb.append(text);
+        ButtonGroup difficultyGroup = new ButtonGroup();
+        JRadioButton easy = new JRadioButton("Easy");
+        JRadioButton medium = new JRadioButton("Medium");
+        JRadioButton hard = new JRadioButton("Hard");
+//        easy.setBounds(275,25,100,30);
+//        medium.setBounds(275,50,100,30);
+//        hard.setBounds(275,1175,100,30);
 
-            dbar.setText(sb.toString());
-        }
+//        dbar = new JLabel("Selected: ");
+
+//        difficultyPanel.setLayout(new BoxLayout(difficultyPanel, BoxLayout.Y_AXIS));
+//        difficultyPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        difficultyGroup.add(easy);
+        difficultyGroup.add(medium);
+        difficultyGroup.add(hard);
+
+        menuPanel.add(difficultyLabel);
+        menuPanel.add(easy);
+        menuPanel.add(medium);
+        menuPanel.add(hard);
+        menuPanel.add(generate);
+
+        window.add(menuPanel);
+    }
+
+    private void postGenerationUI() {
+        menuPanel.removeAll();
+        // Show solved version button
+        Button solution = new Button("Show maze solution");
+
+        menuPanel.add(solution);
     }
 
     public static void main(String args[]) {
@@ -121,6 +121,7 @@ public class MazeDisplay {
         EventQueue.invokeLater(() -> {
             MazeDisplay UI = new MazeDisplay();
             UI.initializeUI();
+            UI.preGenerateUI();
             UI.setVisible(true);
         });
     }
