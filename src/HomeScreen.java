@@ -22,25 +22,25 @@ public class HomeScreen extends JFrame implements Runnable {
         setTitle("Computer-Assisted Maze Design Tool");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Set so pressing x closes window
 
-        JPanel panel = new JPanel();
-        BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.PAGE_AXIS);
-        panel.setBorder(new EmptyBorder(new Insets(height/2, width/2, height/2, width/2)));
-        panel.setLayout(boxlayout);
+        JPanel btnPanel = new JPanel();
+        BoxLayout boxlayout = new BoxLayout(btnPanel, BoxLayout.PAGE_AXIS);
+        btnPanel.setBorder(new EmptyBorder(new Insets(height/2, width/2, height/2, width/2)));
+        btnPanel.setLayout(boxlayout);
 
 
 
 
         // Maze button
         JButton maze = new JButton(); maze.setText("Maze");
-        maze.addActionListener(e -> System.out.print("maze"));
-        panel.add(maze);
+        maze.addActionListener(e -> System.out.print("maze")); // testing
+        btnPanel.add(maze);
         // Database button
-        JButton db = new JButton(); db.setText("Database");
-        db.addActionListener(e -> System.out.print("db"));
-        panel.add(db);
+        JButton db = new JButton(); db.setText("Database"); // testing
+        db.addActionListener(e -> SwingUtilities.invokeLater(new DataBaseUI()));
+        btnPanel.add(db);
 
 
-        add(panel);
+        add(btnPanel);
         pack();
     }
 
