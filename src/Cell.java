@@ -160,19 +160,19 @@ public class Cell {
         int sizeX = parentMaze.getSizeX();
         int sizeY = parentMaze.getSizeY();
 
-        if (y > 0 && !walls[0])
+        if (y > 0 && !walls[0] && !cells[x][y-1].walls[2])
         {
             neighbours.add(cells[x][y-1]);
         }
-        if (x < sizeX && !walls[1])
+        if (x < sizeX - 1 && !walls[1] && !cells[x+1][y].walls[3])
         {
             neighbours.add(cells[x+1][y]);
         }
-        if (y < sizeY && !walls[2])
+        if (y < sizeY - 1 && !walls[2] && !cells[x][y+1].walls[0])
         {
             neighbours.add(cells[x][y+1]);
         }
-        if (x > 0 && !walls[3])
+        if (x > 0 && !walls[3] && !cells[x-1][y].walls[1])
         {
             neighbours.add(cells[x-1][y]);
         }

@@ -35,7 +35,7 @@ public class MazePanel extends JPanel {
 
 
         Insets insets = getInsets();
-        g2d.clearRect(0, 0, maze.getSizeX() * cellSize + insets.left + insets.right + 1, maze.getSizeY() * cellSize + insets.top + insets.bottom + 1);
+        g2d.clearRect(0, 0, maze.getSizeX() * cellSize + 1, maze.getSizeY() * cellSize + 1);
         // setSize(maze.getSizeX() * cellSize + insets.left + insets.right + 1, maze.getSizeY() * cellSize + insets.top + insets.bottom + 1);
 
         if (drawSolution) {
