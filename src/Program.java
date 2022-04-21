@@ -16,9 +16,6 @@ public class Program {
         MazeImage testImage = new MazeImage(0, 3, 3);
         testMaze.PlaceImage(testImage, 2, 2);
 
-        testMaze.Print();
-        System.out.println();
-
         startTime = System.nanoTime();
         testMaze.GenerateMaze();
         endTime = System.nanoTime();
@@ -28,7 +25,7 @@ public class Program {
         System.out.println();
 
         startTime = System.nanoTime();
-        CellNode[] solution = testMaze.Solve(0, 0, sizeX - 1, sizeY - 1);
+        CellNode[] solution = testMaze.Solve();
         endTime = System.nanoTime();
         long solveTime = endTime - startTime;
 

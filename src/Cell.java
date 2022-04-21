@@ -70,28 +70,54 @@ public class Cell {
     }
 
     /**
-     * Checks if this cell has all walls intact.
-     * @return True if all walls are intact.
+     * Checks each wall and returns the number of intact walls.
+     * @return Number of intact walls.
      */
-    public boolean HasAllWalls() {
-        boolean hasAllWalls = true;
-        for (int i = 0; i < 4; i++)
-        {
-            if (!walls[i]) {
-                hasAllWalls = false;
-                break;
+    public int CountWalls() {
+        int counter = 0;
+        for (int i = 0; i < 4; i++) {
+            if (walls[i]) {
+                counter++;
             }
         }
-        return hasAllWalls;
+        return counter;
     }
 
     /**
-     * Sets all walls to false.
+     * Toggles wall between this cell and its corresponding neighbour.
+     * @param i Index of wall in order: North, East, South, West.
      */
-    public void RemoveAllWalls() {
-        for (int i = 0; i < 4; i++) {
-            walls[i] = false;
-        }
+    public void ToggleWall(int i) {
+        Cell[][] cells = parentMaze.getCells();
+        int sizeX = parentMaze.getSizeX();
+        int sizeY = parentMaze.getSizeY();
+
+        // Toggle this wall
+        walls[i] = !walls[i];
+
+        // Toggle neighbouring wall
+        if (i == 0 && y > 0) cells[x][y-1].walls[2] = !cells[x][y-1].walls[2];
+        if (i == 1 && x < sizeX - 1) cells[x+1][y].walls[3] = !cells[x+1][y].walls[3];
+        if (i == 2 && y < sizeY - 1) cells[x][y+1].walls[0] = !cells[x][y+1].walls[0];
+        if (i == 3 && x > 0) cells[x-1][y].walls[1] = !cells[x-1][y].walls[1];
+    }
+
+    /**
+     * Removes wall between this cell and its corresponding neighbour.
+     * @param i Index of wall in order: North, East, South, West.
+     */
+    public void RemoveWall(int i) {
+        Cell[][] cells = parentMaze.getCells();
+        int sizeX = parentMaze.getSizeX();
+        int sizeY = parentMaze.getSizeY();
+
+        // Toggle this wall
+        walls[i] = false;
+
+        if (i == 0 && y > 0) cells[x][y-1].walls[2] = false;
+        if (i == 1 && x < sizeX - 1) cells[x+1][y].walls[3] = false;
+        if (i == 2 && y < sizeY - 1) cells[x][y+1].walls[0] = false;
+        if (i == 3 && x > 0) cells[x-1][y].walls[1] = false;
     }
 
     /**
@@ -104,19 +130,19 @@ public class Cell {
         int sizeX = parentMaze.getSizeX();
         int sizeY = parentMaze.getSizeY();
 
-        if (y > 0 && cells[x][y-1].HasAllWalls() && !cells[x][y-1].isCoveredByImage())
+        if (y > 0 && cells[x][y-1].CountWalls()==4 && !cells[x][y-1].isCoveredByImage())
         {
             neighbours.add(cells[x][y-1]);
         }
-        if (x < sizeX - 1 && cells[x+1][y].HasAllWalls() && !cells[x+1][y].isCoveredByImage())
+        if (x < sizeX - 1 && cells[x+1][y].CountWalls()==4 && !cells[x+1][y].isCoveredByImage())
         {
             neighbours.add(cells[x+1][y]);
         }
-        if (y < sizeY - 1 && cells[x][y+1].HasAllWalls() && !cells[x][y+1].isCoveredByImage())
+        if (y < sizeY - 1 && cells[x][y+1].CountWalls()==4 && !cells[x][y+1].isCoveredByImage())
         {
             neighbours.add(cells[x][y+1]);
         }
-        if (x > 0 && cells[x-1][y].HasAllWalls() && !cells[x-1][y].isCoveredByImage())
+        if (x > 0 && cells[x-1][y].CountWalls()==4 && !cells[x-1][y].isCoveredByImage())
         {
             neighbours.add(cells[x-1][y]);
         }
@@ -125,7 +151,7 @@ public class Cell {
     }
 
     /**
-     * Finds all neighbours that are open to this cell.
+     * Finds all neighbours that this cell is open to.
      * @return ArrayList of open cell neighbours.
      */
     public ArrayList<Cell> GetOpenNeighbours() {
@@ -152,30 +178,6 @@ public class Cell {
         }
 
         return neighbours;
-    }
-
-    /**
-     * Removes a wall on the x-axis.
-     * @param wall Wall to be removed: 1 is East wall, -1 is West wall.
-     */
-    public void RemoveWallX(int wall) {
-        if (wall == 1) {
-            walls[1] = false;
-        } else if (wall == -1) {
-            walls[3] = false;
-        }
-    }
-
-    /**
-     * Removes a wall on the y-axis.
-     * @param wall Wall to be removed: 1 is South wall, -1 is North wall.
-     */
-    public void RemoveWallY(int wall) {
-        if (wall == 1) {
-            walls[2] = false;
-        } else if (wall == -1) {
-            walls[0] = false;
-        }
     }
 
     /**

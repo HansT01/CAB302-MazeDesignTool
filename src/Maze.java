@@ -12,6 +12,10 @@ public class Maze {
     private final Cell[][] cells;
     private ArrayList<MazeImage> images = new ArrayList<>();
     private int imageCells = 0;
+    private int startX;
+    private int startY;
+    private int endX;
+    private int endY;
 
     /**
      * Constructs and initialises a new Maze.
@@ -23,6 +27,11 @@ public class Maze {
         this.sizeY = sizeY;
         this.area = sizeX * sizeY;
         cells = new Cell[sizeX][sizeY];
+
+        this.startX = 0;
+        this.startY = 0;
+        this.endX = sizeX - 1;
+        this.endY = sizeY - 1;
 
         for (int y = 0; y < sizeY; y++) {
             for (int x = 0; x < sizeX; x++) {
@@ -107,15 +116,15 @@ public class Maze {
         pick a random starting cell as the current cell
 
         while there are still cells to be visited
-          find current cell neighbours with all walls intact
-          if at least one is found
-            choose one neighbour cell at random
-            knock down the wall between it and current cell
-            push current cell onto the cell stack
-            increment visited cells
-            set current cell as the neighbour cell
-          else
-            pop the cell stack and set it as current cell
+            find current cell neighbours with all walls intact
+            if at least one is found
+                choose one neighbour cell at random
+                knock down the wall between it and current cell
+                push current cell onto the cell stack
+                increment visited cells
+                set current cell as the neighbour cell
+            else
+                pop the cell stack and set it as current cell
          */
 
         // Create cell stack.
@@ -128,15 +137,9 @@ public class Maze {
         int visitedCellsCount = 1 + imageCells;
         int totalCells = getArea();
 
-        // TODO This is a stupid idea.
-        Cell currentCell;
-        if (imageCells < totalCells) {
-            // Pick a random starting point.
-            do {
-                currentCell = cells[r.nextInt(sizeX)][r.nextInt(sizeY)];
-            }
-            while (currentCell.isCoveredByImage());
-        } else {
+        Cell currentCell = cells[startX][startY];
+
+        if (currentCell.isCoveredByImage()) {
             throw new RuntimeException();
         }
 
@@ -153,16 +156,22 @@ public class Maze {
 
                 // Positive x direction is EAST, negative x direction is WEST.
                 // Positive y direction is SOUTH, negative y direction is NORTH.
-                int currentX = currentCell.getX();
-                int currentY = currentCell.getY();
-                int neighbourX = neighbourCell.getX();
-                int neighbourY = neighbourCell.getY();
+                int xDiff = neighbourCell.getX() - currentCell.getX();
+                int yDiff = neighbourCell.getY() - currentCell.getY();
 
                 // Break down the walls between the current and neighbour cell.
-                currentCell.RemoveWallX(neighbourX - currentX);
-                currentCell.RemoveWallY(neighbourY - currentY);
-                neighbourCell.RemoveWallX(currentX - neighbourX);
-                neighbourCell.RemoveWallY(currentY - neighbourY);
+                if (yDiff < 0) {
+                    currentCell.RemoveWall(0);
+                }
+                else if (xDiff > 0) {
+                    currentCell.RemoveWall(1);
+                }
+                else if (yDiff > 0) {
+                    currentCell.RemoveWall(2);
+                }
+                else {
+                    currentCell.RemoveWall(3);
+                }
 
                 // Push the current cell onto the stack and increment visited cells count.
                 cellStack.add(currentCell);
@@ -179,17 +188,12 @@ public class Maze {
     }
 
     /**
-     * Solves maze from the startCell to endCell using the AStar algorithm.
-     * @param startX The x position of the starting cell.
-     * @param startY The y position of the starting cell.
-     * @param endX The x position of the ending cell.
-     * @param endY The y position of the ending cell.
+     * Solves maze from the startX, startY to endX, endY using the AStar algorithm.
      * @return
      * An array of the cell path from startCell to endCell.
      * An empty Cell array if no path was found.
-     * TODO Does not implement image blocks
      */
-    public CellNode[] Solve(int startX, int startY, int endX, int endY) {
+    public CellNode[] Solve() {
         /*
         AStar pathfinding pseudocode:
 
@@ -197,21 +201,21 @@ public class Maze {
         create a visited cells hash map
         enqueue the start cell to the priority queue
         while there are still nodes to be visited
-          dequeue priority queue as current cell
-          if current cell is the end cell
-            trace back the parents of all cells from end to start cell
-            store it in an array and reverse it
-            return array
-          else
-            put current cell in visited cells
-            find current cell neighbours as neighbour cells
-            for each neighbour cell
-              if the neighbour cell is not in visited cells
-                calculate path and combined cost of the neighbour cell
-                if the path cost is less than the neighbour cell's path cost
-                  update the neighbour cell's path and combined cost
-                  set the neighbour cell's parent as the current cell
-                enqueue the neighbour cell to the priority queue
+            dequeue priority queue as current cell
+            if current cell is the end cell
+                trace back the parents of all cells from end to start cell
+                store it in an array and reverse it
+                return array
+            else
+                put current cell in visited cells
+                find current cell neighbours as neighbour cells
+                for each neighbour cell
+                    if the neighbour cell is not in visited cells
+                        calculate path and combined cost of the neighbour cell
+                        if the path cost is less than the neighbour cell's path cost
+                            update the neighbour cell's path and combined cost
+                            set the neighbour cell's parent as the current cell
+                        enqueue the neighbour cell to the priority queue
         return null
         */
 
@@ -307,9 +311,21 @@ public class Maze {
 
             images.add(image);
             imageCells += imageSizeX * imageSizeY;
-            for (int y = yPos; y < yPos + imageSizeY; y++) {
-                for (int x = xPos; x < xPos + imageSizeX; x++) {
+            for (int x = xPos; x < xPos + imageSizeX; x++) {
+                for (int y = yPos; y < yPos + imageSizeY; y++) {
                     cells[x][y].setCoveredByImage(true);
+                }
+            }
+
+            for (int x = xPos; x < xPos + imageSizeX - 1; x++) {
+                for (int y = yPos; y < yPos + imageSizeY; y++) {
+                    cells[x][y].RemoveWall(1);
+                }
+            }
+
+            for (int x = xPos; x < xPos + imageSizeX; x++) {
+                for (int y = yPos; y < yPos + imageSizeY - 1; y++) {
+                    cells[x][y].RemoveWall(2);
                 }
             }
         }
@@ -343,16 +359,27 @@ public class Maze {
      * Calculates the percentage of cells in maze covered by a solution.
      * @param solution Path solution.
      * @return Percentage of cells in maze covered by a solution.
+     * TODO untested
      */
     public double SolutionPct(ArrayList<CellNode> solution) {
-        return 0;
+        return 1.0 * solution.size() / area;
     }
 
     /**
      * Calculates the percentage of cells in maze that are dead ends.
      * @return Percentage of cells in maze that are dead ends.
+     * TODO untested
      */
     public double DeadEndPct() {
-        return 0;
+        // A cell is a dead end if it has only one opening
+        int deadEndCount = 0;
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
+                if (cells[x][y].CountWalls() == 3) {
+                    deadEndCount++;
+                }
+            }
+        }
+        return deadEndCount;
     }
 }

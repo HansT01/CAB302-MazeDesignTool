@@ -75,7 +75,6 @@ public class CellNode implements Comparable<CellNode> {
      * Compares the combined cost of this node and a target node.
      * @param targetNode The target node.
      * @return 0 if same, -1 if less than, 1 if more than.
-     * TODO Implementation is backwards, but for some reason orders correctly on Priority Queue
      */
     @Override
     public int compareTo(CellNode targetNode) {
