@@ -8,22 +8,22 @@ public class MazeTest {
         Cell c2 = m1.getCells()[1][0];
         Cell c3 = m1.getCells()[2][0];
     }
-    public void TestMazeDetails() {}
-    public void TestImageTooBig() {}
-    public void TestImageBadIndex() {}
-    public void TestDateLastEdited() {}
-    public void TestDateCreated() {}
-    public void TestArea() {}
-    public void TestNegativeArea() {}
-    public void TestGenerate0x0() {}
-    public void TestGenerate1000x1000() {}
-    public void TestGenerateTwice() {}
-    public void TestSolveSameStartEnd() {}
-    public void TestSolveBadIndex() {}
-    public void TestSolveNoSolution() {}
-    public void TestGenerateWithImage() {}
-    public void TestGenerateWithTwoImages() {}
-    public void TestPlaceImage() {}
-    public void TestSolutionPct() {}
-    public void TestDeadEndPct() {}
+    public void MazeDetails() {}
+    public void ImageTooBig() {}
+    public void ImageBadIndex() {}
+    public void DateLastEdited() {}
+    public void DateCreated() {}
+    public void Area() {}
+    public void NegativeArea() {}
+    public void Generate0x0() {}
+    public void Generate1000x1000() {}
+    public void GenerateTwice() {}
+    public void SolveSameStartEnd() {}
+    public void SolveBadIndex() {}
+    public void SolveNoSolution() {}
+    public void GenerateWithImage() {}
+    public void GenerateWithTwoImages() {}
+    public void PlaceImage() {}
+    public void SolutionPct() {}
+    public void DeadEndPct() {}
 }
