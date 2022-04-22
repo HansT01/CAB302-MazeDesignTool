@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 public class MazePanel extends JPanel {
     private Maze maze;
@@ -40,30 +41,28 @@ public class MazePanel extends JPanel {
     @Override
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.blue);
-
         g2d.clearRect(0, 0, getPreferredSize().width, getPreferredSize().height);
 
         if (drawSolution) {
             int offset = cellSize / 2;
-            CellNode[] solution = maze.Solve();
+            ArrayList<CellNode> solution = maze.Solve();
 
             if (solution != null) {
                 g2d.setColor(Color.RED);
-                int xOld = solution[0].getCell().getX() * cellSize + offset;
-                int yOld = solution[0].getCell().getY() * cellSize + offset;
-                for (int i = 1; i < solution.length; i++) {
-                    int x = solution[i].getCell().getX() * cellSize + offset;
-                    int y = solution[i].getCell().getY() * cellSize + offset;
+                int xOld = solution.get(0).getCell().getX() * cellSize + offset;
+                int yOld = solution.get(0).getCell().getY() * cellSize + offset;
+                for (int i = 1; i < solution.size(); i++) {
+                    int x = solution.get(i).getCell().getX() * cellSize + offset;
+                    int y = solution.get(i).getCell().getY() * cellSize + offset;
 
                     g2d.drawLine(xOld, yOld, x, y);
                     xOld = x;
                     yOld = y;
                 }
-                g2d.setColor(Color.BLUE);
             }
         }
 
+        g2d.setColor(Color.BLUE);
         for (int i = 0; i < maze.getSizeX(); i++) {
             int x = i * cellSize;
             for (int j = 0; j < maze.getSizeY(); j++) {
@@ -158,7 +157,7 @@ public class MazePanel extends JPanel {
         frame.setLayout(new GridBagLayout());
         frame.add(mazePanel, new GridBagConstraints());
 
-        // Resizes window to preferred dimensions size
+        // Resizes window to preferred dimensions
         frame.pack();
 
         // Centre to screen
