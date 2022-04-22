@@ -43,6 +43,14 @@ public class Cell {
     }
 
     /**
+     * Setter for walls.
+     * @param walls walls array of length 4 in order: North, East, South, West
+     */
+    public void setWalls(boolean[] walls) {
+        this.walls = walls;
+    }
+
+    /**
      * Getter for coveredByImage.
      * @return True if covered by image.
      */

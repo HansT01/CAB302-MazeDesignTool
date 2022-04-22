@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -10,36 +9,40 @@ public class MazePanel extends JPanel {
     private int cellSize;
     private boolean drawSolution = true;
 
+    public void toggleSolution() {
+        this.drawSolution = !drawSolution;
+    }
 
+    /**
+     * Constructs the maze panel.
+     * @param maze The Maze object to be rendered.
+     * @param cellSize The size of each cell in the maze. The size should be even for proper rendering.
+     */
     public MazePanel(Maze maze, int cellSize) {
         super();
         this.maze = maze;
         this.cells = maze.getCells();
         this.cellSize = cellSize;
 
-
-
-
         setPreferredSize(new Dimension(maze.getSizeX()*cellSize + 1, maze.getSizeY()*cellSize + 1));
-
         setBackground(Color.white);
+
+        // Sourced from: https://stackhowto.com/how-to-get-mouse-position-on-click-relative-to-jframe/
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                ToggleWall(e.getX(), e.getY());
+                HandleClickEvent(e);
             }
         });
     }
+
 
     @Override
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.blue);
 
-
-        Insets insets = getInsets();
-        g2d.clearRect(0, 0, maze.getSizeX() * cellSize + 1, maze.getSizeY() * cellSize + 1);
-        // setSize(maze.getSizeX() * cellSize + insets.left + insets.right + 1, maze.getSizeY() * cellSize + insets.top + insets.bottom + 1);
+        g2d.clearRect(0, 0, getPreferredSize().width, getPreferredSize().height);
 
         if (drawSolution) {
             int offset = cellSize / 2;
@@ -47,11 +50,11 @@ public class MazePanel extends JPanel {
 
             if (solution != null) {
                 g2d.setColor(Color.RED);
-                int xOld = solution[0].getCell().getX() * cellSize + insets.left + offset;
-                int yOld = solution[0].getCell().getY() * cellSize + insets.top + offset;
+                int xOld = solution[0].getCell().getX() * cellSize + offset;
+                int yOld = solution[0].getCell().getY() * cellSize + offset;
                 for (int i = 1; i < solution.length; i++) {
-                    int x = solution[i].getCell().getX() * cellSize + insets.left + offset;
-                    int y = solution[i].getCell().getY() * cellSize + insets.top + offset;
+                    int x = solution[i].getCell().getX() * cellSize + offset;
+                    int y = solution[i].getCell().getY() * cellSize + offset;
 
                     g2d.drawLine(xOld, yOld, x, y);
                     xOld = x;
@@ -62,9 +65,9 @@ public class MazePanel extends JPanel {
         }
 
         for (int i = 0; i < maze.getSizeX(); i++) {
-            int x = i * cellSize + insets.left;
+            int x = i * cellSize;
             for (int j = 0; j < maze.getSizeY(); j++) {
-                int y = j * cellSize + insets.top;
+                int y = j * cellSize;
                 boolean[] walls = cells[i][j].getWalls();
 
                 if (walls[0]) {
@@ -89,18 +92,29 @@ public class MazePanel extends JPanel {
 
     /**
      * Toggles a wall near the input x, y coordinate.
-     * @param xPx x coordinate in pixels.
-     * @param yPx y coordinate in pixels.
+     * @param e MouseEvent click event.
      */
-    public void ToggleWall(int xPx, int yPx) {
-        // Get every half cell index to determine which wall is clicked
-        int x2 = (int) Math.round(2.0 * xPx / cellSize);
-        int y2 = (int) Math.round(2.0 * yPx / cellSize);
+    public void HandleClickEvent(MouseEvent e) {
+        // Round to every half cell index to determine which wall is clicked
+        int x2 = (int) Math.round(2.0 * e.getX() / cellSize);
+        int y2 = (int) Math.round(2.0 * e.getY() / cellSize);
 
-        // Limit to one wall at a time
         boolean xSelect = (x2 % 2 == 1);
         boolean ySelect = (y2 % 2 == 1);
-        if (xSelect ^ ySelect) {
+        // If a cell centre is clicked
+        if (xSelect && ySelect) {
+            // Left click
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                maze.setStartCell(x2 / 2, y2 / 2);
+            }
+            // Right click
+            else if (e.getButton() == MouseEvent.BUTTON3) {
+                maze.setEndCell(x2 / 2, y2 / 2);
+            }
+            repaint();
+        }
+        // If a wall is clicked
+        else if (xSelect ^ ySelect) {
             // If x is out of bounds
             if (x2 / 2 == maze.getSizeX()) {
                 cells[x2 / 2 - 1][y2 / 2].ToggleWall(1);
@@ -133,10 +147,9 @@ public class MazePanel extends JPanel {
 
     public static void main(String[] args) {
         // Generate maze panel
-        Maze testMaze = new Maze(32,32);
+        Maze testMaze = new Maze(80,50);
         testMaze.GenerateMaze();
-        testMaze.Solve();
-        MazePanel mazePanel = new MazePanel(testMaze, 16);
+        MazePanel mazePanel = new MazePanel(testMaze, 12);
 
         // Create new frame
         JFrame frame = new JFrame();

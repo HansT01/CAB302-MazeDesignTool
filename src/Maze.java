@@ -33,8 +33,8 @@ public class Maze {
         this.endX = sizeX - 1;
         this.endY = sizeY - 1;
 
-        for (int y = 0; y < sizeY; y++) {
-            for (int x = 0; x < sizeX; x++) {
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
                 cells[x][y] = new Cell(x, y, this);
             }
         }
@@ -96,12 +96,45 @@ public class Maze {
         return sizeY;
     }
 
+
     /**
      * Calculates the area of the maze.
      * @return The area of the maze.
      */
     public int getArea() {
         return area;
+    }
+
+
+    /**
+     * Setter for the start cell.
+     * @param startX x location of the start cell.
+     * @param startY y location of the start cell.
+     */
+    public void setStartCell(int startX, int startY) {
+        this.startX = startX;
+        this.startY = startY;
+    }
+
+    /**
+     * Setter for the end cell.
+     * @param endX x location of the end cell.
+     * @param endY y location of the end cell.
+     */
+    public void setEndCell(int endX, int endY) {
+        this.endX = endX;
+        this.endY = endY;
+    }
+
+    /**
+     * Clears the maze to a state ready for the GenerateMaze method.
+     */
+    public void ClearMaze() {
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
+                cells[x][y].setWalls(new boolean[] {true, true, true, true});
+            }
+        }
     }
 
     /**
@@ -361,8 +394,11 @@ public class Maze {
      * @return Percentage of cells in maze covered by a solution.
      * TODO untested
      */
-    public double SolutionPct(ArrayList<CellNode> solution) {
-        return 1.0 * solution.size() / area;
+    public double SolutionPct(CellNode[] solution) {
+        if (solution != null) {
+            return 1.0 * solution.length / area;
+        }
+        return 0.0;
     }
 
     /**
