@@ -17,6 +17,9 @@ public class MazePanel extends JPanel {
         this.cells = maze.getCells();
         this.cellSize = cellSize;
 
+
+
+
         setPreferredSize(new Dimension(maze.getSizeX()*cellSize + 1, maze.getSizeY()*cellSize + 1));
 
         setBackground(Color.white);
@@ -129,17 +132,27 @@ public class MazePanel extends JPanel {
     }
 
     public static void main(String[] args) {
+        // Generate maze panel
         Maze testMaze = new Maze(32,32);
         testMaze.GenerateMaze();
         testMaze.Solve();
-        MazePanel testPanel = new MazePanel(testMaze, 16);
+        MazePanel mazePanel = new MazePanel(testMaze, 16);
 
-        JFrame testWindow = new JFrame();
-        testWindow.add(testPanel);
-        testWindow.pack();
+        // Create new frame
+        JFrame frame = new JFrame();
 
-        testWindow.setLayout(null);
-        testWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        testWindow.setVisible(true);
+        // Automatically centres content to frame
+        frame.setLayout(new GridBagLayout());
+        frame.add(mazePanel, new GridBagConstraints());
+
+        // Resizes window to preferred dimensions size
+        frame.pack();
+
+        // Centre to screen
+        frame.setLocationRelativeTo(null);
+
+        // Set defaults
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
