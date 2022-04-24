@@ -63,7 +63,7 @@ public class MazeDisplay {
         loginMenu.addActionListener(e -> SwingUtilities.invokeLater(new LoginUI()));
 
         // Open DataBaseUI when 'DataBase' is pressed
-        dbMenu.addActionListener(e -> SwingUtilities.invokeLater(new DataBaseUI()));
+        dbMenu.addActionListener(e -> SwingUtilities.invokeLater(new DataBaseUI())); // DataBaseUI is currently just a blank window
     }
 
     private void initializeUI() {
