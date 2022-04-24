@@ -54,6 +54,5 @@ public class LoginUI extends JFrame implements Runnable{
 
     @Override
     public void run() {createGUI();}
-    public static void main(String[] args) {SwingUtilities.invokeLater(new LoginUI());} // for testing
 
 }

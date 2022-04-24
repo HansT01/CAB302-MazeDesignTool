@@ -35,8 +35,13 @@ public class MazeDisplay {
         menuBar.add(openButton);
 
         // Login Button
-        JMenu loginMenu = new JMenu("Login");
+        JMenuItem loginMenu = new JMenuItem("Login");
         menuBar.add(loginMenu);
+
+        //Database button
+        JMenuItem dbMenu = new JMenuItem("DataBase");
+        menuBar.add(dbMenu);
+
         window.setJMenuBar(menuBar);
 
         openButton.addActionListener(new ActionListener() {
@@ -50,6 +55,12 @@ public class MazeDisplay {
                 }
             }
         });
+
+        // Open LoginUI when 'Login' is pressed
+        loginMenu.addActionListener(e -> SwingUtilities.invokeLater(new LoginUI()));
+
+        // Open DataBaseUI when 'DataBase' is pressed
+        dbMenu.addActionListener(e -> SwingUtilities.invokeLater(new DataBaseUI()));
     }
 
     private void initializeUI() {

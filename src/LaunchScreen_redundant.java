@@ -1,10 +1,8 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class HomeScreen extends JFrame implements Runnable {
+public class LaunchScreen_redundant extends JFrame implements Runnable {
     // Values used for default screen size
     private static final int width = 500;
     private static final int height = 300;
@@ -48,6 +46,6 @@ public class HomeScreen extends JFrame implements Runnable {
     @Override
     public void run() {createGUI();}
 
-    public static void main(String[] args) {SwingUtilities.invokeLater(new HomeScreen());}
+    public static void main(String[] args) {SwingUtilities.invokeLater(new LaunchScreen_redundant());}
 
 }
