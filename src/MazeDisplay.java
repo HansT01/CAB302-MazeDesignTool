@@ -31,7 +31,7 @@ public class MazeDisplay {
         menuBar.add(exportMenu);
 
         // Open Button
-        JMenu openButton = new JMenu("Open File");
+        JMenuItem openButton = new JMenuItem("Open File");
         menuBar.add(openButton);
 
         // Login Button
@@ -46,11 +46,14 @@ public class MazeDisplay {
 
         openButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("pls login");
                 if (!userStatus) {
+                    System.out.println("pls login");
+                    SwingUtilities.invokeLater(new LoginUI()); // Open LoginUI when 'Open File' is pressed and userStatus if false
 
 //                    JFrame frame = new JFrame("JOptionPane showMessageDialog component example");
 //                    JOptionPane.showMessageDialog(frame, window);
+                }
+                else {
 
                 }
             }
