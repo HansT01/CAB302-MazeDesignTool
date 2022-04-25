@@ -75,6 +75,12 @@ public class MazeDisplay {
         menuBar();
         window.pack();
         window.setLocationRelativeTo(null);
+
+        // Opens window at mouse pointer
+        Point open_location = MouseInfo.getPointerInfo().getLocation();
+        int open_x = (int) open_location.getX();
+        int open_y = (int) open_location.getY();
+        window.setLocation(open_x, open_y); // Open window at location of mouse pointer
     }
 
     private void setVisible(boolean b) {

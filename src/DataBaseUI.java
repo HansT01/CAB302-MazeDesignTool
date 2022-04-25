@@ -19,14 +19,29 @@ public class DataBaseUI extends JFrame implements Runnable{
         setVisible(true);
         setTitle("Maze DataBase");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Set so pressing x closes window not whole program
-        setLayout(new BorderLayout());
+        setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
         setSize(width, height);
+
+        add(Box.createVerticalStrut(10));
+        add(scrollPane());
+
 
 
     }
 
 
+    private JScrollPane scrollPane() {
 
+
+        JScrollPane scroller = new JScrollPane();
+        scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroller.setMinimumSize(new Dimension(200, 100));
+        scroller.setPreferredSize(new Dimension(250, 150));
+        scroller.setMaximumSize(new Dimension(300, 200));
+
+        return scroller;
+    }
 
 
 
