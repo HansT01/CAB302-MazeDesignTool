@@ -37,6 +37,10 @@ public class MazeDisplay {
         JMenuItem dbMenu = new JMenuItem("DataBase");
         menuBar.add(dbMenu);
 
+        //Back button
+        JMenuItem backBtn = new JMenuItem("Back");
+        menuBar.add(backBtn);
+
         window.setJMenuBar(menuBar);
 
         openButton.addActionListener(new ActionListener() {
@@ -59,6 +63,21 @@ public class MazeDisplay {
 
         // Open DataBaseUI when 'DataBase' is pressed
         dbMenu.addActionListener(e -> SwingUtilities.invokeLater(new DataBaseUI())); // DataBaseUI is currently just a blank window
+
+        // Goes back to home (work in progress)
+        backBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JMenuItem backBtn = (JMenuItem)e.getSource();
+                if (backBtn.isArmed()) {
+                    System.out.println("Back");
+                    preGenerateUI();
+                    MazeDisplay UI = new MazeDisplay();
+                    UI.initializeUI();
+                }
+
+            }
+        });
+
     }
 
 
