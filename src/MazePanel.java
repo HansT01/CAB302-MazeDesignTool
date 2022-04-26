@@ -8,6 +8,8 @@ public class MazePanel extends JPanel {
     private Maze maze;
     private Cell[][] cells;
     private int cellSize;
+
+    private boolean setStartCell = true;
     private boolean drawSolution = true;
 
     public void toggleSolution() {
@@ -103,13 +105,15 @@ public class MazePanel extends JPanel {
         // If a cell centre is clicked
         if (xSelect && ySelect) {
             // Left click
-            if (e.getButton() == MouseEvent.BUTTON1) {
+            if (setStartCell) {
                 maze.setStartCell(x2 / 2, y2 / 2);
             }
             // Right click
-            else if (e.getButton() == MouseEvent.BUTTON3) {
+            else {
                 maze.setEndCell(x2 / 2, y2 / 2);
             }
+
+            setStartCell = !setStartCell;
             repaint();
         }
         // If a wall is clicked
