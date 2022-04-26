@@ -15,15 +15,16 @@ public class DataBaseUI extends JFrame implements Runnable{
 
 
     private void createGUI() {
+        // Adjusting window
         setLocation(open_x, open_y); // Open window at location of mouse pointer
         setVisible(true);
         setTitle("Maze DataBase");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Set so pressing x closes window not whole program
-        setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
         setSize(width, height);
 
-        add(Box.createVerticalStrut(10));
-        add(scrollPane());
+
+        add(mazeTable());
+
 
 
 
@@ -31,8 +32,6 @@ public class DataBaseUI extends JFrame implements Runnable{
 
 
     private JScrollPane scrollPane() {
-
-
         JScrollPane scroller = new JScrollPane();
         scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -43,7 +42,20 @@ public class DataBaseUI extends JFrame implements Runnable{
         return scroller;
     }
 
+    private JTable mazeTable() {
+        String[][] data = {{"ur","a","nerd"}};
+        String[] columns = {"test","test","test"};
+        JTable table = new JTable(data, columns);
+        table.setBounds(10,10,100,200);
+
+
+
+        return table;
+    }
+
 
 
     public void run() {createGUI();}
+
+    public static void main(String[] args) {SwingUtilities.invokeLater(new DataBaseUI());}
 }
