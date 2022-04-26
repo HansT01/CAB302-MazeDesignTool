@@ -4,14 +4,12 @@ import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JFileChooser;
+import java.io.File;
 
-public class MazeDisplay {
-
-    static JFrame window = new JFrame("Maze Generator");
-
+public class MazeDisplay extends JFrame implements Runnable{
     JPanel menuPanel = new JPanel();
     boolean userStatus = false;
 
@@ -30,39 +28,33 @@ public class MazeDisplay {
         menuBar.add(openButton);
 
         // Login Button
-        JMenuItem loginMenu = new JMenuItem("Author");
-        menuBar.add(loginMenu);
+        //JMenuItem loginMenu = new JMenuItem("Author");
+        //menuBar.add(loginMenu);
 
         //Database button
-        JMenuItem dbMenu = new JMenuItem("DataBase");
-        menuBar.add(dbMenu);
+        //JMenuItem dbMenu = new JMenuItem("DataBase");
+        //menuBar.add(dbMenu);
 
         //Home button
         JMenuItem homeBtn = new JMenuItem("Home");
         menuBar.add(homeBtn);
 
-        window.setJMenuBar(menuBar);
+        setJMenuBar(menuBar);
 
         openButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (!userStatus) {
-                    System.out.println("pls login");
-                    SwingUtilities.invokeLater(new CreateDialogue()); // Open LoginUI when 'Open File' is pressed and userStatus if false
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+                int result = fileChooser.showOpenDialog(null);
 
-//                    JFrame frame = new JFrame("JOptionPane showMessageDialog component example");
-//                    JOptionPane.showMessageDialog(frame, window);
-                }
-                else {
-
-                }
             }
         });
 
         // Open LoginUI when 'Login' is pressed
-        loginMenu.addActionListener(e -> SwingUtilities.invokeLater(new CreateDialogue()));
+        //loginMenu.addActionListener(e -> SwingUtilities.invokeLater(new CreateDialogue()));
 
         // Open DataBaseUI when 'DataBase' is pressed
-        dbMenu.addActionListener(e -> SwingUtilities.invokeLater(new DataBaseUI())); // DataBaseUI is currently just a blank window
+        //dbMenu.addActionListener(e -> SwingUtilities.invokeLater(new DataBaseUI())); // DataBaseUI is currently just a blank window
 
         // Goes back to home
         homeBtn.addActionListener(new ActionListener() {
@@ -78,11 +70,6 @@ public class MazeDisplay {
         });
 
     }
-
-
-    private void setVisible(boolean b) {
-    }
-
 
     private void preGenerateUI() {
         menuPanel.removeAll();
@@ -117,7 +104,7 @@ public class MazeDisplay {
         menuPanel.add(hard);
         menuPanel.add(generate);
 
-        window.add(menuPanel);
+        add(menuPanel);
 
 
         generate.addActionListener(new ActionListener() {
@@ -160,13 +147,13 @@ public class MazeDisplay {
 
     private void initializeUI() {
         // Creating and displaying the program
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setVisible(true);
-        window.setPreferredSize(new Dimension(1400, 900)); // desired size of window
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setVisible(true);
+        setPreferredSize(new Dimension(1400, 900)); // desired size of window
         // Compile and place window on screen
         menuBar();
-        window.pack();
-        window.setLocationRelativeTo(null);
+        pack();
+        setLocationRelativeTo(null);
 
 
         // Opens window at mouse pointer
@@ -184,27 +171,23 @@ public class MazeDisplay {
         menuPanel.add(solution);
     }
 
-    public static void main(String args[]) {
+    private void createGUI() {
 
-        EventQueue.invokeLater(() -> {
-            MazeDisplay UI = new MazeDisplay();
-            UI.initializeUI();
-            UI.preGenerateUI();
-            UI.setVisible(true);
-            // Automatically centres content to frame
+        initializeUI();
+        preGenerateUI();
+        setVisible(true);
+        // Automatically centres content to frame
 
-            window.setLayout(new GridBagLayout());
+        setLayout(new GridBagLayout());
 
-            // Resizes window to preferred dimensions
-            window.pack();
-            // Centre to screen
-            window.setLocationRelativeTo(null);
-
-            // Set defaults
-            window.setVisible(true);
-            window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        });
+        // Resizes window to preferred dimensions
+        pack();
+        // Centre to screen
+        setLocationRelativeTo(null);
     }
 
+    public void run() {createGUI();}
+
+    public static void main(String[] args) {SwingUtilities.invokeLater(new MazeDisplay());}
 
 }

@@ -36,7 +36,7 @@ public class CreateDialogue extends JFrame implements Runnable {
         JTextField cellText = new JTextField();
         // Button
         JButton create = new JButton(); create.setText("Create");
-        create.addActionListener(e -> new MazeDisplay()); // Placeholder; does not go to right spot
+        create.addActionListener(e ->SwingUtilities.invokeLater(new MazeDisplay()));
 
         // Main Panel
         JPanel panel = new JPanel();

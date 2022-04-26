@@ -24,7 +24,8 @@ public class DataBaseUI extends JFrame implements Runnable {
     String selectedCellValue;
 
     JButton b1 = new JButton();
-
+    JButton b2 = new JButton();
+    JButton b3 = new JButton();
     JTable table;
 
 
@@ -44,21 +45,19 @@ public class DataBaseUI extends JFrame implements Runnable {
 
         // Panel for buttons and whatnot
         JPanel p1 = new JPanel();
-        p1.setLayout((new GridLayout(2,1)));
+        p1.setLayout((new GridLayout(3,1)));
         // Buttons
         b1.setText("New");
-        JButton b2 = new JButton(); // placeholders
         b2.setText("Edit");
+        b3.setText("Delete");
         // Adding buttons to panel
         p1.add(b1);
         p1.add(b2);
-
-
-
+        p1.add(b3);
         // Packing
         add(scroller); // Scroll panel for table
         add(p1);
-
+        // Setup listeners
         buttonSetup();
     }
 
@@ -69,7 +68,6 @@ public class DataBaseUI extends JFrame implements Runnable {
         String[] header = {"Title", "Author", "Data Created", "Last Edited"};
         JTable table = new JTable(rowData, header);
         table.setBounds(30,40,200,300);
-
         return table;
     }
 
@@ -86,7 +84,6 @@ public class DataBaseUI extends JFrame implements Runnable {
                 System.out.println(selectedCellValue);
                 System.out.println(selectedRow);
                 System.out.println(selectedColumn);
-
             }
             @Override
             public void mouseReleased(MouseEvent e) {}
@@ -99,6 +96,8 @@ public class DataBaseUI extends JFrame implements Runnable {
 
     void buttonSetup() {
         b1.addActionListener(e -> SwingUtilities.invokeLater(new CreateDialogue()));
+        b2.addActionListener(e -> SwingUtilities.invokeLater(new MazeDisplay()));
+        b3.addActionListener(e -> System.out.println("get pranked nerd"));
     }
 
     public void run() {createGUI();}
