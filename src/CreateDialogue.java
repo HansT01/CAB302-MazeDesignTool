@@ -2,7 +2,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class CreateDialogue extends JFrame implements Runnable{
+public class CreateDialogue extends JFrame implements Runnable {
 
     // Values used for default screen size
     private static final int width = 500;
@@ -36,7 +36,7 @@ public class CreateDialogue extends JFrame implements Runnable{
         JTextField cellText = new JTextField();
         // Button
         JButton create = new JButton(); create.setText("Create");
-        create.addActionListener(e -> SwingUtilities.invokeLater(new DataBaseUI())); // Placeholder; does not go to right spot
+        create.addActionListener(e -> new MazeDisplay()); // Placeholder; does not go to right spot
 
         // Main Panel
         JPanel panel = new JPanel();
@@ -61,7 +61,9 @@ public class CreateDialogue extends JFrame implements Runnable{
 
 
 
+
     @Override
     public void run() {createGUI();}
+
 
 }

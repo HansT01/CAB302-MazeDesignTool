@@ -1,5 +1,7 @@
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -15,6 +17,13 @@ public class DataBaseUI extends JFrame implements Runnable {
     Point open_location = MouseInfo.getPointerInfo().getLocation();
     int open_x = (int) open_location.getX();
     int open_y = (int) open_location.getY();
+
+    // For getting rows and columns
+    int selectedColumn;
+    int selectedRow;
+    String selectedCellValue;
+
+    JButton b1 = new JButton();
 
     JTable table;
 
@@ -33,16 +42,24 @@ public class DataBaseUI extends JFrame implements Runnable {
         listenerSetup();
         JScrollPane scroller = new JScrollPane(table);
 
-
         // Panel for buttons and whatnot
         JPanel p1 = new JPanel();
+        p1.setLayout((new GridLayout(2,1)));
+        // Buttons
+        b1.setText("New");
+        JButton b2 = new JButton(); // placeholders
+        b2.setText("Edit");
+        // Adding buttons to panel
+        p1.add(b1);
+        p1.add(b2);
+
 
 
         // Packing
         add(scroller); // Scroll panel for table
         add(p1);
 
-
+        buttonSetup();
     }
 
     private JTable mazeTable() {
@@ -63,8 +80,13 @@ public class DataBaseUI extends JFrame implements Runnable {
             public void mouseClicked(MouseEvent e) {}
             @Override
             public void mousePressed(MouseEvent e) {
+                int selectedRow = table.getSelectedRow();
+                int selectedColumn =table.getSelectedColumn();
                 String selectedCellValue = (String) table.getValueAt(table.getSelectedRow() , table.getSelectedColumn());
                 System.out.println(selectedCellValue);
+                System.out.println(selectedRow);
+                System.out.println(selectedColumn);
+
             }
             @Override
             public void mouseReleased(MouseEvent e) {}
@@ -75,7 +97,9 @@ public class DataBaseUI extends JFrame implements Runnable {
         });
     }
 
-
+    void buttonSetup() {
+        b1.addActionListener(e -> SwingUtilities.invokeLater(new CreateDialogue()));
+    }
 
     public void run() {createGUI();}
 
