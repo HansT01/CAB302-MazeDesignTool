@@ -1,18 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.ButtonGroup;
-import javax.swing.GroupLayout;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.LayoutStyle;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
 public class MazeDisplay {
 
@@ -36,7 +30,7 @@ public class MazeDisplay {
         menuBar.add(openButton);
 
         // Login Button
-        JMenuItem loginMenu = new JMenuItem("Login");
+        JMenuItem loginMenu = new JMenuItem("Author");
         menuBar.add(loginMenu);
 
         //Database button
@@ -49,7 +43,7 @@ public class MazeDisplay {
             public void actionPerformed(ActionEvent e) {
                 if (!userStatus) {
                     System.out.println("pls login");
-                    SwingUtilities.invokeLater(new LoginUI()); // Open LoginUI when 'Open File' is pressed and userStatus if false
+                    SwingUtilities.invokeLater(new CreateDialogue()); // Open LoginUI when 'Open File' is pressed and userStatus if false
 
 //                    JFrame frame = new JFrame("JOptionPane showMessageDialog component example");
 //                    JOptionPane.showMessageDialog(frame, window);
@@ -61,7 +55,7 @@ public class MazeDisplay {
         });
 
         // Open LoginUI when 'Login' is pressed
-        loginMenu.addActionListener(e -> SwingUtilities.invokeLater(new LoginUI()));
+        loginMenu.addActionListener(e -> SwingUtilities.invokeLater(new CreateDialogue()));
 
         // Open DataBaseUI when 'DataBase' is pressed
         dbMenu.addActionListener(e -> SwingUtilities.invokeLater(new DataBaseUI())); // DataBaseUI is currently just a blank window
