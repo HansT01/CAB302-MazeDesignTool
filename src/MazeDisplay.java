@@ -66,22 +66,6 @@ public class MazeDisplay {
         dbMenu.addActionListener(e -> SwingUtilities.invokeLater(new DataBaseUI())); // DataBaseUI is currently just a blank window
     }
 
-    private void initializeUI() {
-        // Creating and displaying the program
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setVisible(true);
-        window.setPreferredSize(new Dimension(400, 400)); // desired size of window
-        // Compile and place window on screen
-        menuBar();
-        window.pack();
-        window.setLocationRelativeTo(null);
-
-        // Opens window at mouse pointer
-        Point open_location = MouseInfo.getPointerInfo().getLocation();
-        int open_x = (int) open_location.getX();
-        int open_y = (int) open_location.getY();
-        window.setLocation(open_x, open_y); // Open window at location of mouse pointer
-    }
 
     private void setVisible(boolean b) {
     }
@@ -92,13 +76,7 @@ public class MazeDisplay {
         // Generate Button
         Button generate = new Button("Generate!");
 
-        generate.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("anyone listening?");
-                postGenerationUI();
-                initializeUI();
-            }
-        });
+
 
         // Radio buttons for choosing difficulty
         Label difficultyLabel = new Label("Choose Maze Difficulty:");
@@ -119,6 +97,7 @@ public class MazeDisplay {
         difficultyGroup.add(medium);
         difficultyGroup.add(hard);
 
+
         menuPanel.add(difficultyLabel);
         menuPanel.add(easy);
         menuPanel.add(medium);
@@ -126,8 +105,63 @@ public class MazeDisplay {
         menuPanel.add(generate);
 
         window.add(menuPanel);
+
+
+        generate.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("anyone listening?");
+
+
+                postGenerationUI();
+                if (easy.isSelected()) {
+                    Maze testMaze = new Maze(12, 8);
+                    testMaze.GenerateMaze();
+                    MazePanel mazePanel = new MazePanel(testMaze, 100);
+                    menuPanel.add(mazePanel);
+                    System.out.println("Easy");
+                }
+                else if (medium.isSelected()) {
+                    Maze testMaze = new Maze(24, 16);
+                    testMaze.GenerateMaze();
+                    MazePanel mazePanel = new MazePanel(testMaze, 50);
+                    menuPanel.add(mazePanel);
+                    System.out.println("Medium");
+
+                }
+                else if (hard.isSelected()) {
+                    Maze testMaze = new Maze(48, 32);
+                    testMaze.GenerateMaze();
+                    MazePanel mazePanel = new MazePanel(testMaze, 25);
+                    menuPanel.add(mazePanel);
+                    System.out.println("Hard");
+                }
+                else {
+                    preGenerateUI();
+                }
+                initializeUI();
+            }
+        });
     }
 
+
+    private void initializeUI() {
+        // Creating and displaying the program
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setVisible(true);
+        window.setPreferredSize(new Dimension(1400, 900)); // desired size of window
+        // Compile and place window on screen
+        menuBar();
+        window.pack();
+        window.setLocationRelativeTo(null);
+
+
+        // Opens window at mouse pointer
+        Point open_location = MouseInfo.getPointerInfo().getLocation();
+        int open_x = (int) open_location.getX();
+        int open_y = (int) open_location.getY();
+        window.setLocation(open_x, open_y); // Open window at location of mouse pointer
+
+    }
     private void postGenerationUI() {
         menuPanel.removeAll();
         // Show solved version button
