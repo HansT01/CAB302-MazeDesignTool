@@ -16,7 +16,8 @@ import java.awt.event.ItemListener;
 
 public class MazeDisplay {
 
-    JFrame window = new JFrame("Maze Generator");
+    static JFrame window = new JFrame("Maze Generator");
+
     JPanel menuPanel = new JPanel();
     boolean userStatus = false;
 
@@ -132,6 +133,7 @@ public class MazeDisplay {
                     Maze testMaze = new Maze(48, 32);
                     testMaze.GenerateMaze();
                     MazePanel mazePanel = new MazePanel(testMaze, 25);
+
                     menuPanel.add(mazePanel);
                     System.out.println("Hard");
                 }
@@ -159,7 +161,7 @@ public class MazeDisplay {
         Point open_location = MouseInfo.getPointerInfo().getLocation();
         int open_x = (int) open_location.getX();
         int open_y = (int) open_location.getY();
-        window.setLocation(open_x, open_y); // Open window at location of mouse pointer
+
 
     }
     private void postGenerationUI() {
@@ -177,6 +179,18 @@ public class MazeDisplay {
             UI.initializeUI();
             UI.preGenerateUI();
             UI.setVisible(true);
+            // Automatically centres content to frame
+
+            window.setLayout(new GridBagLayout());
+
+            // Resizes window to preferred dimensions
+            window.pack();
+            // Centre to screen
+            window.setLocationRelativeTo(null);
+
+            // Set defaults
+            window.setVisible(true);
+            window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         });
     }
 
