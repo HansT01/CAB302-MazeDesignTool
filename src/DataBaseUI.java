@@ -1,8 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 
-public class DataBaseUI extends JFrame implements Runnable{
+public class DataBaseUI extends JFrame implements Runnable {
 
     // Values used for default screen size
     private static final int width = 500;
@@ -13,6 +16,8 @@ public class DataBaseUI extends JFrame implements Runnable{
     int open_x = (int) open_location.getX();
     int open_y = (int) open_location.getY();
 
+    JTable table;
+
 
     private void createGUI() {
         // Adjusting window
@@ -21,36 +26,53 @@ public class DataBaseUI extends JFrame implements Runnable{
         setTitle("Maze DataBase");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Set so pressing x closes window not whole program
         setSize(width, height);
+        setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
+
+        // Table
+        table = mazeTable();
+        listenerSetup();
+        JScrollPane scroller = new JScrollPane(table);
 
 
-        add(mazeTable());
+        // Panel for buttons and whatnot
+        JPanel p1 = new JPanel();
 
 
+        // Packing
+        add(scroller); // Scroll panel for table
+        add(p1);
 
 
-    }
-
-
-    private JScrollPane scrollPane() {
-        JScrollPane scroller = new JScrollPane();
-        scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroller.setMinimumSize(new Dimension(200, 100));
-        scroller.setPreferredSize(new Dimension(250, 150));
-        scroller.setMaximumSize(new Dimension(300, 200));
-
-        return scroller;
     }
 
     private JTable mazeTable() {
-        String[][] data = {{"ur","a","nerd"}};
-        String[] columns = {"test","test","test"};
-        JTable table = new JTable(data, columns);
-        table.setBounds(10,10,100,200);
-
-
+        String[][] rowData = {
+                {"Mr PlaceHolder", "The PlaceHold", "Some Time", "Ur Mum"},
+        };
+        String[] header = {"Title", "Author", "Data Created", "Last Edited"};
+        JTable table = new JTable(rowData, header);
+        table.setBounds(30,40,200,300);
 
         return table;
+    }
+
+
+    private void listenerSetup(){
+        table.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {}
+            @Override
+            public void mousePressed(MouseEvent e) {
+                String selectedCellValue = (String) table.getValueAt(table.getSelectedRow() , table.getSelectedColumn());
+                System.out.println(selectedCellValue);
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+            @Override
+            public void mouseExited(MouseEvent e) {}
+        });
     }
 
 
