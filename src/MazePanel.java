@@ -104,15 +104,12 @@ public class MazePanel extends JPanel {
         boolean ySelect = (y2 % 2 == 1);
         // If a cell centre is clicked
         if (xSelect && ySelect) {
-            // Left click
             if (setStartCell) {
                 maze.setStartCell(x2 / 2, y2 / 2);
             }
-            // Right click
             else {
                 maze.setEndCell(x2 / 2, y2 / 2);
             }
-
             setStartCell = !setStartCell;
             repaint();
         }
@@ -148,4 +145,28 @@ public class MazePanel extends JPanel {
         return new int[] {xPx / maze.getSizeX(), yPx / maze.getSizeY()};
     }
 
+    // For testing maze panel, do not remove!
+    public static void main(String[] args) {
+        // Generate maze panel
+        Maze testMaze = new Maze(80,50);
+        testMaze.GenerateMaze();
+        MazePanel mazePanel = new MazePanel(testMaze, 12);
+
+        // Create new frame
+        JFrame frame = new JFrame();
+
+        // Automatically centres content to frame
+        frame.setLayout(new GridBagLayout());
+        frame.add(mazePanel, new GridBagConstraints());
+
+        // Resizes window to preferred dimensions
+        frame.pack();
+
+        // Centre to screen
+        frame.setLocationRelativeTo(null);
+
+        // Set defaults
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
 }

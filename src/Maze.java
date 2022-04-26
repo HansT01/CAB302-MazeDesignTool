@@ -314,8 +314,7 @@ public class Maze {
         int imageSizeY = image.getSizeY();
         boolean fitsX = (xPos >= 0 && xPos + imageSizeX <= sizeX);
         boolean fitsY = (yPos >= 0 && yPos + imageSizeY <= sizeY);
-        if (fitsX && fitsY)
-        {
+        if (fitsX && fitsY) {
             image.setX(xPos);
             image.setY(yPos);
 
@@ -327,17 +326,22 @@ public class Maze {
                 }
             }
 
+            // Remove vertical walls
             for (int x = xPos; x < xPos + imageSizeX - 1; x++) {
                 for (int y = yPos; y < yPos + imageSizeY; y++) {
                     cells[x][y].RemoveWall(1);
                 }
             }
 
+            // Remove horizontal walls
             for (int x = xPos; x < xPos + imageSizeX; x++) {
                 for (int y = yPos; y < yPos + imageSizeY - 1; y++) {
                     cells[x][y].RemoveWall(2);
                 }
             }
+        }
+        else {
+            throw new RuntimeException("Image does not fit inside maze");
         }
     }
 
