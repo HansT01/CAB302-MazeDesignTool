@@ -195,11 +195,11 @@ public class MazeDisplay extends JFrame implements Runnable{
 
 
     }
-    private void postGenerationUI() {
+  /*  private void postGenerationUI() {
         menuPanel.removeAll();
         // Show solved version button
 
-    }
+    }*/
 
     private void createGUI() {
 
