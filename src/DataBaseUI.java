@@ -26,6 +26,7 @@ public class DataBaseUI extends JFrame implements Runnable {
     JButton b1 = new JButton();
     JButton b2 = new JButton();
     JButton b3 = new JButton();
+    JButton b4 = new JButton();
     JTable table;
 
 
@@ -45,15 +46,17 @@ public class DataBaseUI extends JFrame implements Runnable {
 
         // Panel for buttons and whatnot
         JPanel p1 = new JPanel();
-        p1.setLayout((new GridLayout(3,1)));
+        p1.setLayout((new GridLayout(4,1)));
         // Buttons
         b1.setText("New");
         b2.setText("Edit");
         b3.setText("Delete");
+        b4.setText("Export");
         // Adding buttons to panel
         p1.add(b1);
         p1.add(b2);
         p1.add(b3);
+        p1.add(b4);
         // Packing
         add(scroller); // Scroll panel for table
         add(p1);
@@ -64,6 +67,7 @@ public class DataBaseUI extends JFrame implements Runnable {
     private JTable mazeTable() {
         String[][] rowData = {
                 {"Mr PlaceHolder", "The PlaceHold", "Some Time", "Ur Mum"},
+                {"Mr PlaceHolder II", "something", "Some Time", "Ur Mum"}
         };
         String[] header = {"Title", "Author", "Data Created", "Last Edited"};
         JTable table = new JTable(rowData, header);
