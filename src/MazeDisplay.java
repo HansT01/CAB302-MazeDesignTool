@@ -111,13 +111,26 @@ public class MazeDisplay extends JFrame implements Runnable{
             public void actionPerformed(ActionEvent e) {
                 System.out.println("anyone listening?");
 
+                menuPanel.removeAll();
+                JToggleButton solution = new JToggleButton("Show maze solution");
+                menuPanel.add(solution);
 
-                postGenerationUI();
                 if (easy.isSelected()) {
                     Maze testMaze = new Maze("Title A", "Author A",12, 8);
                     testMaze.GenerateMaze();
                     MazePanel mazePanel = new MazePanel(testMaze, 100);
                     menuPanel.add(mazePanel);
+                    solution.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            JToggleButton tBtn = (JToggleButton)e.getSource();
+                            if (tBtn.isSelected()){
+                                mazePanel.toggleSolution();
+                            }
+                            else {
+                                mazePanel.toggleSolution();
+                            }
+                        }
+                    });
                     System.out.println("Easy");
                 }
                 else if (medium.isSelected()) {
@@ -125,15 +138,35 @@ public class MazeDisplay extends JFrame implements Runnable{
                     testMaze.GenerateMaze();
                     MazePanel mazePanel = new MazePanel(testMaze, 50);
                     menuPanel.add(mazePanel);
+                    solution.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            JToggleButton tBtn = (JToggleButton)e.getSource();
+                            if (tBtn.isSelected()){
+                                mazePanel.toggleSolution();
+                            }
+                            else {
+                                mazePanel.toggleSolution();
+                            }
+                        }
+                    });
                     System.out.println("Medium");
-
                 }
                 else if (hard.isSelected()) {
                     Maze testMaze = new Maze("Title C", "Author C",48, 32);
                     testMaze.GenerateMaze();
                     MazePanel mazePanel = new MazePanel(testMaze, 25);
-
                     menuPanel.add(mazePanel);
+                    solution.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            JToggleButton tBtn = (JToggleButton)e.getSource();
+                            if (tBtn.isSelected()){
+                                mazePanel.toggleSolution();
+                            }
+                            else {
+                                mazePanel.toggleSolution();
+                            }
+                        }
+                    });
                     System.out.println("Hard");
                 }
                 else {
@@ -143,7 +176,6 @@ public class MazeDisplay extends JFrame implements Runnable{
             }
         });
     }
-
 
     private void initializeUI() {
         // Creating and displaying the program
@@ -166,9 +198,7 @@ public class MazeDisplay extends JFrame implements Runnable{
     private void postGenerationUI() {
         menuPanel.removeAll();
         // Show solved version button
-        Button solution = new Button("Show maze solution");
 
-        menuPanel.add(solution);
     }
 
     private void createGUI() {

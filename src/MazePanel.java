@@ -10,37 +10,15 @@ public class MazePanel extends JPanel {
     private int cellSize;
 
     private boolean setStartCell = true;
-    private boolean drawSolution = true;
+    private boolean drawSolution = false;
 
+    //Enable Maze Solution
     public void toggleSolution() {
         this.drawSolution = !drawSolution;
+        paint(getGraphics());
     }
 
-    /**
-     * Constructs the maze panel.
-     * @param maze The Maze object to be rendered.
-     * @param cellSize The size of each cell in the maze. The size should be even for proper rendering.
-     */
-    public MazePanel(Maze maze, int cellSize) {
-        super();
-        this.maze = maze;
-        this.cells = maze.getCells();
-        this.cellSize = cellSize;
-
-        setPreferredSize(new Dimension(maze.getSizeX()*cellSize + 1, maze.getSizeY()*cellSize + 1));
-        setBackground(Color.white);
-
-        // Sourced from: https://stackhowto.com/how-to-get-mouse-position-on-click-relative-to-jframe/
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                HandleClickEvent(e);
-            }
-        });
-    }
-
-
-    @Override
+    //Draw Maze Lines
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.clearRect(0, 0, getPreferredSize().width, getPreferredSize().height);
@@ -90,6 +68,31 @@ public class MazePanel extends JPanel {
             }
         }
     }
+    /**
+     * Constructs the maze panel.
+     * @param maze The Maze object to be rendered.
+     * @param cellSize The size of each cell in the maze. The size should be even for proper rendering.
+     */
+    public MazePanel(Maze maze, int cellSize) {
+        super();
+        this.maze = maze;
+        this.cells = maze.getCells();
+        this.cellSize = cellSize;
+
+        setPreferredSize(new Dimension(maze.getSizeX()*cellSize + 1, maze.getSizeY()*cellSize + 1));
+        setBackground(Color.white);
+
+        // Sourced from: https://stackhowto.com/how-to-get-mouse-position-on-click-relative-to-jframe/
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                HandleClickEvent(e);
+            }
+        });
+    }
+
+
+
 
     /**
      * Toggles a wall near the input x, y coordinate.
