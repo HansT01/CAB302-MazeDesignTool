@@ -148,7 +148,7 @@ public class MazePanel extends JPanel {
     // For testing maze panel, do not remove!
     public static void main(String[] args) {
         // Generate maze panel
-        Maze testMaze = new Maze(80,50);
+        Maze testMaze = new Maze("Maze Title", "Maze Author", 80,50);
         testMaze.GenerateMaze();
         MazePanel mazePanel = new MazePanel(testMaze, 12);
 

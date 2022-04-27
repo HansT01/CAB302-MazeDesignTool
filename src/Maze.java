@@ -1,9 +1,9 @@
 import java.util.*;
 
 public class Maze {
-    private String title;
-    private String author;
-    private Date dateCreated;
+    private final String title;
+    private final String author;
+    private final Date dateCreated;
     private Date dateLastEdited;
 
     private final int sizeX;
@@ -22,9 +22,12 @@ public class Maze {
      * @param sizeX The width of the maze in cells.
      * @param sizeY The height of the maze in cells.
      */
-    public Maze(int sizeX, int sizeY) {
+    public Maze(String title, String author, int sizeX, int sizeY) {
+        this.title = title;
+        this.author = author;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
+        this.dateCreated = new Date(System.currentTimeMillis());
         this.area = sizeX * sizeY;
         cells = new Cell[sizeX][sizeY];
 
@@ -78,6 +81,14 @@ public class Maze {
      */
     public Date getDateLastEdited() {
         return dateLastEdited;
+    }
+
+    /**
+     * Setter for date last edited.
+     * @param dateLastEdited Date last edited.
+     */
+    public void setDateLastEdited(Date dateLastEdited) {
+        this.dateLastEdited = dateLastEdited;
     }
 
     /**
@@ -403,7 +414,7 @@ public class Maze {
         long endTime;
 
         startTime = System.nanoTime();
-        Maze testMaze = new Maze(20, 10);
+        Maze testMaze = new Maze("Maze title", "Maze author", 20, 10);
         endTime = System.nanoTime();
         long constructTime = endTime - startTime;
 

@@ -114,14 +114,14 @@ public class MazeDisplay extends JFrame implements Runnable{
 
                 postGenerationUI();
                 if (easy.isSelected()) {
-                    Maze testMaze = new Maze(12, 8);
+                    Maze testMaze = new Maze("Title A", "Author A",12, 8);
                     testMaze.GenerateMaze();
                     MazePanel mazePanel = new MazePanel(testMaze, 100);
                     menuPanel.add(mazePanel);
                     System.out.println("Easy");
                 }
                 else if (medium.isSelected()) {
-                    Maze testMaze = new Maze(24, 16);
+                    Maze testMaze = new Maze("Title B", "Author B",24, 16);
                     testMaze.GenerateMaze();
                     MazePanel mazePanel = new MazePanel(testMaze, 50);
                     menuPanel.add(mazePanel);
@@ -129,7 +129,7 @@ public class MazeDisplay extends JFrame implements Runnable{
 
                 }
                 else if (hard.isSelected()) {
-                    Maze testMaze = new Maze(48, 32);
+                    Maze testMaze = new Maze("Title C", "Author C",48, 32);
                     testMaze.GenerateMaze();
                     MazePanel mazePanel = new MazePanel(testMaze, 25);
 
