@@ -38,6 +38,8 @@ public class DataBaseUI extends JFrame implements Runnable {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Set so pressing x closes window not whole program
         setSize(width, height);
         setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
+        // Centre to screen
+        setLocationRelativeTo(null);
 
         // Table
         table = mazeTable();

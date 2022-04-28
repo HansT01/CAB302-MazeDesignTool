@@ -25,7 +25,9 @@ public class LoginUI extends JFrame implements Runnable{
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Set so pressing x closes window
         setSize(width, height);
         setLayout(new BorderLayout());
-
+        // Centre to screen
+        setLocationRelativeTo(null);
+        
         // Labels
         JLabel nameLabel = new JLabel("Name");
         JLabel passwordLabel = new JLabel("Password");
