@@ -61,8 +61,6 @@ public class CreateDialogue extends JFrame implements Runnable {
     }
 
 
-
-
     @Override
     public void run() {createGUI();}
 }

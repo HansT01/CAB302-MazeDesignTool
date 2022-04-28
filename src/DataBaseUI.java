@@ -114,8 +114,14 @@ public class DataBaseUI extends JFrame implements Runnable {
      * Adds actionListeners for buttons
      */
     void buttonSetup() {
-        b1.addActionListener(e -> SwingUtilities.invokeLater(new CreateDialogue()));
-        b2.addActionListener(e -> SwingUtilities.invokeLater(new MazeDisplay()));
+        b1.addActionListener(e -> {
+            SwingUtilities.invokeLater(new CreateDialogue());
+            dispose();
+        });
+        b2.addActionListener(e -> {
+            SwingUtilities.invokeLater(new MazeDisplay());
+            dispose();
+        });
         b3.addActionListener(e -> System.out.println("get pranked nerd"));
     }
 
