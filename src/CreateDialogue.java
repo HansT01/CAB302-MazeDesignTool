@@ -2,11 +2,15 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
+/**
+ * Constructs window for entering information required to create new maze
+ */
 public class CreateDialogue extends JFrame implements Runnable {
 
-    // Used for opening application at location of mouse pointer on screen
+    /** Used for getting location of mouse pointer */
     Point openLocation = MouseInfo.getPointerInfo().getLocation();
 
+    /** Constructs CreateDialogueGUI */
     private void createGUI () {
         // Setting up main window
         setLocation(openLocation); // Open window at location of mouse pointer

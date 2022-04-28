@@ -1,11 +1,14 @@
-        import javax.swing.*;
-        import java.awt.*;
-        import javax.swing.border.Border;
-        import javax.swing.border.EmptyBorder;
-        import java.awt.*;
-        import java.awt.event.ActionEvent;
-        import java.awt.event.ActionListener;
+import javax.swing.*;
+import java.awt.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+/**
+ * Constructs window for authenticating user
+ */
 public class LoginUI extends JFrame implements Runnable{
 
     // Used for opening application at location of mouse pointer on screen

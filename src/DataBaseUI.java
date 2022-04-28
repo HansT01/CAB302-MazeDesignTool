@@ -6,24 +6,33 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-
+/**
+ * Constructs window for viewing and interacting with mazes stored in database
+ */
 public class DataBaseUI extends JFrame implements Runnable {
 
-    // Used for opening application at location of mouse pointer on screen
-    Point openLocation = MouseInfo.getPointerInfo().getLocation();
+    /** Used for getting location of mouse pointer */
+     Point openLocation = MouseInfo.getPointerInfo().getLocation();
 
-    // For getting rows and columns
+    /** Value of column of cell clicked on */
     int selectedColumn;
+    /** Value of row of cell clicked on */
     int selectedRow;
+    /** Data in cell clicked on */
     String selectedCellValue;
 
+    /** JButton used for New */
     JButton b1 = new JButton();
+    /** JButton used for Edit */
     JButton b2 = new JButton();
+    /** JButton used for Delete */
     JButton b3 = new JButton();
+    /** JButton used for Export */
     JButton b4 = new JButton();
+    /** JTable used for displaying maze data */
     JTable table;
 
-
+    /** Constructs DataBase JFrame */
     private void createGUI() {
         // Adjusting window
         setLocation(openLocation); // Open window at location of mouse pointer
@@ -60,6 +69,10 @@ public class DataBaseUI extends JFrame implements Runnable {
         buttonSetup();
     }
 
+    /**
+     * Constructs JTable used for displaying information stored in database
+     * @return Table for displaying maze data
+     */
     private JTable mazeTable() {
         String[][] rowData = {
                 {"Mr PlaceHolder", "The PlaceHold", "Some Time", "Ur Mum"},
@@ -72,6 +85,9 @@ public class DataBaseUI extends JFrame implements Runnable {
     }
 
 
+    /**
+     * Adds listener for mousePressed event
+     */
     private void listenerSetup(){
         table.addMouseListener(new MouseListener() {
             @Override
@@ -94,6 +110,9 @@ public class DataBaseUI extends JFrame implements Runnable {
         });
     }
 
+    /**
+     * Adds actionListeners for buttons
+     */
     void buttonSetup() {
         b1.addActionListener(e -> SwingUtilities.invokeLater(new CreateDialogue()));
         b2.addActionListener(e -> SwingUtilities.invokeLater(new MazeDisplay()));
