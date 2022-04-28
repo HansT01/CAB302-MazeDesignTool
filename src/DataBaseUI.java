@@ -9,14 +9,8 @@ import java.awt.event.MouseListener;
 
 public class DataBaseUI extends JFrame implements Runnable {
 
-    // Values used for default screen size
-    private static final int width = 500;
-    private static final int height = 500;
-
     // Used for opening application at location of mouse pointer on screen
-    Point open_location = MouseInfo.getPointerInfo().getLocation();
-    int open_x = (int) open_location.getX();
-    int open_y = (int) open_location.getY();
+    Point openLocation = MouseInfo.getPointerInfo().getLocation();
 
     // For getting rows and columns
     int selectedColumn;
@@ -32,11 +26,11 @@ public class DataBaseUI extends JFrame implements Runnable {
 
     private void createGUI() {
         // Adjusting window
-        setLocation(open_x, open_y); // Open window at location of mouse pointer
+        setLocation(openLocation); // Open window at location of mouse pointer
         setVisible(true);
         setTitle("Maze DataBase");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Set so pressing x closes window not whole program
-        setSize(width, height);
+        setSize(500, 500);
         setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
         // Centre to screen
         setLocationRelativeTo(null);

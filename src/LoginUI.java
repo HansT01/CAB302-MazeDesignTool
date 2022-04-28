@@ -8,22 +8,16 @@
 
 public class LoginUI extends JFrame implements Runnable{
 
-    // Values used for default screen size
-    private static final int width = 500;
-    private static final int height = 300;
-
     // Used for opening application at location of mouse pointer on screen
-    Point open_location = MouseInfo.getPointerInfo().getLocation();
-    int open_x = (int) open_location.getX();
-    int open_y = (int) open_location.getY();
+    Point openLocation = MouseInfo.getPointerInfo().getLocation();
 
     private void createGUI () {
         // Setting up main window
-        setLocation(open_x, open_y); // Open window at location of mouse pointer
+        setLocation(openLocation); // Open window at location of mouse pointer
         setVisible(true);
         setTitle("Login");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Set so pressing x closes window
-        setSize(width, height);
+        setSize(500, 300);
         setLayout(new BorderLayout());
         // Centre to screen
         setLocationRelativeTo(null);
@@ -36,7 +30,10 @@ public class LoginUI extends JFrame implements Runnable{
         JTextField passwordText = new JTextField();
         // Button
         JButton login = new JButton(); login.setText("Login");
-        login.addActionListener(e -> SwingUtilities.invokeLater(new DataBaseUI())); // Placeholder; does not go to right spot
+        login.addActionListener(e -> {
+            SwingUtilities.invokeLater(new DataBaseUI());
+            dispose();
+        });
 
         // Main Panel
         JPanel panel = new JPanel();
