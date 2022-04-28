@@ -188,12 +188,6 @@ public class MazeDisplay extends JFrame implements Runnable{
         setLocationRelativeTo(null);
 
 
-        // Opens window at mouse pointer
-        Point open_location = MouseInfo.getPointerInfo().getLocation();
-        int open_x = (int) open_location.getX();
-        int open_y = (int) open_location.getY();
-
-
     }
   /*  private void postGenerationUI() {
         menuPanel.removeAll();
@@ -217,7 +211,5 @@ public class MazeDisplay extends JFrame implements Runnable{
     }
 
     public void run() {createGUI();}
-
-    public static void main(String[] args) {SwingUtilities.invokeLater(new MazeDisplay());}
 
 }
