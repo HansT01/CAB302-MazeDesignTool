@@ -119,8 +119,12 @@ public class DataBaseUI extends JFrame implements Runnable {
             dispose();
         });
         b2.addActionListener(e -> {
-            SwingUtilities.invokeLater(new MazeDisplay());
-            dispose();
+            // Create maze panel - This will later implement parameters from the database
+            Maze testMaze = new Maze("Maze Title", "Maze Author", 80,50);
+            testMaze.GenerateMaze();
+            MazePanel testPanel = new MazePanel(testMaze, 12);
+
+            SwingUtilities.invokeLater(new EditPage(testPanel));
         });
         b3.addActionListener(e -> System.out.println("get pranked nerd"));
     }

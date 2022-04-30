@@ -10,7 +10,7 @@ public class MazePanel extends JPanel {
     private int cellSize;
 
     private boolean setStartCell = true;
-    private boolean drawSolution = false;
+    private boolean drawSolution = true;
 
     //Enable Maze Solution
     public void toggleSolution() {

@@ -9,9 +9,11 @@ import java.awt.event.ActionListener;
 import javax.swing.JFileChooser;
 import java.io.File;
 
+@Deprecated
 public class MazeDisplay extends JFrame implements Runnable{
     JPanel menuPanel = new JPanel();
     boolean userStatus = false;
+
 
     private void menuBar() {
         // Setting up the menu bar
@@ -73,10 +75,9 @@ public class MazeDisplay extends JFrame implements Runnable{
 
     private void preGenerateUI() {
         menuPanel.removeAll();
+
         // Generate Button
         Button generate = new Button("Generate!");
-
-
 
         // Radio buttons for choosing difficulty
         Label difficultyLabel = new Label("Choose Maze Difficulty:");
@@ -85,14 +86,7 @@ public class MazeDisplay extends JFrame implements Runnable{
         JRadioButton easy = new JRadioButton("Easy");
         JRadioButton medium = new JRadioButton("Medium");
         JRadioButton hard = new JRadioButton("Hard");
-//        easy.setBounds(275,25,100,30);
-//        medium.setBounds(275,50,100,30);
-//        hard.setBounds(275,1175,100,30);
 
-//        dbar = new JLabel("Selected: ");
-
-//        difficultyPanel.setLayout(new BoxLayout(difficultyPanel, BoxLayout.Y_AXIS));
-//        difficultyPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         difficultyGroup.add(easy);
         difficultyGroup.add(medium);
         difficultyGroup.add(hard);
@@ -182,18 +176,12 @@ public class MazeDisplay extends JFrame implements Runnable{
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
         setPreferredSize(new Dimension(1400, 900)); // desired size of window
+
         // Compile and place window on screen
         menuBar();
         pack();
         setLocationRelativeTo(null);
-
-
     }
-  /*  private void postGenerationUI() {
-        menuPanel.removeAll();
-        // Show solved version button
-
-    }*/
 
     private void createGUI() {
 
@@ -212,4 +200,7 @@ public class MazeDisplay extends JFrame implements Runnable{
 
     public void run() {createGUI();}
 
+    public static void main(String[] args) {
+
+    }
 }
