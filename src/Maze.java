@@ -1,3 +1,4 @@
+import java.awt.image.BufferedImage;
 import java.util.*;
 
 public class Maze {
@@ -239,7 +240,7 @@ public class Maze {
             M(n) = true
             if c == end
                 return path from start
-            for each unmarked neighbour n of c
+            for each unmarked neighbour n of c do
                 pathCost = c.pathCost + 1
                 if pathCost < n.pathCost
                     n.pathCost = pathCost
@@ -286,7 +287,7 @@ public class Maze {
                 return solution;
             }
 
-            // for each unmarked neighbour n of c
+            // for each unmarked neighbour n of c do
             ArrayList<CellNode> neighbourNodes = new ArrayList<>();
             for (Cell neighbourCell : currentNode.getCell().GetOpenNeighbours()) {
                 neighbourNodes.add(new CellNode(neighbourCell));
@@ -385,9 +386,9 @@ public class Maze {
      * @param solution Path solution.
      * @return Percentage of cells in maze covered by a solution.
      */
-    public double SolutionPct(CellNode[] solution) {
+    public double SolutionPct(ArrayList<CellNode> solution) {
         if (solution != null) {
-            return 1.0 * solution.length / area;
+            return 1.0 * solution.size() / area;
         }
         return 0.0;
     }
@@ -406,7 +407,7 @@ public class Maze {
                 }
             }
         }
-        return deadEndCount;
+        return 1.0 * deadEndCount / area;
     }
 
     public static void main(String[] args) {
@@ -418,7 +419,7 @@ public class Maze {
         endTime = System.nanoTime();
         long constructTime = endTime - startTime;
 
-        MazeImage testImage = new MazeImage(0, 3, 3);
+        MazeImage testImage = new MazeImage(new BufferedImage(0, 0, 0), 3, 3);
         testMaze.PlaceImage(testImage, 2, 2);
 
         startTime = System.nanoTime();

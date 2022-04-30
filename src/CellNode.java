@@ -2,7 +2,7 @@ public class CellNode implements Comparable<CellNode> {
     private final Cell cell;
     private CellNode parent = null;
     private int pathCost = Integer.MAX_VALUE;
-    private double combinedCost = Integer.MAX_VALUE;
+    private double combinedCost = Double.MAX_VALUE;
 
     /**
      * Constructs and initializes the cell node.

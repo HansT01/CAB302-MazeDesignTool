@@ -1,7 +1,8 @@
 import javax.swing.*;
+import java.awt.image.BufferedImage;
 
 public class MazeImage {
-    private int imageData;
+    private BufferedImage imageData;
     private int x;
     private int y;
     private int sizeX;
@@ -31,7 +32,7 @@ public class MazeImage {
         return sizeY;
     }
 
-    public MazeImage(int imageData, int sizeX, int sizeY)
+    public MazeImage(BufferedImage imageData, int sizeX, int sizeY)
     {
         this.imageData = imageData;
         this.sizeX = sizeX;
