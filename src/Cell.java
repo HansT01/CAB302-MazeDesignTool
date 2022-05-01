@@ -1,10 +1,15 @@
 import java.util.ArrayList;
 
 public class Cell {
+    /** The maze that is containing this cell */
     private final Maze parentMaze;
     private final int x;
     private final int y;
-    private boolean[] walls = {true, true, true, true};  // North, East, South, West
+    /**
+     * The status of the walls of this cell.
+     * 0 - North, 1 - East, 2 - South, 3 - West.
+     */
+    private boolean[] walls = {true, true, true, true};
     private boolean coveredByImage = false;
 
     /**

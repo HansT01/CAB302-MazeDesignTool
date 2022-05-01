@@ -415,12 +415,15 @@ public class Maze {
         long endTime;
 
         startTime = System.nanoTime();
-        Maze testMaze = new Maze("Maze title", "Maze author", 20, 10);
+        Maze testMaze = new Maze("Maze title", "Maze author", 6, 4);
         endTime = System.nanoTime();
         long constructTime = endTime - startTime;
 
-        MazeImage testImage = new MazeImage(new BufferedImage(0, 0, 0), 3, 3);
-        testMaze.PlaceImage(testImage, 2, 2);
+        testMaze.Print();
+        System.out.println();
+
+        // MazeImage testImage = new MazeImage(new BufferedImage(0, 0, 0), 3, 3);
+        // testMaze.PlaceImage(testImage, 2, 2);
 
         startTime = System.nanoTime();
         testMaze.GenerateMaze();
