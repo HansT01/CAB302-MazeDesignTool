@@ -35,7 +35,7 @@ public class CreateDialogue extends JFrame implements Runnable {
         // Button
         JButton create = new JButton(); create.setText("Create");
         create.addActionListener(e -> {
-            SwingUtilities.invokeLater(new MazeDisplay());
+            // SwingUtilities.invokeLater(new EditPage());
             dispose();
         });
 
