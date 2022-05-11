@@ -8,11 +8,16 @@ import java.io.IOException;
 
 public class MazeImage {
     private final BufferedImage imageData;
+    private final String imageTitle;
     private int sizeX;
     private int sizeY;
     private int x;
     private int y;
     private boolean isPlaced = false;
+
+    public String getImageTitle() {
+        return imageTitle;
+    }
 
     public boolean isPlaced() {
         return isPlaced;
@@ -58,8 +63,9 @@ public class MazeImage {
         return imageData;
     }
 
-    public MazeImage(BufferedImage imageData, int sizeX, int sizeY)
+    public MazeImage(String imageTitle, BufferedImage imageData, int sizeX, int sizeY)
     {
+        this.imageTitle = imageTitle;
         this.imageData = imageData;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
@@ -103,7 +109,7 @@ public class MazeImage {
 
             try {
                 BufferedImage imageData = ImageIO.read(file);
-                MazeImage image = new MazeImage(imageData, 3, 3);
+                MazeImage image = new MazeImage(file.getName(), imageData, 3, 3);
                 testMaze.getImages().add(image);
                 testMaze.setSelectedImage(image);
                 testMaze.PlaceImage(1, 1);

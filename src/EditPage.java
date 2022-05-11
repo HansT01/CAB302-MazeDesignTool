@@ -1,12 +1,16 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class EditPage extends JFrame implements Runnable{
     private final MazePanel mazePanel;
@@ -18,7 +22,9 @@ public class EditPage extends JFrame implements Runnable{
     private JButton generateMaze = new JButton("Generate maze");
     private JTextField imageWidth = new JTextField(10);
     private JTextField imageHeight = new JTextField(10);
-    private JTable imagesTable;
+
+    private JTable imagesTable = new JTable(new DefaultTableModel());
+
     private GridBagConstraints gbc;
     private JPanel optionsPanel;
 
@@ -32,6 +38,8 @@ public class EditPage extends JFrame implements Runnable{
      */
     public EditPage(MazePanel mazePanel) {
         this.mazePanel = mazePanel;
+        UpdateTable();
+
         fc.setFileFilter(new FileNameExtensionFilter("Static image files", "jpeg", "jpg", "png"));
         fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
 
@@ -63,7 +71,8 @@ public class EditPage extends JFrame implements Runnable{
                 BufferedImage imageData = ImageIO.read(file);
                 int width = Integer.parseInt(imageWidth.getText());
                 int height = Integer.parseInt(imageHeight.getText());
-                mazePanel.getMaze().getImages().add(new MazeImage(imageData, width, height));
+                mazePanel.getMaze().getImages().add(new MazeImage(file.getName(), imageData, width, height));
+                UpdateTable();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -111,18 +120,21 @@ public class EditPage extends JFrame implements Runnable{
         return gbc;
     }
 
+    public void UpdateTable() {
+        ArrayList<MazeImage> imageList = mazePanel.getMaze().getImages();
+        String[][] imageNames = new String[imageList.size()][1];
+        for (int i = 0; i < imageList.size(); i++) {
+            MazeImage image = imageList.get(i);
+            imageNames[i][0] = image.getImageTitle();
+        }
+        System.out.println(Arrays.deepToString(imageNames));
+        // TODO currently creating a new model everytime method is invoked
+        imagesTable.setModel(new DefaultTableModel(imageNames, new String[] {"File name"}));
+    }
+
+
+
     public void CreateGUI() {
-
-        // JTable config
-        // TODO move to its own method
-        String[] columnNames = {"File name"};
-        String[][] rowData = {
-                {"logo.png"},
-                {"start-icon.png"},
-                {"end-icon.png"}
-        };
-
-        imagesTable = new JTable(rowData, columnNames);
         JScrollPane scrollPane = new JScrollPane(imagesTable);
         scrollPane.setPreferredSize(new Dimension(250, 100));
 
@@ -202,11 +214,11 @@ public class EditPage extends JFrame implements Runnable{
      */
     public static void main(String[] args) {
         // Generate maze
-        Maze testMaze = new Maze("Maze Title", "Maze Author", 80,50);
+        Maze testMaze = new Maze("Maze Title", "Maze Author", 5,5);
         testMaze.GenerateMaze();
 
         // Create panel with maze
-        MazePanel testPanel = new MazePanel(testMaze, 12);
+        MazePanel testPanel = new MazePanel(testMaze, 64);
 
         // Create page with panel
         EditPage testPage = new EditPage(testPanel);

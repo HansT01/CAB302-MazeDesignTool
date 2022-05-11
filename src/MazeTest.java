@@ -26,12 +26,10 @@ public class MazeTest {
     }
     @Test
     public void ImageTooBig() {
-        MazeImage testImage = new MazeImage(new BufferedImage(1, 1, 1), 2, 2);
         assertThrows(Exception.class, () -> {
         });}
     @Test
     public void ImageBadIndex() {
-        MazeImage testImage = new MazeImage(new BufferedImage(1, 1, 1), 1, 1);
         assertThrows(Exception.class, () -> {
         });
     }
