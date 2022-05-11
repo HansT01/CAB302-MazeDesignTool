@@ -12,7 +12,6 @@ public class Maze {
     private final int area;
     private final Cell[][] cells;
     private ArrayList<MazeImage> images = new ArrayList<>();
-    private int imageCells = 0;
     private int startX;
     private int startY;
     private int endX;
@@ -108,6 +107,13 @@ public class Maze {
         return sizeY;
     }
 
+    /**
+     * Getter for images in maze.
+     * @return ArrayList of MazeImage.
+     */
+    public ArrayList<MazeImage> getImages() {
+        return images;
+    }
 
     /**
      * Calculates the area of the maze.
@@ -329,9 +335,9 @@ public class Maze {
         if (fitsX && fitsY) {
             image.setX(xPos);
             image.setY(yPos);
+            image.setPlaced(true);
 
             images.add(image);
-            imageCells += imageSizeX * imageSizeY;
             for (int x = xPos; x < xPos + imageSizeX; x++) {
                 for (int y = yPos; y < yPos + imageSizeY; y++) {
                     cells[x][y].setCoveredByImage(true);

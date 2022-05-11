@@ -5,23 +5,27 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class MazePanel extends JPanel {
-    private Maze maze;
-    private Cell[][] cells;
-    private int cellSize;
+    private final Maze maze;
+    private final Cell[][] cells;
+    private final int cellSize;
 
     private boolean setStartCell = true;
     private boolean drawSolution = true;
 
-    //Enable Maze Solution
-    public void toggleSolution() {
-        this.drawSolution = !drawSolution;
-        paint(getGraphics());
+    public Maze getMaze() {
+        return maze;
     }
 
-    //Draw Maze Lines
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.clearRect(0, 0, getPreferredSize().width, getPreferredSize().height);
+
+        ArrayList<MazeImage> images = maze.getImages();
+        for (MazeImage image : images) {
+            if (image.isPlaced()) {
+                g.drawImage(image.getImageData(), image.getX() * cellSize, image.getY() * cellSize, image.getSizeX() * cellSize, image.getSizeY() * cellSize, null);
+            }
+        }
 
         if (drawSolution) {
             int offset = cellSize / 2;
@@ -68,6 +72,7 @@ public class MazePanel extends JPanel {
             }
         }
     }
+
     /**
      * Constructs the maze panel.
      * @param maze The Maze object to be rendered.

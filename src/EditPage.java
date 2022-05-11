@@ -1,5 +1,14 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class EditPage extends JFrame implements Runnable{
     private final MazePanel mazePanel;
@@ -15,7 +24,9 @@ public class EditPage extends JFrame implements Runnable{
     private GridBagConstraints gbc;
     private JPanel optionsPanel;
 
-    private int paddingSize = 10;
+    final JFileChooser fc = new JFileChooser();
+
+    private int paddingSize = 5;
 
     /**
      * Constructs the edit page with the maze panel
@@ -23,16 +34,41 @@ public class EditPage extends JFrame implements Runnable{
      */
     public EditPage(MazePanel mazePanel) {
         this.mazePanel = mazePanel;
+        fc.setFileFilter(new FileNameExtensionFilter("Static image files", "jpeg", "jpg", "png"));
+        fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
+
+        importImage.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                System.out.println("Import image button clicked");
+                int returnVal = fc.showOpenDialog(EditPage.this);
+
+                // https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File file = fc.getSelectedFile();
+                    try {
+                        BufferedImage imageData = ImageIO.read(file);
+                        // MazeImage image = new MazeImage(imageData, 3, 3);
+                        // mazePanel.getMaze().PlaceImage(image, 1, 1);
+                        // mazePanel.repaint();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+
+                } else {
+                    System.out.println("Open command cancelled by user");
+                }
+            }
+        });
     }
 
     /**
-     * Creates a GridBagConstraints object with 1 grid width and height at x and y.
-     * Will generate automatic insets for padding.
+     * Creates a GridBagConstraints object for objects on the main frame
      * @param x x location of the grid bag layout
      * @param y y location of the grid bag layout
      * @return GridBagConstraints object
      */
-    private GridBagConstraints CreateGBC(int x, int y) {
+    private GridBagConstraints CreateOuterGBC(int x, int y) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = x;
         gbc.gridy = y;
@@ -40,6 +76,25 @@ public class EditPage extends JFrame implements Runnable{
         gbc.gridheight = 1;
 
         gbc.insets = new Insets((y==0) ? paddingSize: 0, (x==0) ? paddingSize: 0, paddingSize, paddingSize);
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        return gbc;
+    }
+
+    /**
+     * Creates a GridBagConstraints object for objects inside a panel
+     * @param x x location of the grid bag layout
+     * @param y y location of the grid bag layout
+     * @return GridBagConstraints object
+     */
+    private GridBagConstraints CreateInnerGBC(int x, int y) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = x;
+        gbc.gridy = y;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+
+        gbc.insets = new Insets((y!=0) ? paddingSize: 0, (x!=0) ? paddingSize: 0, 0, 0);
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         return gbc;
@@ -65,54 +120,54 @@ public class EditPage extends JFrame implements Runnable{
         optionsPanel.setLayout(new GridBagLayout());
 
         // Import image button
-        gbc = CreateGBC(0, 0);
+        gbc = CreateInnerGBC(0, 0);
         gbc.gridwidth = 2;
         optionsPanel.add(importImage, gbc);
 
         // Imported images table
-        gbc = CreateGBC(0, 1);
+        gbc = CreateInnerGBC(0, 1);
         gbc.gridwidth = 2;
         optionsPanel.add(scrollPane, gbc);
 
         // Image place button and options
-        gbc = CreateGBC(0, 2);
+        gbc = CreateInnerGBC(0, 2);
         optionsPanel.add(new Label("Image width:", 2), gbc);
-        gbc = CreateGBC(1, 2);
+        gbc = CreateInnerGBC(1, 2);
         optionsPanel.add(imagePxWidth, gbc);
-        gbc = CreateGBC(0, 3);
+        gbc = CreateInnerGBC(0, 3);
         optionsPanel.add(new Label("Image height:", 2), gbc);
-        gbc = CreateGBC(1, 3);
+        gbc = CreateInnerGBC(1, 3);
         optionsPanel.add(imagePxHeight, gbc);
-        gbc = CreateGBC(0, 4);
+        gbc = CreateInnerGBC(0, 4);
         gbc.gridwidth = 2;
         optionsPanel.add(placeImage, gbc);
 
         // Remove all images button
-        gbc = CreateGBC(0, 5);
+        gbc = CreateInnerGBC(0, 5);
         gbc.gridwidth = 2;
         optionsPanel.add(clearImages, gbc);
 
         // Generate maze button
-        gbc = CreateGBC(0, 6);
+        gbc = CreateInnerGBC(0, 6);
         gbc.gridwidth = 2;
         optionsPanel.add(generateMaze, gbc);
 
         // Toggle solution
-        gbc = CreateGBC(0, 7);
+        gbc = CreateInnerGBC(0, 7);
         gbc.gridwidth = 2;
         optionsPanel.add(toggleSolution, gbc);
 
         // Toggle randomize images
-        gbc = CreateGBC(0, 8);
+        gbc = CreateInnerGBC(0, 8);
         gbc.gridwidth = 2;
         optionsPanel.add(toggleRandomizeImages, gbc);
 
         // Main panel
         setLayout(new GridBagLayout());
-        gbc = CreateGBC(0,0);
+        gbc = CreateOuterGBC(0,0);
         gbc.gridheight = 2;
         add(mazePanel, gbc);
-        gbc = CreateGBC(1, 0);
+        gbc = CreateOuterGBC(1, 0);
         add(optionsPanel, gbc);
 
         // Resizes window to preferred dimensions

@@ -118,10 +118,8 @@ public class MazeDisplay extends JFrame implements Runnable{
                         public void actionPerformed(ActionEvent e) {
                             JToggleButton tBtn = (JToggleButton)e.getSource();
                             if (tBtn.isSelected()){
-                                mazePanel.toggleSolution();
                             }
                             else {
-                                mazePanel.toggleSolution();
                             }
                         }
                     });
@@ -136,10 +134,8 @@ public class MazeDisplay extends JFrame implements Runnable{
                         public void actionPerformed(ActionEvent e) {
                             JToggleButton tBtn = (JToggleButton)e.getSource();
                             if (tBtn.isSelected()){
-                                mazePanel.toggleSolution();
                             }
                             else {
-                                mazePanel.toggleSolution();
                             }
                         }
                     });
@@ -154,10 +150,8 @@ public class MazeDisplay extends JFrame implements Runnable{
                         public void actionPerformed(ActionEvent e) {
                             JToggleButton tBtn = (JToggleButton)e.getSource();
                             if (tBtn.isSelected()){
-                                mazePanel.toggleSolution();
                             }
                             else {
-                                mazePanel.toggleSolution();
                             }
                         }
                     });
