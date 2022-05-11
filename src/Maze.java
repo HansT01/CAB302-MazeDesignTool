@@ -11,11 +11,13 @@ public class Maze {
     private final int sizeY;
     private final int area;
     private final Cell[][] cells;
-    private ArrayList<MazeImage> images = new ArrayList<>();
     private int startX;
     private int startY;
     private int endX;
     private int endY;
+
+    private ArrayList<MazeImage> images = new ArrayList<>();
+    private MazeImage selectedImage;
 
     /**
      * Constructs and initialises a new Maze.
@@ -41,6 +43,10 @@ public class Maze {
                 cells[x][y] = new Cell(x, y, this);
             }
         }
+    }
+
+    public void setSelectedImage(MazeImage selectedImage) {
+        this.selectedImage = selectedImage;
     }
 
     /**
@@ -322,22 +328,20 @@ public class Maze {
     }
 
     /**
-     * Adds an image to images field, increments the imageCells, removes all walls under image cells
-     * @param image object of class MazeImage.
+     * Removes all walls under image cells and set image placed state.
      * @param xPos x position of image.
      * @param yPos y position of image.
      */
-    public void PlaceImage(MazeImage image, int xPos, int yPos) {
-        int imageSizeX = image.getSizeX();
-        int imageSizeY = image.getSizeY();
+    public void PlaceImage(int xPos, int yPos) {
+        int imageSizeX = selectedImage.getSizeX();
+        int imageSizeY = selectedImage.getSizeY();
         boolean fitsX = (xPos >= 0 && xPos + imageSizeX <= sizeX);
         boolean fitsY = (yPos >= 0 && yPos + imageSizeY <= sizeY);
         if (fitsX && fitsY) {
-            image.setX(xPos);
-            image.setY(yPos);
-            image.setPlaced(true);
+            selectedImage.setX(xPos);
+            selectedImage.setY(yPos);
+            selectedImage.setPlaced(true);
 
-            images.add(image);
             for (int x = xPos; x < xPos + imageSizeX; x++) {
                 for (int y = yPos; y < yPos + imageSizeY; y++) {
                     cells[x][y].setCoveredByImage(true);

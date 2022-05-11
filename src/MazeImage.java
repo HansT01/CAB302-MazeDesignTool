@@ -104,7 +104,9 @@ public class MazeImage {
             try {
                 BufferedImage imageData = ImageIO.read(file);
                 MazeImage image = new MazeImage(imageData, 3, 3);
-                testMaze.PlaceImage(image, 1, 1);
+                testMaze.getImages().add(image);
+                testMaze.setSelectedImage(image);
+                testMaze.PlaceImage(1, 1);
                 mazePanel.repaint();
             } catch (IOException ex) {
                 ex.printStackTrace();

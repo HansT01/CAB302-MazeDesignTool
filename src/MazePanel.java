@@ -12,8 +12,14 @@ public class MazePanel extends JPanel {
     private boolean setStartCell = true;
     private boolean drawSolution = true;
 
+    private boolean placingImage = false;
+
     public Maze getMaze() {
         return maze;
+    }
+
+    public void setPlacingImage(boolean placingImage) {
+        this.placingImage = placingImage;
     }
 
     public void paint(Graphics g) {
@@ -103,43 +109,53 @@ public class MazePanel extends JPanel {
      * Toggles a wall near the input x, y coordinate.
      * @param e MouseEvent click event.
      */
-    public void HandleClickEvent(MouseEvent e) {
+    private void HandleClickEvent(MouseEvent e) {
         // Round to every half cell index to determine which wall is clicked
         int x2 = (int) Math.round(2.0 * e.getX() / cellSize);
         int y2 = (int) Math.round(2.0 * e.getY() / cellSize);
 
-        boolean xSelect = (x2 % 2 == 1);
-        boolean ySelect = (y2 % 2 == 1);
-        // If a cell centre is clicked
-        if (xSelect && ySelect) {
-            if (setStartCell) {
-                maze.setStartCell(x2 / 2, y2 / 2);
-            }
-            else {
-                maze.setEndCell(x2 / 2, y2 / 2);
-            }
-            setStartCell = !setStartCell;
+        if (placingImage) {
+            int xPos = (x2 / 2 == maze.getSizeX()) ? x2 / 2 - 1 : x2 / 2;
+            int yPos = (y2 / 2 == maze.getSizeY()) ? y2 / 2 - 1 : y2 / 2;
+
+            // If x is out of bounds
+            maze.PlaceImage(xPos, yPos);
             repaint();
         }
-        // If a wall is clicked
-        else if (xSelect ^ ySelect) {
-            // If x is out of bounds
-            if (x2 / 2 == maze.getSizeX()) {
-                cells[x2 / 2 - 1][y2 / 2].ToggleWall(1);
+        else {
+            boolean xSelect = (x2 % 2 == 1);
+            boolean ySelect = (y2 % 2 == 1);
+            // If a cell centre is clicked
+            if (xSelect && ySelect) {
+                if (setStartCell) {
+                    maze.setStartCell(x2 / 2, y2 / 2);
+                }
+                else {
+                    maze.setEndCell(x2 / 2, y2 / 2);
+                }
+                setStartCell = !setStartCell;
+                repaint();
             }
-            // If y is out of bounds
-            else if (y2 / 2 == maze.getSizeY()) {
-                cells[x2 / 2][y2 / 2 - 1].ToggleWall(2);
+            // If a wall is clicked
+            else if (xSelect ^ ySelect) {
+                // If x is out of bounds
+                if (x2 / 2 == maze.getSizeX()) {
+                    cells[x2 / 2 - 1][y2 / 2].ToggleWall(1);
+                }
+                // If y is out of bounds
+                else if (y2 / 2 == maze.getSizeY()) {
+                    cells[x2 / 2][y2 / 2 - 1].ToggleWall(2);
+                }
+                // If x is selected
+                else if (xSelect) {
+                    cells[x2 / 2][y2 / 2].ToggleWall(0);
+                }
+                // If y is selected
+                else {
+                    cells[x2 / 2][y2 / 2].ToggleWall(3);
+                }
+                repaint();
             }
-            // If x is selected
-            else if (xSelect) {
-                cells[x2 / 2][y2 / 2].ToggleWall(0);
-            }
-            // If y is selected
-            else {
-                cells[x2 / 2][y2 / 2].ToggleWall(3);
-            }
-            repaint();
         }
     }
 
