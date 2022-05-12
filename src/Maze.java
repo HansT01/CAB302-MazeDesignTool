@@ -16,6 +16,8 @@ public class Maze implements Serializable {
     private int endX;
     private int endY;
 
+    private MazeImage startImage;
+    private MazeImage endImage;
     private ArrayList<MazeImage> images = new ArrayList<>();
     private MazeImage selectedImage;
 
@@ -30,6 +32,7 @@ public class Maze implements Serializable {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.dateCreated = new Date(System.currentTimeMillis());
+        this.dateLastEdited = new Date(System.currentTimeMillis());
         this.area = sizeX * sizeY;
         cells = new Cell[sizeX][sizeY];
 
@@ -43,6 +46,14 @@ public class Maze implements Serializable {
                 cells[x][y] = new Cell(x, y, this);
             }
         }
+    }
+
+    public void setStartImage(MazeImage startImage) {
+        this.startImage = startImage;
+    }
+
+    public void setEndImage(MazeImage endImage) {
+        this.endImage = endImage;
     }
 
     public void setSelectedImage(MazeImage selectedImage) {
@@ -148,6 +159,13 @@ public class Maze implements Serializable {
     public void setEndCell(int endX, int endY) {
         this.endX = endX;
         this.endY = endY;
+    }
+
+    /**
+     * Updates the date last edited field.
+     */
+    public void UpdateLastEdited() {
+        dateLastEdited = new Date(System.currentTimeMillis());
     }
 
     /**
@@ -402,8 +420,7 @@ public class Maze implements Serializable {
         int imageSizeY = mazeImage.getSizeY();
 
         // check if image fits within maze
-        if (!(xPos >= 0 && xPos + imageSizeX <= sizeX) || !(yPos >= 0 && yPos + imageSizeY <= sizeY)) {
-            System.out.println("Image does not fit inside maze");
+        if (!CheckInBounds(xPos, yPos, mazeImage)) {
             return;
         }
 
@@ -436,6 +453,29 @@ public class Maze implements Serializable {
                 cells[x][y].RemoveWall(2);
             }
         }
+    }
+
+    /**
+     * Checks if image at input x and y location remains in bounds
+     * @param xPos x position of image
+     * @param yPos y position of image
+     * @param mazeImage MazeImage object
+     * @return true if image is in bounds, false otherwise
+     */
+    public boolean CheckInBounds(int xPos, int yPos, MazeImage mazeImage) {
+        int imageSizeX = mazeImage.getSizeX();
+        int imageSizeY = mazeImage.getSizeY();
+        return (xPos >= 0 && xPos + imageSizeX <= sizeX) && (yPos >= 0 && yPos + imageSizeY <= sizeY);
+    }
+
+    /**
+     * Checks if input x and y location remains in bounds
+     * @param xPos x position of image
+     * @param yPos y position of image
+     * @return true if image is in bounds, false otherwise
+     */
+    public boolean CheckInBounds(int xPos, int yPos) {
+        return (xPos >= 0 && xPos < sizeX) && (yPos >= 0 && yPos < sizeY);
     }
 
     /**

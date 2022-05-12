@@ -15,23 +15,23 @@ import java.util.Arrays;
 
 public class EditPage extends JFrame implements Runnable {
     private final MazePanel mazePanel;
-    private JToggleButton toggleSolution = new JToggleButton("Enable maze solution", true);
-    private JToggleButton toggleRandomizeImages = new JToggleButton("Enable randomize images");
-    private JButton importImage = new JButton("Import image");
-    private JButton deleteImage = new JButton("Delete image");
-    private JToggleButton placeImage = new JToggleButton("Place image");
-    private JButton clearImages = new JButton("Clear images");
-    private JButton generateMaze = new JButton("Generate maze");
-    private JTextField imageWidth = new JTextField("1", 10);
-    private JTextField imageHeight = new JTextField("1", 10);
-    private JLabel solutionPct = new JLabel("0.00%", SwingConstants.LEFT);
-    private JLabel deadEndsPct = new JLabel("0.00%", SwingConstants.LEFT);
-    private JButton saveMaze = new JButton("Save maze");
-    private JButton restoreMaze = new JButton("Restore maze");
+    private final JToggleButton toggleSolution = new JToggleButton("Enable maze solution", true);
+    private final JToggleButton toggleRandomizeImages = new JToggleButton("Enable randomize images");
+    private final JButton importImage = new JButton("Import image");
+    private final JButton deleteImage = new JButton("Delete image");
+    private final JToggleButton placeImage = new JToggleButton("Place image");
+    private final JButton clearImages = new JButton("Clear images");
+    private final JButton generateMaze = new JButton("Generate maze");
+    private final JTextField imageWidth = new JTextField("1", 10);
+    private final JTextField imageHeight = new JTextField("1", 10);
+    private final JLabel solutionPct = new JLabel("0.00%", SwingConstants.LEFT);
+    private final JLabel deadEndsPct = new JLabel("0.00%", SwingConstants.LEFT);
+    private final JButton saveMaze = new JButton("Save maze");
+    private final JButton restoreMaze = new JButton("Restore maze");
 
     private byte[] saveState;
 
-    private JTable imagesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"File name", "Width", "Height"})) {
+    private final JTable imagesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"File name", "Width", "Height"})) {
         // make rows uneditable
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -39,12 +39,7 @@ public class EditPage extends JFrame implements Runnable {
         }
     };
 
-    private JPanel optionsPanel;
-
     final JFileChooser fc = new JFileChooser();
-
-    private int innerPaddingSize = 5;
-    private int outerPaddingSize = 20;
 
     /**
      * Constructs the edit page
@@ -235,6 +230,7 @@ public class EditPage extends JFrame implements Runnable {
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
 
+        int outerPaddingSize = 20;
         gbc.insets = new Insets((y==0) ? outerPaddingSize : 0, (x==0) ? outerPaddingSize : 0, outerPaddingSize, outerPaddingSize);
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
@@ -255,6 +251,7 @@ public class EditPage extends JFrame implements Runnable {
         gbc.gridheight = 1;
 
         gbc.fill = GridBagConstraints.BOTH;
+        int innerPaddingSize = 5;
         gbc.insets = new Insets((y!=0) ? innerPaddingSize : 0, (x!=0) ? innerPaddingSize : 0, 0, 0);
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
@@ -311,8 +308,6 @@ public class EditPage extends JFrame implements Runnable {
 
         GridBagConstraints gbc;
         int gridRow = 0;
-
-        Color clr = new Color(255, 255, 255, 40);
 
         // Import image button
         gbc = CreateInnerGBC(0, gridRow);

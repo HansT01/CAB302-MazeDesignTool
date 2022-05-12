@@ -10,8 +10,8 @@ import java.io.Serializable;
 public class MazeImage implements Serializable {
     private final ImageIcon imageData;
     private final String imageTitle;
-    private int sizeX;
-    private int sizeY;
+    private final int sizeX;
+    private final int sizeY;
     private int x;
     private int y;
     private boolean isPlaced = false;
@@ -48,27 +48,26 @@ public class MazeImage implements Serializable {
         return sizeX;
     }
 
-    public void setSizeX(int sizeX) {
-        this.sizeX = sizeX;
-    }
-
     public int getSizeY() {
         return sizeY;
-    }
-
-    public void setSizeY(int sizeY) {
-        this.sizeY = sizeY;
     }
 
     public ImageIcon getImageData() {
         return imageData;
     }
 
-    public MazeImage(String imageTitle, BufferedImage imageData, int sizeX, int sizeY) {
+    public MazeImage(String imageTitle, Image imageData, int sizeX, int sizeY) {
         this.imageTitle = imageTitle;
         this.imageData = new ImageIcon(imageData);
         this.sizeX = sizeX;
         this.sizeY = sizeY;
+    }
+
+    public MazeImage(String imageTitle, Image imageData) {
+        this.imageTitle = imageTitle;
+        this.imageData = new ImageIcon(imageData);
+        this.sizeX = 0;
+        this.sizeY = 0;
     }
 
     public static void main(String[] args) {

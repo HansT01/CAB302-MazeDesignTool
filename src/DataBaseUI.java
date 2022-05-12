@@ -1,8 +1,5 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
@@ -116,7 +113,7 @@ public class DataBaseUI extends JFrame implements Runnable {
      */
     void buttonSetup() {
         b1.addActionListener(e -> {
-            SwingUtilities.invokeLater(new CreateDialogue());
+            SwingUtilities.invokeLater(new CreatePage());
             dispose();
         });
         b2.addActionListener(e -> {

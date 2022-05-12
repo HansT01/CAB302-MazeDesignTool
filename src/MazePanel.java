@@ -136,6 +136,7 @@ public class MazePanel extends JPanel {
             boolean xSelect = (x2 % 2 == 1);
             boolean ySelect = (y2 % 2 == 1);
             // If a cell centre is clicked
+            /*
             if (xSelect && ySelect) {
                 if (setStartCell) {
                     maze.setStartCell(x2 / 2, y2 / 2);
@@ -146,8 +147,9 @@ public class MazePanel extends JPanel {
                 setStartCell = !setStartCell;
                 repaint();
             }
+             */
             // If a wall is clicked
-            else if (xSelect ^ ySelect) {
+            if (xSelect ^ ySelect) {
                 // If x is out of bounds
                 if (x2 / 2 == maze.getSizeX()) {
                     cells[x2 / 2 - 1][y2 / 2].ToggleWall(1);
