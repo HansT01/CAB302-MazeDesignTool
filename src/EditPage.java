@@ -15,7 +15,7 @@ import java.util.Arrays;
 
 public class EditPage extends JFrame implements Runnable{
     private final MazePanel mazePanel;
-    private JToggleButton toggleSolution = new JToggleButton("Enable maze solution");
+    private JToggleButton toggleSolution = new JToggleButton("Enable maze solution", true);
     private JToggleButton toggleRandomizeImages = new JToggleButton("Enable randomize images");
     private JButton importImage = new JButton("Import image");
     private JButton deleteImage = new JButton("Delete image");
@@ -24,6 +24,8 @@ public class EditPage extends JFrame implements Runnable{
     private JButton generateMaze = new JButton("Generate maze");
     private JTextField imageWidth = new JTextField("1", 10);
     private JTextField imageHeight = new JTextField("1", 10);
+    private JLabel solutionPct = new JLabel("0.00%", SwingConstants.LEFT);
+    private JLabel deadEndsPct = new JLabel("0.00%", SwingConstants.LEFT);
 
     private JTable imagesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"File name", "Width", "Height"})) {
         // make rows uneditable
@@ -33,12 +35,12 @@ public class EditPage extends JFrame implements Runnable{
         }
     };
 
-    private GridBagConstraints gbc;
     private JPanel optionsPanel;
 
     final JFileChooser fc = new JFileChooser();
 
-    private int paddingSize = 5;
+    private int innerPaddingSize = 5;
+    private int outerPaddingSize = 20;
 
     /**
      * Constructs the edit page with the maze panel
@@ -50,6 +52,9 @@ public class EditPage extends JFrame implements Runnable{
 
         fc.setFileFilter(new FileNameExtensionFilter("Static image files", "jpeg", "jpg", "png"));
         fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
+
+        UpdateSolutionMetrics();
+
 
         importImage.addMouseListener(new MouseAdapter() {
             @Override
@@ -93,6 +98,7 @@ public class EditPage extends JFrame implements Runnable{
             @Override
             public void mousePressed(MouseEvent e) {
                 RegenerateMaze();
+                UpdateSolutionMetrics();
             }
         });
 
@@ -103,6 +109,22 @@ public class EditPage extends JFrame implements Runnable{
                 mazePanel.repaint();
             }
         });
+
+        mazePanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                UpdateSolutionMetrics();
+            }
+        });
+    }
+
+    /**
+     * Updates the labels for the maze metrics
+     */
+    private void UpdateSolutionMetrics() {
+        Maze maze = mazePanel.getMaze();
+        solutionPct.setText(String.format("%.2f%%%n", maze.SolutionPct(maze.Solve())*100));
+        deadEndsPct.setText(String.format("%.2f%%%n", maze.DeadEndPct()*100));
     }
 
     /**
@@ -115,13 +137,14 @@ public class EditPage extends JFrame implements Runnable{
             maze.PlaceImagesRandom(50);
         }
         maze.GenerateMaze();
+        maze.Solve();
         mazePanel.repaint();
     }
 
     private void ClearImages() {
         ArrayList<MazeImage> imagesList = mazePanel.getMaze().getImages();
         for (MazeImage image : imagesList) {
-            image.setPlaced(false);
+            mazePanel.getMaze().RemoveImage(image);
         }
         mazePanel.repaint();
     }
@@ -161,7 +184,7 @@ public class EditPage extends JFrame implements Runnable{
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
 
-        gbc.insets = new Insets((y==0) ? paddingSize: 0, (x==0) ? paddingSize: 0, paddingSize, paddingSize);
+        gbc.insets = new Insets((y==0) ? outerPaddingSize : 0, (x==0) ? outerPaddingSize : 0, outerPaddingSize, outerPaddingSize);
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         return gbc;
@@ -180,7 +203,8 @@ public class EditPage extends JFrame implements Runnable{
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
 
-        gbc.insets = new Insets((y!=0) ? paddingSize: 0, (x!=0) ? paddingSize: 0, 0, 0);
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets((y!=0) ? innerPaddingSize : 0, (x!=0) ? innerPaddingSize : 0, 0, 0);
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         return gbc;
@@ -223,80 +247,157 @@ public class EditPage extends JFrame implements Runnable{
         return null;
     }
 
-    public void CreateGUI() {
+    private JPanel CreateImagesPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder("Maze images editor"),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5))
+        );
+
         JScrollPane scrollPane = new JScrollPane(imagesTable);
         scrollPane.setPreferredSize(new Dimension(250, 100));
 
-        // Options panel
-        optionsPanel = new JPanel();
-        optionsPanel.setLayout(new GridBagLayout());
-
+        GridBagConstraints gbc;
         int gridRow = 0;
+
+        Color clr = new Color(255, 255, 255, 40);
 
         // Import image button
         gbc = CreateInnerGBC(0, gridRow);
         gbc.gridwidth = 1;
-        optionsPanel.add(importImage, gbc);
+        panel.add(importImage, gbc);
 
         // Delete image button
         gbc = CreateInnerGBC(1, gridRow++);
         gbc.gridwidth = 1;
-        optionsPanel.add(deleteImage, gbc);
+        panel.add(deleteImage, gbc);
 
         // Imported images table
         gbc = CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
-        optionsPanel.add(scrollPane, gbc);
+        panel.add(scrollPane, gbc);
 
         // Place image buttons and options
         gbc = CreateInnerGBC(0, gridRow);
-        optionsPanel.add(new Label("Image width:", 2), gbc);
+        panel.add(new Label("Image width:", Label.RIGHT), gbc);
         gbc = CreateInnerGBC(1, gridRow++);
-        optionsPanel.add(imageWidth, gbc);
+        panel.add(imageWidth, gbc);
         gbc = CreateInnerGBC(0, gridRow);
-        optionsPanel.add(new Label("Image height:", 2), gbc);
+        panel.add(new Label("Image height:", Label.RIGHT), gbc);
         gbc = CreateInnerGBC(1, gridRow++);
-        optionsPanel.add(imageHeight, gbc);
+        panel.add(imageHeight, gbc);
         gbc = CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
-        optionsPanel.add(placeImage, gbc);
+        panel.add(placeImage, gbc);
 
         // Clear all images button
-        // This button will set all images to not isPlaced
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = CreateInnerGBC(0, gridRow);
         gbc.gridwidth = 2;
-        optionsPanel.add(clearImages, gbc);
+        panel.add(clearImages, gbc);
+
+        return panel;
+    }
+
+    private JPanel CreateGeneratePanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder("Maze options"),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5))
+        );
+
+        GridBagConstraints gbc;
+        int gridRow = 0;
 
         // Generate maze button
         gbc = CreateInnerGBC(0, gridRow++);
-        gbc.gridwidth = 2;
-        optionsPanel.add(generateMaze, gbc);
-
-        // Toggle solution
-        gbc = CreateInnerGBC(0, gridRow++);
-        gbc.gridwidth = 2;
-        optionsPanel.add(toggleSolution, gbc);
+        panel.add(generateMaze, gbc);
 
         // Toggle randomize images
+        gbc = CreateInnerGBC(0, gridRow);
+        panel.add(toggleRandomizeImages, gbc);
+
+        return panel;
+    }
+
+    private JPanel CreateSolutionPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder("Solution options"),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5))
+        );
+
+        GridBagConstraints gbc;
+        int gridRow = 0;
+
+        // toggle solution
         gbc = CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
-        optionsPanel.add(toggleRandomizeImages, gbc);
+        panel.add(toggleSolution, gbc);
 
-        // Main panel
+        // solution percentage
+        gbc = CreateInnerGBC(0, gridRow);
+        gbc.weightx = 0;
+        panel.add(new JLabel("Solution percentage: " , SwingConstants.LEFT), gbc);
+        gbc = CreateInnerGBC(1, gridRow++);
+        panel.add(solutionPct, gbc);
+
+        // solution percentage
+        gbc = CreateInnerGBC(0, gridRow);
+        gbc.weightx = 0;
+        panel.add(new JLabel("Dead ends: ", SwingConstants.LEFT), gbc);
+        gbc = CreateInnerGBC(1, gridRow);
+        panel.add(deadEndsPct, gbc);
+
+        return panel;
+    }
+
+    private JPanel CreateOptionsPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+
+        GridBagConstraints gbc;
+        int gridRow = 0;
+
+        gbc = CreateInnerGBC(0, gridRow++);
+        gbc.gridwidth = 1;
+        panel.add(CreateImagesPanel(), gbc);
+
+        gbc = CreateInnerGBC(0, gridRow++);
+        gbc.gridwidth = 1;
+        panel.add(CreateGeneratePanel(), gbc);
+
+        gbc = CreateInnerGBC(0, gridRow);
+        gbc.gridwidth = 1;
+        panel.add(CreateSolutionPanel(), gbc);
+
+        return panel;
+    }
+
+    public void CreateGUI() {
         setLayout(new GridBagLayout());
-        gbc = CreateOuterGBC(0,0);
-        gbc.gridheight = 2;
-        add(mazePanel, gbc);
-        gbc = CreateOuterGBC(1, 0);
-        add(optionsPanel, gbc);
+        GridBagConstraints gbc;
+        int gridRow = 0;
 
-        // Resizes window to preferred dimensions
+        // maze panel
+        gbc = CreateOuterGBC(0, gridRow);
+        gbc.anchor = GridBagConstraints.EAST;
+        add(mazePanel, gbc);
+
+        // options panel
+        gbc = CreateOuterGBC(1, gridRow);
+        gbc.anchor = GridBagConstraints.WEST;
+        add(CreateOptionsPanel(), gbc);
+
+        // resizes window to preferred dimensions
         pack();
 
-        // Centre to screen
+        // centre to screen
         setLocationRelativeTo(null);
 
-        // Set defaults
+        // set defaults
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }

@@ -10,7 +10,7 @@ public class MazePanel extends JPanel {
     private final int cellSize;
 
     private boolean setStartCell = true;
-    private boolean drawSolution = false;
+    private boolean drawSolution = true;
 
     private boolean placingImage = false;
 
@@ -114,7 +114,6 @@ public class MazePanel extends JPanel {
      * @param e MouseEvent click event.
      */
     private void HandleClickEvent(MouseEvent e) {
-
         if (placingImage) {
             int x = e.getX() / cellSize;
             int y = e.getY() / cellSize;

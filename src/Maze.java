@@ -160,6 +160,17 @@ public class Maze {
         }
     }
 
+    public void RemoveImage(MazeImage image) {
+        image.setPlaced(false);
+        int oldX = image.getX();
+        int oldY = image.getY();
+        for (int x = oldX; x < oldX + image.getSizeX(); x++) {
+            for (int y = oldY; y < oldY + image.getSizeY(); y++) {
+                cells[x][y].setCoveredByImage(false);
+            }
+        }
+    }
+
     /**
      * Places all images in image list randomly on the maze until no images overlap
      * @return false if no non-overlapping placements were found.
@@ -167,14 +178,7 @@ public class Maze {
     public boolean PlaceImagesRandom(int iterations) {
         // unset placed images and cells covered by image
         for (MazeImage image : images) {
-            image.setPlaced(false);
-            int oldX = image.getX();
-            int oldY = image.getY();
-            for (int x = oldX; x < oldX + image.getSizeX(); x++) {
-                for (int y = oldY; y < oldY + image.getSizeY(); y++) {
-                    cells[x][y].setCoveredByImage(false);
-                }
-            }
+            RemoveImage(image);
         }
         Random r = new Random();
 
@@ -402,15 +406,9 @@ public class Maze {
             return;
         }
 
-        // if image is already placed, unset covered by image
+        // if image is already placed, remove it
         if (mazeImage.isPlaced()) {
-            int oldX = mazeImage.getX();
-            int oldY = mazeImage.getY();
-            for (int x = oldX; x < oldX + imageSizeX; x++) {
-                for (int y = oldY; y < oldY + imageSizeY; y++) {
-                    cells[x][y].setCoveredByImage(false);
-                }
-            }
+            RemoveImage(mazeImage);
         }
 
         mazeImage.setX(xPos);
@@ -478,7 +476,6 @@ public class Maze {
 
     /**
      * Calculates the percentage of cells in maze covered by a solution.
-     * @param solution Path solution.
      * @return Percentage of cells in maze covered by a solution.
      */
     public double SolutionPct(ArrayList<CellNode> solution) {
@@ -516,9 +513,6 @@ public class Maze {
 
         testMaze.Print();
         System.out.println();
-
-        // MazeImage testImage = new MazeImage(new BufferedImage(0, 0, 0), 3, 3);
-        // testMaze.PlaceImage(testImage, 2, 2);
 
         startTime = System.nanoTime();
         testMaze.GenerateMaze();
