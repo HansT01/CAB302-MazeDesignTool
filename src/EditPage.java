@@ -2,7 +2,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -23,7 +22,13 @@ public class EditPage extends JFrame implements Runnable{
     private JTextField imageWidth = new JTextField(10);
     private JTextField imageHeight = new JTextField(10);
 
-    private JTable imagesTable = new JTable(new DefaultTableModel());
+    private JTable imagesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"File name", "Width", "Height"})) {
+        // make rows uneditable
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
 
     private GridBagConstraints gbc;
     private JPanel optionsPanel;
@@ -121,17 +126,26 @@ public class EditPage extends JFrame implements Runnable{
     }
 
     public void UpdateTable() {
-        ArrayList<MazeImage> imageList = mazePanel.getMaze().getImages();
-        String[][] imageNames = new String[imageList.size()][1];
-        for (int i = 0; i < imageList.size(); i++) {
-            MazeImage image = imageList.get(i);
-            imageNames[i][0] = image.getImageTitle();
-        }
-        System.out.println(Arrays.deepToString(imageNames));
-        // TODO currently creating a new model everytime method is invoked
-        imagesTable.setModel(new DefaultTableModel(imageNames, new String[] {"File name"}));
-    }
+        // get current model
+        DefaultTableModel tm = (DefaultTableModel) imagesTable.getModel();
+        tm.setRowCount(0);
 
+        // create new data array
+        ArrayList<MazeImage> imageList = mazePanel.getMaze().getImages();
+        for (int i = 0; i < imageList.size(); i++) {
+            String[] data = new String[3];
+            MazeImage image = imageList.get(i);
+            data[0] = image.getImageTitle();
+            data[1] = String.format("%s", image.getSizeX());
+            data[2] = String.format("%s", image.getSizeY());
+            System.out.println(Arrays.deepToString(data));
+            tm.addRow(data);
+        }
+
+        // update table model
+        imagesTable.setModel(tm);
+        tm.fireTableDataChanged();
+    }
 
 
     public void CreateGUI() {
