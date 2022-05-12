@@ -1,6 +1,4 @@
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 
 public class Maze implements Serializable {
@@ -503,6 +501,32 @@ public class Maze implements Serializable {
             }
         }
         return 1.0 * deadEndCount / area;
+    }
+
+    /**
+     * Serializes a maze into a byte array
+     * @param maze Input maze object
+     * @return byte array
+     * @throws IOException
+     */
+    public static byte[] MazeToByteArray(Maze maze) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(maze);
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    /**
+     * Deserializes a byte array into a maze object
+     * @param byteArr Input byte array
+     * @return Maze object
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public static Maze ByteArrayToMaze(byte[] byteArr) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArr);
+        ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+        return (Maze) objectInputStream.readObject();
     }
 
     public static void main(String[] args) {

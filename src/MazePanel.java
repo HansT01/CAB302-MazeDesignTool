@@ -5,8 +5,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class MazePanel extends JPanel {
-    private final Maze maze;
-    private final Cell[][] cells;
+    private Maze maze;
     private final int cellSize;
 
     private boolean setStartCell = true;
@@ -22,11 +21,16 @@ public class MazePanel extends JPanel {
         return maze;
     }
 
+    public void setMaze(Maze maze) {
+        this.maze = maze;
+    }
+
     public void setPlacingImage(boolean placingImage) {
         this.placingImage = placingImage;
     }
 
     public void paint(Graphics g) {
+        Cell[][] cells = maze.getCells();
         Graphics2D g2d = (Graphics2D) g;
         g2d.clearRect(0, 0, getPreferredSize().width, getPreferredSize().height);
 
@@ -91,7 +95,6 @@ public class MazePanel extends JPanel {
     public MazePanel(Maze maze, int cellSize) {
         super();
         this.maze = maze;
-        this.cells = maze.getCells();
         this.cellSize = cellSize;
 
         setPreferredSize(new Dimension(maze.getSizeX()*cellSize + 1, maze.getSizeY()*cellSize + 1));
@@ -114,6 +117,7 @@ public class MazePanel extends JPanel {
      * @param e MouseEvent click event.
      */
     private void HandleClickEvent(MouseEvent e) {
+        Cell[][] cells = maze.getCells();
         if (placingImage) {
             int x = e.getX() / cellSize;
             int y = e.getY() / cellSize;

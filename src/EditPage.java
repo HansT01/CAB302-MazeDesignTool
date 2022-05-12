@@ -29,6 +29,8 @@ public class EditPage extends JFrame implements Runnable {
     private JButton saveMaze = new JButton("Save maze");
     private JButton restoreMaze = new JButton("Restore maze");
 
+    private byte[] saveState;
+
     private JTable imagesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"File name", "Width", "Height"})) {
         // make rows uneditable
         @Override
@@ -45,18 +47,20 @@ public class EditPage extends JFrame implements Runnable {
     private int outerPaddingSize = 20;
 
     /**
-     * Constructs the edit page with the maze panel
-     * @param mazePanel Maze panel with maze object
+     * Constructs the edit page
+     * @param maze maze object
+     * @param cellSize size of each cell
      */
-    public EditPage(MazePanel mazePanel) {
-        this.mazePanel = mazePanel;
-        UpdateTable();
-
-        fc.setFileFilter(new FileNameExtensionFilter("Static image files", "jpeg", "jpg", "png"));
+    public EditPage(Maze maze, int cellSize) throws IOException {
+        fc.setFileFilter(new FileNameExtensionFilter("Image files", "jpeg", "jpg", "png", "gif"));
         fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
 
-        UpdateSolutionMetrics();
+        mazePanel = new MazePanel(maze, cellSize);
+        saveState = Maze.MazeToByteArray(maze);
+        UpdateTable();
 
+
+        UpdateSolutionMetrics();
 
         importImage.addMouseListener(new MouseAdapter() {
             @Override
@@ -118,6 +122,30 @@ public class EditPage extends JFrame implements Runnable {
                 UpdateSolutionMetrics();
             }
         });
+
+        saveMaze.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                try {
+                    SaveMaze();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        restoreMaze.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                try {
+                    RestoreMaze();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                } catch (ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
@@ -171,6 +199,27 @@ public class EditPage extends JFrame implements Runnable {
         } else {
             System.out.println("Open command cancelled by user");
         }
+    }
+
+    /**
+     * Updates maze saveState and database row
+     * @throws IOException
+     */
+    private void SaveMaze() throws IOException {
+        saveState = Maze.MazeToByteArray(mazePanel.getMaze());
+        // update database row
+    }
+
+    /**
+     * Restores maze object to save state
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    private void RestoreMaze() throws IOException, ClassNotFoundException {
+        mazePanel.setMaze(Maze.ByteArrayToMaze(saveState));
+        mazePanel.repaint();
+        UpdateTable();
+        UpdateSolutionMetrics();
     }
 
     /**
@@ -438,16 +487,13 @@ public class EditPage extends JFrame implements Runnable {
     /**
      * Main test method for testing this edit page
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // Generate maze
-        Maze testMaze = new Maze("Maze Title", "Maze Author", 12,12);
+        Maze testMaze = new Maze("Maze Title", "Maze Author", 80,80);
         testMaze.GenerateMaze();
 
-        // Create panel with maze
-        MazePanel testPanel = new MazePanel(testMaze, 32);
-
         // Create page with panel
-        EditPage testPage = new EditPage(testPanel);
+        EditPage testPage = new EditPage(testMaze, 8);
 
         // No idea what runnable is for, but here it is!
         SwingUtilities.invokeLater(testPage);

@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 
 /**
  * Constructs window for viewing and interacting with mazes stored in database
@@ -122,9 +123,12 @@ public class DataBaseUI extends JFrame implements Runnable {
             // Create maze panel - This will later implement parameters from the database
             Maze testMaze = new Maze("Maze Title", "Maze Author", 80,50);
             testMaze.GenerateMaze();
-            MazePanel testPanel = new MazePanel(testMaze, 12);
 
-            SwingUtilities.invokeLater(new EditPage(testPanel));
+            try {
+                SwingUtilities.invokeLater(new EditPage(testMaze, 12));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         });
         b3.addActionListener(e -> System.out.println("get pranked nerd"));
     }

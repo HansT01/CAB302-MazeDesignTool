@@ -7,6 +7,7 @@ public class Cell implements Serializable {
     private final Maze parentMaze;
     private final int x;
     private final int y;
+
     /**
      * The status of the walls of this cell.
      * 0 - North, 1 - East, 2 - South, 3 - West.

@@ -113,18 +113,11 @@ public class MazeTest {
         assert (testMaze.DeadEndPct() == 0.5) : "Dead end percentage " + testMaze.DeadEndPct() + " does not match 0.5";
     }
     @Test
-    public void SerializeMaze() throws IOException, ClassNotFoundException {
+    public void SerializeAndDeserializeMaze() throws IOException, ClassNotFoundException {
         testMaze.GenerateMaze();
+        Maze testMaze2 = Maze.ByteArrayToMaze(Maze.MazeToByteArray(testMaze));
 
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-        objectOutputStream.writeObject(testMaze);
-        byte[] testMazeAsBytes = byteArrayOutputStream.toByteArray();
-
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(testMazeAsBytes);
-        ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-        Maze testMaze2 = (Maze) objectInputStream.readObject();
-
+        assert (testMaze != testMaze2) : "Maze objects should not have the same reference";
         assert (Objects.equals(testMaze.getTitle(), testMaze2.getTitle())) : testMaze2.getTitle() + " does not match " + testMaze.getTitle();
         assert (Objects.equals(testMaze.getAuthor(), testMaze2.getAuthor())) : testMaze2.getAuthor() + " does not match " + testMaze.getAuthor();
         assert (testMaze.getCells()[0][0] != testMaze2.getCells()[0][0]) : "Cell objects have the same reference";
