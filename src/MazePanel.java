@@ -33,7 +33,7 @@ public class MazePanel extends JPanel {
         ArrayList<MazeImage> images = maze.getImages();
         for (MazeImage image : images) {
             if (image.isPlaced()) {
-                g.drawImage(image.getImageData(), image.getX() * cellSize, image.getY() * cellSize, image.getSizeX() * cellSize, image.getSizeY() * cellSize, null);
+                g.drawImage(image.getImageData().getImage(), image.getX() * cellSize, image.getY() * cellSize, image.getSizeX() * cellSize, image.getSizeY() * cellSize, null);
             }
         }
 

@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class EditPage extends JFrame implements Runnable{
+public class EditPage extends JFrame implements Runnable {
     private final MazePanel mazePanel;
     private JToggleButton toggleSolution = new JToggleButton("Enable maze solution", true);
     private JToggleButton toggleRandomizeImages = new JToggleButton("Enable randomize images");
@@ -26,6 +26,8 @@ public class EditPage extends JFrame implements Runnable{
     private JTextField imageHeight = new JTextField("1", 10);
     private JLabel solutionPct = new JLabel("0.00%", SwingConstants.LEFT);
     private JLabel deadEndsPct = new JLabel("0.00%", SwingConstants.LEFT);
+    private JButton saveMaze = new JButton("Save maze");
+    private JButton restoreMaze = new JButton("Restore maze");
 
     private JTable imagesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"File name", "Width", "Height"})) {
         // make rows uneditable
@@ -354,6 +356,28 @@ public class EditPage extends JFrame implements Runnable{
         return panel;
     }
 
+    private JPanel CreateSavePanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder("Save options"),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5))
+        );
+
+        GridBagConstraints gbc;
+        int gridRow = 0;
+
+        gbc = CreateInnerGBC(0, gridRow++);
+        gbc.gridwidth = 1;
+        panel.add(saveMaze, gbc);
+
+        gbc = CreateInnerGBC(0, gridRow);
+        gbc.gridwidth = 1;
+        panel.add(restoreMaze, gbc);
+
+        return panel;
+    }
+
     private JPanel CreateOptionsPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -369,9 +393,13 @@ public class EditPage extends JFrame implements Runnable{
         gbc.gridwidth = 1;
         panel.add(CreateGeneratePanel(), gbc);
 
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 1;
         panel.add(CreateSolutionPanel(), gbc);
+
+        gbc = CreateInnerGBC(0, gridRow);
+        gbc.gridwidth = 1;
+        panel.add(CreateSavePanel(), gbc);
 
         return panel;
     }

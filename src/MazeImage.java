@@ -5,9 +5,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 
-public class MazeImage {
-    private final BufferedImage imageData;
+public class MazeImage implements Serializable {
+    private final ImageIcon imageData;
     private final String imageTitle;
     private int sizeX;
     private int sizeY;
@@ -59,14 +60,13 @@ public class MazeImage {
         this.sizeY = sizeY;
     }
 
-    public BufferedImage getImageData() {
+    public ImageIcon getImageData() {
         return imageData;
     }
 
-    public MazeImage(String imageTitle, BufferedImage imageData, int sizeX, int sizeY)
-    {
+    public MazeImage(String imageTitle, BufferedImage imageData, int sizeX, int sizeY) {
         this.imageTitle = imageTitle;
-        this.imageData = imageData;
+        this.imageData = new ImageIcon(imageData);
         this.sizeX = sizeX;
         this.sizeY = sizeY;
     }

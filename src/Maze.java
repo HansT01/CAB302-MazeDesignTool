@@ -1,6 +1,9 @@
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.*;
 
-public class Maze {
+public class Maze implements Serializable {
     private final String title;
     private final String author;
     private final Date dateCreated;

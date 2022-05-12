@@ -1,6 +1,8 @@
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Cell {
+public class Cell implements Serializable {
     /** The maze that is containing this cell */
     private final Maze parentMaze;
     private final int x;
