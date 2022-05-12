@@ -38,6 +38,9 @@ public class CreatePage extends JFrame implements Runnable {
 
     final JFileChooser fc = new JFileChooser();
 
+    /**
+     * Constructor for the CreatePage
+     */
     public CreatePage() {
         fc.setFileFilter(new FileNameExtensionFilter("Image files", "jpeg", "jpg", "png", "gif"));
         fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
@@ -68,6 +71,11 @@ public class CreatePage extends JFrame implements Runnable {
         });
     }
 
+    /**
+     * Creates maze with the input fields. If any input fields are invalid, an InvalidInputException will be raised.
+     * @throws IOException
+     * @throws InvalidInputException
+     */
     private void CreateMaze() throws IOException, InvalidInputException {
         if (mazeTitle.getText().isEmpty()) {
             throw new InvalidInputException("Please input a title", this);
@@ -104,10 +112,14 @@ public class CreatePage extends JFrame implements Runnable {
         catch (Exception e) {
             throw new InvalidInputException("Please input a number for start and end locations");
         }
-
         if (!maze.CheckInBounds(startX, startY) || !maze.CheckInBounds(endX, endY)) {
             throw new InvalidInputException("Start and end locations must be within bounds");
         }
+        maze.setStartCell(startX, startY);
+        maze.setEndCell(endX, endY);
+
+        System.out.println(startX + " " + startY);
+        System.out.println(endX + " " + endY);
 
         MazeImage startMazeImage;
         MazeImage endMazeImage;
@@ -126,7 +138,10 @@ public class CreatePage extends JFrame implements Runnable {
             if (!maze.CheckInBounds(startX, startY, startMazeImage)) {
                 throw new InvalidInputException("Start image is out of bounds");
             }
+            startMazeImage.setX(startX);
+            startMazeImage.setY(startY);
             maze.setStartImage(startMazeImage);
+            maze.PlaceImage(startX, startY, startMazeImage);
         }
         if (endImage != null) {
             int endImageWidth;
@@ -140,10 +155,13 @@ public class CreatePage extends JFrame implements Runnable {
             }
 
             endMazeImage = new MazeImage(endImage.getImageTitle(), endImage.getImageData().getImage(), endImageWidth, endImageHeight);
-            if (!maze.CheckInBounds(startX, startY, endMazeImage)) {
+            if (!maze.CheckInBounds(endX, endY, endMazeImage)) {
                 throw new InvalidInputException("Start image is out of bounds");
             }
+            endMazeImage.setX(endX);
+            endMazeImage.setY(endY);
             maze.setEndImage(endMazeImage);
+            maze.PlaceImage(endX, endY, endMazeImage);
         }
 
         EditPage editPage = new EditPage(maze, cellSize);
@@ -151,6 +169,9 @@ public class CreatePage extends JFrame implements Runnable {
         dispose();
     }
 
+    /**
+     * Updates start and end labels to image titles (or otherwise)
+     */
     private void UpdateLabels() {
         if (startImage != null) {
             startImageLabel.setText(startImage.getImageTitle());
@@ -167,6 +188,10 @@ public class CreatePage extends JFrame implements Runnable {
         }
     }
 
+    /**
+     * Opens a dialogue for the user to import an image
+     * @return MazeImage object with no size properties
+     */
     private MazeImage ImportImage() {
         int returnVal = fc.showOpenDialog(this);
 
@@ -186,6 +211,10 @@ public class CreatePage extends JFrame implements Runnable {
         return null;
     }
 
+    /**
+     * Creates panel for generic maze fields
+     * @return JPanel object
+     */
     private JPanel CreateMazePanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -229,6 +258,10 @@ public class CreatePage extends JFrame implements Runnable {
         return panel;
     }
 
+    /**
+     * Creates panel for start-end properties
+     * @return JPanel object
+     */
     private JPanel CreateStartEndPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -281,6 +314,10 @@ public class CreatePage extends JFrame implements Runnable {
         return panel;
     }
 
+    /**
+     * Creates panel for the start image options
+     * @return JPanel object
+     */
     private JPanel CreateStartImagePanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -319,6 +356,10 @@ public class CreatePage extends JFrame implements Runnable {
         return panel;
     }
 
+    /**
+     * Creates panel for end image options
+     * @return JPanel object
+     */
     private JPanel CreateEndImagePanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -357,6 +398,10 @@ public class CreatePage extends JFrame implements Runnable {
         return panel;
     }
 
+    /**
+     * Creates the main panel by calling other various children panels
+     * @return JPanel object
+     */
     private JPanel CreateMainPanel() {
         JPanel panel = new JPanel();
         panel.setPreferredSize(new Dimension(500,630));
@@ -380,12 +425,14 @@ public class CreatePage extends JFrame implements Runnable {
         panel.add(CreateEndImagePanel(), gbc);
 
         // create maze button
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = CreateInnerGBC(0, gridRow);
         panel.add(createMaze, gbc);
         return panel;
     }
 
-
+    /**
+     * Main GUI method that will construct the main frame from the CreateMainPanel
+     */
     private void CreateGUI() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc;

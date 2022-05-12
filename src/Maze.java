@@ -18,7 +18,7 @@ public class Maze implements Serializable {
 
     private MazeImage startImage;
     private MazeImage endImage;
-    private ArrayList<MazeImage> images = new ArrayList<>();
+    private final ArrayList<MazeImage> images = new ArrayList<>();
     private MazeImage selectedImage;
 
     /**
@@ -36,6 +36,8 @@ public class Maze implements Serializable {
         this.area = sizeX * sizeY;
         cells = new Cell[sizeX][sizeY];
 
+        // temporary defaults
+        // should be overridden with the setStart and setEnd methods
         this.startX = 0;
         this.startY = 0;
         this.endX = sizeX - 1;
@@ -46,6 +48,14 @@ public class Maze implements Serializable {
                 cells[x][y] = new Cell(x, y, this);
             }
         }
+    }
+
+    public MazeImage getStartImage() {
+        return startImage;
+    }
+
+    public MazeImage getEndImage() {
+        return endImage;
     }
 
     public void setStartImage(MazeImage startImage) {
@@ -245,9 +255,9 @@ public class Maze implements Serializable {
             else if none is found
                 S.pop()
          */
-
-        // Failing precondition
         Random r = new Random();
+        if (startImage != null) RemoveImage(startImage);
+        if (endImage != null) RemoveImage(endImage);
 
         // let S be a stack
         // let start be the starting cell
@@ -289,6 +299,8 @@ public class Maze implements Serializable {
                 cellStack.pop();
             }
         }
+        if (startImage != null) PlaceImage(startX, startY, startImage);
+        if (endImage != null) PlaceImage(endX, endY, endImage);
     }
 
     /**
@@ -325,7 +337,7 @@ public class Maze implements Serializable {
 
         // let P be a priority queue sorted by cost
         // let M be an unordered map to mark visited cells
-        HashMap<String, Boolean> visitedNodes = new HashMap<>();
+        HashSet<String> visitedNodes = new HashSet<>();
         PriorityQueue<CellNode> priorityQueue = new PriorityQueue<>();
 
         // let start be the start cell
@@ -345,7 +357,7 @@ public class Maze implements Serializable {
             CellNode currentNode = priorityQueue.poll();
 
             // M(n) = true
-            visitedNodes.put(currentNode.toString(), true);
+            visitedNodes.add(currentNode.toString());
 
             // if c == end
             if (currentNode.getCell() == endCell) {
@@ -366,7 +378,7 @@ public class Maze implements Serializable {
                 neighbourNodes.add(new CellNode(neighbourCell));
             }
             for (CellNode neighbourNode : neighbourNodes) {
-                if (!visitedNodes.containsKey(neighbourNode.toString())) {
+                if (!visitedNodes.contains(neighbourNode.toString())) {
                     // pathCost = c.pathCost + 1
                     int pathCost = currentNode.getPathCost() + 1;
 
@@ -390,18 +402,41 @@ public class Maze implements Serializable {
 
     /**
      * Checks for image collisions
-     * @return
+     * @return true if there are image collisions
      */
     public boolean CheckImageCollisions() {
         HashSet<String> exists = new HashSet<>();
-        for (int i = 0; i < images.size(); i++) {
-            MazeImage image = images.get(i);
+        if (startImage != null) {
+            MazeImage image = startImage;
             for (int x = image.getX(); x < image.getX() + image.getSizeX(); x++) {
                 for (int y = image.getY(); y < image.getY() + image.getSizeY(); y++) {
                     String key = String.format("%s %s", x, y);
                     if (exists.contains(key)) {
                         return true;
-                    };
+                    }
+                    exists.add(key);
+                }
+            }
+        }
+        if (endImage != null) {
+            MazeImage image = endImage;
+            for (int x = image.getX(); x < image.getX() + image.getSizeX(); x++) {
+                for (int y = image.getY(); y < image.getY() + image.getSizeY(); y++) {
+                    String key = String.format("%s %s", x, y);
+                    if (exists.contains(key)) {
+                        return true;
+                    }
+                    exists.add(key);
+                }
+            }
+        }
+        for (MazeImage image : images) {
+            for (int x = image.getX(); x < image.getX() + image.getSizeX(); x++) {
+                for (int y = image.getY(); y < image.getY() + image.getSizeY(); y++) {
+                    String key = String.format("%s %s", x, y);
+                    if (exists.contains(key)) {
+                        return true;
+                    }
                     exists.add(key);
                 }
             }

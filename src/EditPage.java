@@ -202,7 +202,8 @@ public class EditPage extends JFrame implements Runnable {
      */
     private void SaveMaze() throws IOException {
         saveState = Maze.MazeToByteArray(mazePanel.getMaze());
-        // update database row
+        // TODO update database row and move export function elsewhere
+        mazePanel.ExportToFile();
     }
 
     /**

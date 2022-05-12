@@ -1,7 +1,11 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MazePanel extends JPanel {
@@ -35,9 +39,20 @@ public class MazePanel extends JPanel {
         g2d.clearRect(0, 0, getPreferredSize().width, getPreferredSize().height);
 
         ArrayList<MazeImage> images = maze.getImages();
+        if (maze.getStartImage() != null) {
+            MazeImage image = maze.getStartImage();
+            g.drawImage(image.getImageData().getImage(), image.getX() * cellSize, image.getY() * cellSize,
+                    image.getSizeX() * cellSize, image.getSizeY() * cellSize, null);
+        }
+        if (maze.getEndImage() != null) {
+            MazeImage image = maze.getEndImage();
+            g.drawImage(image.getImageData().getImage(), image.getX() * cellSize, image.getY() * cellSize,
+                    image.getSizeX() * cellSize, image.getSizeY() * cellSize, null);
+        }
         for (MazeImage image : images) {
             if (image.isPlaced()) {
-                g.drawImage(image.getImageData().getImage(), image.getX() * cellSize, image.getY() * cellSize, image.getSizeX() * cellSize, image.getSizeY() * cellSize, null);
+                g.drawImage(image.getImageData().getImage(), image.getX() * cellSize, image.getY() * cellSize,
+                        image.getSizeX() * cellSize, image.getSizeY() * cellSize, null);
             }
         }
 
@@ -85,6 +100,28 @@ public class MazePanel extends JPanel {
                 }
             }
         }
+    }
+
+    /**
+     * Prints the current panel to a BufferedImage object
+     * @return BufferedImage object
+     */
+    public BufferedImage PrintToImage() {
+        // https://stackoverflow.com/questions/1349220/convert-jpanel-to-image
+        BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = image.createGraphics();
+        paint(g);
+        g.dispose();
+        return image;
+    }
+
+    /**
+     * Exports this maze panel to a png file named after the maze's title
+     * @throws IOException
+     */
+    public void ExportToFile() throws IOException {
+        File outputFile = new File(maze.getTitle() + ".png");
+        ImageIO.write(PrintToImage(), "png", outputFile);
     }
 
     /**
