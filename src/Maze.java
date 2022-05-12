@@ -216,9 +216,6 @@ public class Maze {
          */
 
         // Failing precondition
-        if (cells[startX][startY].isCoveredByImage()) {
-            throw new RuntimeException();
-        }
         Random r = new Random();
 
         // let S be a stack

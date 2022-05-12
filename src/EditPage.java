@@ -70,7 +70,7 @@ public class EditPage extends JFrame implements Runnable{
         placeImage.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                mazePanel.setPlacingImage(!placeImage.getModel().isSelected());
+                mazePanel.setPlacingImage(!placeImage.isSelected());
             }
         });
 
@@ -95,12 +95,25 @@ public class EditPage extends JFrame implements Runnable{
                 RegenerateMaze();
             }
         });
+
+        toggleSolution.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                mazePanel.setDrawSolution(!toggleSolution.isSelected());
+                mazePanel.repaint();
+            }
+        });
     }
 
+    /**
+     * Regenerates maze by clearing and optionally placing images randomly
+     */
     private void RegenerateMaze() {
         Maze maze = mazePanel.getMaze();
         maze.ClearMaze();
-        maze.PlaceImagesRandom(50);
+        if (toggleRandomizeImages.isSelected()) {
+            maze.PlaceImagesRandom(50);
+        }
         maze.GenerateMaze();
         mazePanel.repaint();
     }
