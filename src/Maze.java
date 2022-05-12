@@ -165,8 +165,16 @@ public class Maze {
      * @return false if no non-overlapping placements were found.
      */
     public boolean PlaceImagesRandom(int iterations) {
+        // unset placed images and cells covered by image
         for (MazeImage image : images) {
             image.setPlaced(false);
+            int oldX = image.getX();
+            int oldY = image.getY();
+            for (int x = oldX; x < oldX + image.getSizeX(); x++) {
+                for (int y = oldY; y < oldY + image.getSizeY(); y++) {
+                    cells[x][y].setCoveredByImage(false);
+                }
+            }
         }
         Random r = new Random();
 
@@ -385,7 +393,6 @@ public class Maze {
      * @param mazeImage input image to be placed.
      */
     public void PlaceImage(int xPos, int yPos, MazeImage mazeImage) {
-
         int imageSizeX = mazeImage.getSizeX();
         int imageSizeY = mazeImage.getSizeY();
 
@@ -395,18 +402,36 @@ public class Maze {
             return;
         }
 
+        // if image is already placed, unset covered by image
+        if (mazeImage.isPlaced()) {
+            int oldX = mazeImage.getX();
+            int oldY = mazeImage.getY();
+            for (int x = oldX; x < oldX + imageSizeX; x++) {
+                for (int y = oldY; y < oldY + imageSizeY; y++) {
+                    cells[x][y].setCoveredByImage(false);
+                }
+            }
+        }
+
         mazeImage.setX(xPos);
         mazeImage.setY(yPos);
         mazeImage.setPlaced(true);
 
-        // Remove vertical walls
+        // set covered by image
+        for (int x = xPos; x < xPos + imageSizeX; x++) {
+            for (int y = yPos; y < yPos + imageSizeY; y++) {
+                cells[x][y].setCoveredByImage(true);
+            }
+        }
+
+        // remove vertical walls
         for (int x = xPos; x < xPos + imageSizeX - 1; x++) {
             for (int y = yPos; y < yPos + imageSizeY; y++) {
                 cells[x][y].RemoveWall(1);
             }
         }
 
-        // Remove horizontal walls
+        // remove horizontal walls
         for (int x = xPos; x < xPos + imageSizeX; x++) {
             for (int y = yPos; y < yPos + imageSizeY - 1; y++) {
                 cells[x][y].RemoveWall(2);
