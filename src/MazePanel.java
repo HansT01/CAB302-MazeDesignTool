@@ -110,19 +110,22 @@ public class MazePanel extends JPanel {
      * @param e MouseEvent click event.
      */
     private void HandleClickEvent(MouseEvent e) {
-        // Round to every half cell index to determine which wall is clicked
-        int x2 = (int) Math.round(2.0 * e.getX() / cellSize);
-        int y2 = (int) Math.round(2.0 * e.getY() / cellSize);
 
         if (placingImage) {
-            int xPos = (x2 / 2 == maze.getSizeX()) ? x2 / 2 - 1 : x2 / 2;
-            int yPos = (y2 / 2 == maze.getSizeY()) ? y2 / 2 - 1 : y2 / 2;
+            int x = e.getX() / cellSize;
+            int y = e.getY() / cellSize;
+
+            int xPos = (x == maze.getSizeX()) ? x - 1 : x;
+            int yPos = (y == maze.getSizeY()) ? y - 1 : y;
 
             // If x is out of bounds
             maze.PlaceImage(xPos, yPos);
             repaint();
         }
         else {
+            // Round to every half cell index to determine which wall is clicked
+            int x2 = (int) Math.round(2.0 * e.getX() / cellSize);
+            int y2 = (int) Math.round(2.0 * e.getY() / cellSize);
             boolean xSelect = (x2 % 2 == 1);
             boolean ySelect = (y2 % 2 == 1);
             // If a cell centre is clicked

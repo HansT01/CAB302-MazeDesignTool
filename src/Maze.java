@@ -1,4 +1,3 @@
-import java.awt.image.BufferedImage;
 import java.util.*;
 
 public class Maze {
@@ -159,6 +158,40 @@ public class Maze {
                 cells[x][y].setWalls(new boolean[] {true, true, true, true});
             }
         }
+    }
+
+    /**
+     * Places all images in image list randomly on the maze until no images overlap
+     * @return false if no non-overlapping placements were found.
+     */
+    public boolean PlaceImagesRandom(int iterations) {
+        for (MazeImage image : images) {
+            image.setPlaced(false);
+        }
+        Random r = new Random();
+
+        // loop until no collisions or iteration cap is reached
+        int i = 0;
+        while (i < iterations) {
+            for (MazeImage image : images) {
+                image.setX(r.nextInt(sizeX - image.getSizeX() + 1));
+                image.setY(r.nextInt(sizeY - image.getSizeY() + 1));
+            }
+            if (!CheckImageCollisions()) {
+                break;
+            }
+            i++;
+        }
+
+        // if placements without collisions was not found
+        if (CheckImageCollisions()) {
+            return false;
+        }
+
+        for (MazeImage image : images) {
+            PlaceImage(image.getX(), image.getY(), image);
+        }
+        return true;
     }
 
     /**
@@ -328,43 +361,73 @@ public class Maze {
     }
 
     /**
+     * Checks for image collisions
+     * @return
+     */
+    public boolean CheckImageCollisions() {
+        HashSet<String> exists = new HashSet<>();
+        for (int i = 0; i < images.size(); i++) {
+            MazeImage image = images.get(i);
+            for (int x = image.getX(); x < image.getX() + image.getSizeX(); x++) {
+                for (int y = image.getY(); y < image.getY() + image.getSizeY(); y++) {
+                    String key = String.format("%s %s", x, y);
+                    if (exists.contains(key)) {
+                        return true;
+                    };
+                    exists.add(key);
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Removes all walls under image cells and set image placed state.
+     * @param xPos x position of image.
+     * @param yPos y position of image.
+     * @param mazeImage input image to be placed.
+     */
+    public void PlaceImage(int xPos, int yPos, MazeImage mazeImage) {
+
+        int imageSizeX = mazeImage.getSizeX();
+        int imageSizeY = mazeImage.getSizeY();
+
+        // check if image fits within maze
+        if (!(xPos >= 0 && xPos + imageSizeX <= sizeX) || !(yPos >= 0 && yPos + imageSizeY <= sizeY)) {
+            System.out.println("Image does not fit inside maze");
+            return;
+        }
+
+        mazeImage.setX(xPos);
+        mazeImage.setY(yPos);
+        mazeImage.setPlaced(true);
+
+        // Remove vertical walls
+        for (int x = xPos; x < xPos + imageSizeX - 1; x++) {
+            for (int y = yPos; y < yPos + imageSizeY; y++) {
+                cells[x][y].RemoveWall(1);
+            }
+        }
+
+        // Remove horizontal walls
+        for (int x = xPos; x < xPos + imageSizeX; x++) {
+            for (int y = yPos; y < yPos + imageSizeY - 1; y++) {
+                cells[x][y].RemoveWall(2);
+            }
+        }
+    }
+
+    /**
+     * If not image is specified, the method will use selected image.
      * @param xPos x position of image.
      * @param yPos y position of image.
      */
     public void PlaceImage(int xPos, int yPos) {
-        int imageSizeX = selectedImage.getSizeX();
-        int imageSizeY = selectedImage.getSizeY();
-        boolean fitsX = (xPos >= 0 && xPos + imageSizeX <= sizeX);
-        boolean fitsY = (yPos >= 0 && yPos + imageSizeY <= sizeY);
-        if (fitsX && fitsY) {
-            selectedImage.setX(xPos);
-            selectedImage.setY(yPos);
-            selectedImage.setPlaced(true);
-
-            for (int x = xPos; x < xPos + imageSizeX; x++) {
-                for (int y = yPos; y < yPos + imageSizeY; y++) {
-                    cells[x][y].setCoveredByImage(true);
-                }
-            }
-
-            // Remove vertical walls
-            for (int x = xPos; x < xPos + imageSizeX - 1; x++) {
-                for (int y = yPos; y < yPos + imageSizeY; y++) {
-                    cells[x][y].RemoveWall(1);
-                }
-            }
-
-            // Remove horizontal walls
-            for (int x = xPos; x < xPos + imageSizeX; x++) {
-                for (int y = yPos; y < yPos + imageSizeY - 1; y++) {
-                    cells[x][y].RemoveWall(2);
-                }
-            }
+        if (selectedImage == null) {
+            System.out.println("No image is selected!");
+            return;
         }
-        else {
-            throw new RuntimeException("Image does not fit inside maze");
-        }
+        PlaceImage(xPos, yPos, selectedImage);
     }
 
     /**

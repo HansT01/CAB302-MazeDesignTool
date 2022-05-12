@@ -1,5 +1,7 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -15,12 +17,13 @@ public class EditPage extends JFrame implements Runnable{
     private final MazePanel mazePanel;
     private JToggleButton toggleSolution = new JToggleButton("Enable maze solution");
     private JToggleButton toggleRandomizeImages = new JToggleButton("Enable randomize images");
+    private JButton importImage = new JButton("Import image");
+    private JButton deleteImage = new JButton("Delete image");
     private JToggleButton placeImage = new JToggleButton("Place image");
-    private JButton importImage = new JButton("Import new image");
     private JButton clearImages = new JButton("Clear images");
     private JButton generateMaze = new JButton("Generate maze");
-    private JTextField imageWidth = new JTextField(10);
-    private JTextField imageHeight = new JTextField(10);
+    private JTextField imageWidth = new JTextField("1", 10);
+    private JTextField imageHeight = new JTextField("1", 10);
 
     private JTable imagesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"File name", "Width", "Height"})) {
         // make rows uneditable
@@ -51,18 +54,63 @@ public class EditPage extends JFrame implements Runnable{
         importImage.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                System.out.println("Import image button clicked");
                 ImportImage();
+            }
+        });
+
+        deleteImage.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                mazePanel.getMaze().getImages().remove(GetSelectedImage());
+                mazePanel.repaint();
+                UpdateTable();
             }
         });
 
         placeImage.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                boolean selected = !placeImage.getModel().isSelected();
-                mazePanel.setPlacingImage(selected);
+                mazePanel.setPlacingImage(!placeImage.getModel().isSelected());
             }
         });
+
+        clearImages.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                ClearImages();
+            }
+        });
+
+        // event listener for row selection
+        imagesTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                mazePanel.getMaze().setSelectedImage(GetSelectedImage());
+            }
+        });
+
+        generateMaze.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                RegenerateMaze();
+            }
+        });
+    }
+
+    private void RegenerateMaze() {
+        Maze maze = mazePanel.getMaze();
+        maze.ClearMaze();
+        maze.PlaceImagesRandom(50);
+        maze.GenerateMaze();
+        mazePanel.repaint();
+    }
+
+    private void ClearImages() {
+        ArrayList<MazeImage> imagesList = mazePanel.getMaze().getImages();
+        for (MazeImage image : imagesList) {
+            image.setPlaced(false);
+        }
+        mazePanel.repaint();
     }
 
     private void ImportImage() {
@@ -125,6 +173,9 @@ public class EditPage extends JFrame implements Runnable{
         return gbc;
     }
 
+    /**
+     * Gets the current table model and updates the data
+     */
     public void UpdateTable() {
         // get current model
         DefaultTableModel tm = (DefaultTableModel) imagesTable.getModel();
@@ -147,6 +198,17 @@ public class EditPage extends JFrame implements Runnable{
         tm.fireTableDataChanged();
     }
 
+    /**
+     * Gets the image of the first selected row
+     * @return Image of the first selected row
+     */
+    public MazeImage GetSelectedImage() {
+        int selectedRow = imagesTable.getSelectedRow();
+        if (selectedRow != -1) {
+            return mazePanel.getMaze().getImages().get(selectedRow);
+        }
+        return null;
+    }
 
     public void CreateGUI() {
         JScrollPane scrollPane = new JScrollPane(imagesTable);
@@ -156,46 +218,54 @@ public class EditPage extends JFrame implements Runnable{
         optionsPanel = new JPanel();
         optionsPanel.setLayout(new GridBagLayout());
 
+        int gridRow = 0;
+
         // Import image button
-        gbc = CreateInnerGBC(0, 0);
-        gbc.gridwidth = 2;
+        gbc = CreateInnerGBC(0, gridRow);
+        gbc.gridwidth = 1;
         optionsPanel.add(importImage, gbc);
 
+        // Delete image button
+        gbc = CreateInnerGBC(1, gridRow++);
+        gbc.gridwidth = 1;
+        optionsPanel.add(deleteImage, gbc);
+
         // Imported images table
-        gbc = CreateInnerGBC(0, 1);
+        gbc = CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
         optionsPanel.add(scrollPane, gbc);
 
-        // Image place button and options
-        gbc = CreateInnerGBC(0, 2);
+        // Place image buttons and options
+        gbc = CreateInnerGBC(0, gridRow);
         optionsPanel.add(new Label("Image width:", 2), gbc);
-        gbc = CreateInnerGBC(1, 2);
+        gbc = CreateInnerGBC(1, gridRow++);
         optionsPanel.add(imageWidth, gbc);
-        gbc = CreateInnerGBC(0, 3);
+        gbc = CreateInnerGBC(0, gridRow);
         optionsPanel.add(new Label("Image height:", 2), gbc);
-        gbc = CreateInnerGBC(1, 3);
+        gbc = CreateInnerGBC(1, gridRow++);
         optionsPanel.add(imageHeight, gbc);
-        gbc = CreateInnerGBC(0, 4);
+        gbc = CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
         optionsPanel.add(placeImage, gbc);
 
-        // Remove all images button
-        gbc = CreateInnerGBC(0, 5);
+        // Clear all images button
+        // This button will set all images to not isPlaced
+        gbc = CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
         optionsPanel.add(clearImages, gbc);
 
         // Generate maze button
-        gbc = CreateInnerGBC(0, 6);
+        gbc = CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
         optionsPanel.add(generateMaze, gbc);
 
         // Toggle solution
-        gbc = CreateInnerGBC(0, 7);
+        gbc = CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
         optionsPanel.add(toggleSolution, gbc);
 
         // Toggle randomize images
-        gbc = CreateInnerGBC(0, 8);
+        gbc = CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
         optionsPanel.add(toggleRandomizeImages, gbc);
 
@@ -228,11 +298,11 @@ public class EditPage extends JFrame implements Runnable{
      */
     public static void main(String[] args) {
         // Generate maze
-        Maze testMaze = new Maze("Maze Title", "Maze Author", 5,5);
+        Maze testMaze = new Maze("Maze Title", "Maze Author", 12,12);
         testMaze.GenerateMaze();
 
         // Create panel with maze
-        MazePanel testPanel = new MazePanel(testMaze, 64);
+        MazePanel testPanel = new MazePanel(testMaze, 32);
 
         // Create page with panel
         EditPage testPage = new EditPage(testPanel);
