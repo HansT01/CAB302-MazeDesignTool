@@ -28,6 +28,7 @@ public class EditPage extends JFrame implements Runnable {
     private final JLabel deadEndsPct = new JLabel("0.00%", SwingConstants.LEFT);
     private final JButton saveMaze = new JButton("Save maze");
     private final JButton restoreMaze = new JButton("Restore maze");
+    private final JButton exportMaze = new JButton("Export to PNG");
 
     private byte[] saveState;
 
@@ -141,6 +142,17 @@ public class EditPage extends JFrame implements Runnable {
                 }
             }
         });
+
+        exportMaze.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                try {
+                    ExportToPNG();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
@@ -203,7 +215,6 @@ public class EditPage extends JFrame implements Runnable {
     private void SaveMaze() throws IOException {
         saveState = Maze.MazeToByteArray(mazePanel.getMaze());
         // TODO update database row and move export function elsewhere
-        mazePanel.ExportToFile();
     }
 
     /**
@@ -216,6 +227,14 @@ public class EditPage extends JFrame implements Runnable {
         mazePanel.repaint();
         UpdateTable();
         UpdateSolutionMetrics();
+    }
+
+    /**
+     *
+     * @throws IOException
+     */
+    private void ExportToPNG() throws IOException {
+        mazePanel.ExportToFile();
     }
 
     /**
@@ -416,9 +435,14 @@ public class EditPage extends JFrame implements Runnable {
         gbc.gridwidth = 1;
         panel.add(saveMaze, gbc);
 
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 1;
         panel.add(restoreMaze, gbc);
+
+        gbc = CreateInnerGBC(0, gridRow);
+        gbc.gridwidth = 1;
+        panel.add(exportMaze, gbc);
+
 
         return panel;
     }
@@ -485,13 +509,10 @@ public class EditPage extends JFrame implements Runnable {
      */
     public static void main(String[] args) throws IOException {
         // Generate maze
-        Maze testMaze = new Maze("Maze Title", "Maze Author", 80,80);
-        testMaze.GenerateMaze();
+        Maze testMaze = new Maze("test-maze-title", "test-maze-author", 5,5);
 
         // Create page with panel
-        EditPage testPage = new EditPage(testMaze, 8);
-
-        // No idea what runnable is for, but here it is!
+        EditPage testPage = new EditPage(testMaze, 32);
         SwingUtilities.invokeLater(testPage);
     }
 }

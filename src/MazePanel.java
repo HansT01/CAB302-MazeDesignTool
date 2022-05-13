@@ -36,7 +36,9 @@ public class MazePanel extends JPanel {
     public void paint(Graphics g) {
         Cell[][] cells = maze.getCells();
         Graphics2D g2d = (Graphics2D) g;
-        g2d.clearRect(0, 0, getPreferredSize().width, getPreferredSize().height);
+        g2d.clearRect(0, 0, getWidth(), getHeight());
+        g2d.setColor(Color.WHITE);
+        g2d.drawRect(0, 0, getWidth(), getHeight());
 
         ArrayList<MazeImage> images = maze.getImages();
         if (maze.getStartImage() != null) {
@@ -75,7 +77,7 @@ public class MazePanel extends JPanel {
             }
         }
 
-        g2d.setColor(Color.BLUE);
+        g2d.setColor(Color.BLACK);
         for (int i = 0; i < maze.getSizeX(); i++) {
             int x = i * cellSize;
             for (int j = 0; j < maze.getSizeY(); j++) {
@@ -172,19 +174,7 @@ public class MazePanel extends JPanel {
             int y2 = (int) Math.round(2.0 * e.getY() / cellSize);
             boolean xSelect = (x2 % 2 == 1);
             boolean ySelect = (y2 % 2 == 1);
-            // If a cell centre is clicked
-            /*
-            if (xSelect && ySelect) {
-                if (setStartCell) {
-                    maze.setStartCell(x2 / 2, y2 / 2);
-                }
-                else {
-                    maze.setEndCell(x2 / 2, y2 / 2);
-                }
-                setStartCell = !setStartCell;
-                repaint();
-            }
-             */
+
             // If a wall is clicked
             if (xSelect ^ ySelect) {
                 // If x is out of bounds
