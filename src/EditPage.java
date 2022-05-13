@@ -1,7 +1,5 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -48,7 +46,7 @@ public class EditPage extends JFrame implements Runnable {
      * @param cellSize size of each cell
      */
     public EditPage(Maze maze, int cellSize) throws IOException {
-        fc.setFileFilter(new FileNameExtensionFilter("Image files", "jpeg", "jpg", "png", "gif"));
+        fc.setFileFilter(new FileNameExtensionFilter("Image Files", "jpeg", "jpg", "png", "gif"));
         fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
 
         mazePanel = new MazePanel(maze, cellSize);
@@ -61,7 +59,11 @@ public class EditPage extends JFrame implements Runnable {
         importImage.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                ImportImage();
+                try {
+                    ImportImage();
+                } catch (InvalidInputException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
@@ -89,12 +91,7 @@ public class EditPage extends JFrame implements Runnable {
         });
 
         // event listener for row selection
-        imagesTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                mazePanel.getMaze().setSelectedImage(GetSelectedImage());
-            }
-        });
+        imagesTable.getSelectionModel().addListSelectionListener(e -> mazePanel.getMaze().setSelectedImage(GetSelectedImage()));
 
         generateMaze.addMouseListener(new MouseAdapter() {
             @Override
@@ -135,9 +132,7 @@ public class EditPage extends JFrame implements Runnable {
             public void mousePressed(MouseEvent e) {
                 try {
                     RestoreMaze();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                } catch (ClassNotFoundException ex) {
+                } catch (IOException | ClassNotFoundException ex) {
                     ex.printStackTrace();
                 }
             }
@@ -186,41 +181,54 @@ public class EditPage extends JFrame implements Runnable {
         mazePanel.repaint();
     }
 
-    private void ImportImage() {
+    /**
+     * Opens a file chooser dialogue and adds image to maze images
+     */
+    private void ImportImage() throws InvalidInputException {
         int returnVal = fc.showOpenDialog(this);
 
         // https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
+
+            BufferedImage imageData;
             try {
-                System.out.println("Opening file " + file.getName());
-                BufferedImage imageData = ImageIO.read(file);
-                int width = Integer.parseInt(imageWidth.getText());
-                int height = Integer.parseInt(imageHeight.getText());
-                mazePanel.getMaze().getImages().add(new MazeImage(file.getName(), imageData, width, height));
-                UpdateTable();
-            } catch (IOException ex) {
-                ex.printStackTrace();
+                imageData = ImageIO.read(file);
+                if (imageData == null) throw new Exception();
+            }
+            catch (Exception e) {
+                throw new InvalidInputException("Please select an image file", this);
             }
 
-        } else {
-            System.out.println("Open command cancelled by user");
+            int width;
+            int height;
+            try {
+                width = Integer.parseInt(imageWidth.getText());
+                height = Integer.parseInt(imageHeight.getText());
+                if (width <= 0 || height <= 0) throw new Exception();
+            }
+            catch (Exception e) {
+                throw new InvalidInputException("Image dimensions must be a non-zero positive integer", this);
+            }
+
+            mazePanel.getMaze().getImages().add(new MazeImage(file.getName(), imageData, width, height));
+            UpdateTable();
         }
     }
 
     /**
      * Updates maze saveState and database row
-     * @throws IOException
+     * @throws IOException IOException
      */
     private void SaveMaze() throws IOException {
         saveState = Maze.MazeToByteArray(mazePanel.getMaze());
-        // TODO update database row and move export function elsewhere
+        // TODO update database row here
     }
 
     /**
      * Restores maze object to save state
-     * @throws IOException
-     * @throws ClassNotFoundException
+     * @throws IOException Exception
+     * @throws ClassNotFoundException Exception
      */
     private void RestoreMaze() throws IOException, ClassNotFoundException {
         mazePanel.setMaze(Maze.ByteArrayToMaze(saveState));
@@ -230,8 +238,8 @@ public class EditPage extends JFrame implements Runnable {
     }
 
     /**
-     *
-     * @throws IOException
+     * Exports the current maze panel to png file
+     * @throws IOException Exception
      */
     private void ExportToPNG() throws IOException {
         mazePanel.ExportToFile();
@@ -288,13 +296,11 @@ public class EditPage extends JFrame implements Runnable {
 
         // create new data array
         ArrayList<MazeImage> imageList = mazePanel.getMaze().getImages();
-        for (int i = 0; i < imageList.size(); i++) {
+        for (MazeImage mazeImage : imageList) {
             String[] data = new String[3];
-            MazeImage image = imageList.get(i);
-            data[0] = image.getImageTitle();
-            data[1] = String.format("%s", image.getSizeX());
-            data[2] = String.format("%s", image.getSizeY());
-            System.out.println(Arrays.deepToString(data));
+            data[0] = mazeImage.getImageTitle();
+            data[1] = String.format("%s", mazeImage.getSizeX());
+            data[2] = String.format("%s", mazeImage.getSizeY());
             tm.addRow(data);
         }
 
@@ -323,28 +329,27 @@ public class EditPage extends JFrame implements Runnable {
                 BorderFactory.createEmptyBorder(5, 5, 5, 5))
         );
 
+        imagesTable.getColumnModel().getColumn(0).setPreferredWidth(150);
+        imagesTable.getColumnModel().getColumn(1).setPreferredWidth(75);
+        imagesTable.getColumnModel().getColumn(2).setPreferredWidth(75);
+
         JScrollPane scrollPane = new JScrollPane(imagesTable);
         scrollPane.setPreferredSize(new Dimension(250, 100));
 
         GridBagConstraints gbc;
         int gridRow = 0;
 
-        // Import image button
+        // import image button
         gbc = CreateInnerGBC(0, gridRow);
         gbc.gridwidth = 1;
         panel.add(importImage, gbc);
 
-        // Delete image button
+        // delete image button
         gbc = CreateInnerGBC(1, gridRow++);
         gbc.gridwidth = 1;
         panel.add(deleteImage, gbc);
 
-        // Imported images table
-        gbc = CreateInnerGBC(0, gridRow++);
-        gbc.gridwidth = 2;
-        panel.add(scrollPane, gbc);
-
-        // Place image buttons and options
+        // import image options
         gbc = CreateInnerGBC(0, gridRow);
         panel.add(new Label("Image width:", Label.RIGHT), gbc);
         gbc = CreateInnerGBC(1, gridRow++);
@@ -353,11 +358,18 @@ public class EditPage extends JFrame implements Runnable {
         panel.add(new Label("Image height:", Label.RIGHT), gbc);
         gbc = CreateInnerGBC(1, gridRow++);
         panel.add(imageHeight, gbc);
+
+        // imported images table
+        gbc = CreateInnerGBC(0, gridRow++);
+        gbc.gridwidth = 2;
+        panel.add(scrollPane, gbc);
+
+        // place image button
         gbc = CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
         panel.add(placeImage, gbc);
 
-        // Clear all images button
+        // clear all images button
         gbc = CreateInnerGBC(0, gridRow);
         gbc.gridwidth = 2;
         panel.add(clearImages, gbc);
@@ -391,17 +403,43 @@ public class EditPage extends JFrame implements Runnable {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder("Solution options"),
+                BorderFactory.createTitledBorder("Maze metrics"),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5))
         );
 
         GridBagConstraints gbc;
         int gridRow = 0;
 
+        Maze maze = mazePanel.getMaze();
+        int cellSize = mazePanel.getCellSize();
+        int mazeWidth = maze.getSizeX();
+        int mazeHeight = maze.getSizeY();
+
         // toggle solution
         gbc = CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
         panel.add(toggleSolution, gbc);
+
+        // solution percentage
+        gbc = CreateInnerGBC(0, gridRow);
+        gbc.weightx = 0;
+        panel.add(new JLabel("Pixels per cell: " , SwingConstants.LEFT), gbc);
+        gbc = CreateInnerGBC(1, gridRow++);
+        panel.add(new JLabel(String.format("%s", cellSize), SwingConstants.LEFT), gbc);
+
+        // solution percentage
+        gbc = CreateInnerGBC(0, gridRow);
+        gbc.weightx = 0;
+        panel.add(new JLabel("Maze dimensions (cells): " , SwingConstants.LEFT), gbc);
+        gbc = CreateInnerGBC(1, gridRow++);
+        panel.add(new JLabel(String.format("%sx%s", mazeWidth, mazeHeight), SwingConstants.LEFT), gbc);
+
+        // solution percentage
+        gbc = CreateInnerGBC(0, gridRow);
+        gbc.weightx = 0;
+        panel.add(new JLabel("Maze dimensions (pixels): " , SwingConstants.LEFT), gbc);
+        gbc = CreateInnerGBC(1, gridRow++);
+        panel.add(new JLabel(String.format("%sx%s", mazeWidth * cellSize, mazeHeight * cellSize), SwingConstants.LEFT), gbc);
 
         // solution percentage
         gbc = CreateInnerGBC(0, gridRow);
@@ -509,7 +547,7 @@ public class EditPage extends JFrame implements Runnable {
      */
     public static void main(String[] args) throws IOException {
         // Generate maze
-        Maze testMaze = new Maze("test-maze-title", "test-maze-author", 5,5);
+        Maze testMaze = new Maze("test-maze-title", "test-maze-author", 10,5);
 
         // Create page with panel
         EditPage testPage = new EditPage(testMaze, 32);

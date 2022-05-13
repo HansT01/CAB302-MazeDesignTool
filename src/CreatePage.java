@@ -26,10 +26,10 @@ public class CreatePage extends JFrame implements Runnable {
     private final JLabel endImageLabel = new JLabel("No image selected", SwingUtilities.LEFT);
     private final JButton importStartImage = new JButton("Import image");
     private final JButton importEndImage = new JButton("Import image");
-    private final JTextField startImageWidthField = new JTextField();
-    private final JTextField startImageHeightField = new JTextField();
-    private final JTextField endImageWidthField = new JTextField();
-    private final JTextField endImageHeightField = new JTextField();
+    private final JTextField startImageWidthField = new JTextField("1");
+    private final JTextField startImageHeightField = new JTextField("1");
+    private final JTextField endImageWidthField = new JTextField("1");
+    private final JTextField endImageHeightField = new JTextField("1");
 
     private final JButton createMaze = new JButton("Create maze");
 
@@ -42,20 +42,28 @@ public class CreatePage extends JFrame implements Runnable {
      * Constructor for the CreatePage
      */
     public CreatePage() {
-        fc.setFileFilter(new FileNameExtensionFilter("Image files", "jpeg", "jpg", "png", "gif"));
+        fc.setFileFilter(new FileNameExtensionFilter("Image Files", "jpeg", "jpg", "png", "gif"));
         fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
 
         importStartImage.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                startImage = ImportImage();
+                try {
+                    startImage = ImportImage();
+                } catch (InvalidInputException ex) {
+                    ex.printStackTrace();
+                }
                 UpdateLabels();
             }
         });
         importEndImage.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                endImage = ImportImage();
+                try {
+                    endImage = ImportImage();
+                } catch (InvalidInputException ex) {
+                    ex.printStackTrace();
+                }
                 UpdateLabels();
             }
         });
@@ -73,8 +81,8 @@ public class CreatePage extends JFrame implements Runnable {
 
     /**
      * Creates maze with the input fields. If any input fields are invalid, an InvalidInputException will be raised.
-     * @throws IOException
-     * @throws InvalidInputException
+     * @throws IOException Exception
+     * @throws InvalidInputException Exception
      */
     private void CreateMaze() throws IOException, InvalidInputException {
         if (mazeTitle.getText().isEmpty()) {
@@ -117,9 +125,6 @@ public class CreatePage extends JFrame implements Runnable {
         }
         maze.setStartCell(startX, startY);
         maze.setEndCell(endX, endY);
-
-        System.out.println(startX + " " + startY);
-        System.out.println(endX + " " + endY);
 
         MazeImage startMazeImage;
         MazeImage endMazeImage;
@@ -192,21 +197,23 @@ public class CreatePage extends JFrame implements Runnable {
      * Opens a dialogue for the user to import an image
      * @return MazeImage object with no size properties
      */
-    private MazeImage ImportImage() {
+    private MazeImage ImportImage() throws InvalidInputException {
         int returnVal = fc.showOpenDialog(this);
 
         // https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
+
+            BufferedImage imageData;
             try {
-                System.out.println("Opening file " + file.getName());
-                BufferedImage image = ImageIO.read(file);
-                return new MazeImage(file.getName(), image);
-            } catch (IOException ex) {
-                ex.printStackTrace();
+                imageData = ImageIO.read(file);
+                if (imageData == null) throw new Exception();
             }
-        } else {
-            System.out.println("Open command cancelled by user");
+            catch (Exception e) {
+                throw new InvalidInputException("Please select an image file", this);
+            }
+
+            return new MazeImage(file.getName(), imageData);
         }
         return null;
     }
@@ -231,7 +238,6 @@ public class CreatePage extends JFrame implements Runnable {
         gbc.weightx = 0;
         panel.add(new JLabel("Maze Title: ", SwingUtilities.LEFT), gbc);
         gbc = CreateInnerGBC(1, gridRow++);
-        System.out.println(gbc.insets.toString());
         panel.add(mazeTitle, gbc);
 
         // input width
@@ -350,7 +356,7 @@ public class CreatePage extends JFrame implements Runnable {
         gbc = CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
         panel.add(new JLabel("Height: ", SwingUtilities.LEFT), gbc);
-        gbc = CreateInnerGBC(1, gridRow++);
+        gbc = CreateInnerGBC(1, gridRow);
         panel.add(startImageHeightField, gbc);
 
         return panel;

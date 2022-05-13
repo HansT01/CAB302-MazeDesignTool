@@ -25,6 +25,10 @@ public class MazePanel extends JPanel {
         return maze;
     }
 
+    public int getCellSize() {
+        return cellSize;
+    }
+
     public void setMaze(Maze maze) {
         this.maze = maze;
     }
@@ -38,22 +42,22 @@ public class MazePanel extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         g2d.clearRect(0, 0, getWidth(), getHeight());
         g2d.setColor(Color.WHITE);
-        g2d.drawRect(0, 0, getWidth(), getHeight());
+        g2d.fillRect(0, 0, getWidth(), getHeight());
 
         ArrayList<MazeImage> images = maze.getImages();
         if (maze.getStartImage() != null) {
             MazeImage image = maze.getStartImage();
-            g.drawImage(image.getImageData().getImage(), image.getX() * cellSize, image.getY() * cellSize,
+            g2d.drawImage(image.getImageData().getImage(), image.getX() * cellSize, image.getY() * cellSize,
                     image.getSizeX() * cellSize, image.getSizeY() * cellSize, null);
         }
         if (maze.getEndImage() != null) {
             MazeImage image = maze.getEndImage();
-            g.drawImage(image.getImageData().getImage(), image.getX() * cellSize, image.getY() * cellSize,
+            g2d.drawImage(image.getImageData().getImage(), image.getX() * cellSize, image.getY() * cellSize,
                     image.getSizeX() * cellSize, image.getSizeY() * cellSize, null);
         }
         for (MazeImage image : images) {
             if (image.isPlaced()) {
-                g.drawImage(image.getImageData().getImage(), image.getX() * cellSize, image.getY() * cellSize,
+                g2d.drawImage(image.getImageData().getImage(), image.getX() * cellSize, image.getY() * cellSize,
                         image.getSizeX() * cellSize, image.getSizeY() * cellSize, null);
             }
         }
