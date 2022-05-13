@@ -255,6 +255,7 @@ public class Maze implements Serializable {
         // let start be the starting cell
         // S.push(start)
         Stack<Cell> cellStack = new Stack<>();
+        cellStack.push(cells[endX][endY]);
         cellStack.push(cells[startX][startY]);
 
         // while S is not empty do

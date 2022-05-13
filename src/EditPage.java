@@ -53,7 +53,7 @@ public class EditPage extends JFrame implements Runnable {
         UpdateTable();
 
 
-        UpdateSolutionMetrics();
+        MazeUpdatedEvent();
 
         importImage.addMouseListener(new MouseAdapter() {
             @Override
@@ -69,9 +69,19 @@ public class EditPage extends JFrame implements Runnable {
         deleteImage.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                mazePanel.getMaze().getImages().remove(GetSelectedImage());
-                mazePanel.repaint();
-                UpdateTable();
+                Maze maze = mazePanel.getMaze();
+                MazeImage mazeImage = GetSelectedImage();
+                if (mazeImage == null) try {
+                    throw new InvalidInputException("Please select an image", EditPage.this);
+                } catch (InvalidInputException ex) {
+                    ex.printStackTrace();
+                }
+                else {
+                    maze.RemoveImage(mazeImage);
+                    maze.getImages().remove(mazeImage);
+                    UpdateTable();
+                    MazeUpdatedEvent();
+                }
             }
         });
 
@@ -96,7 +106,6 @@ public class EditPage extends JFrame implements Runnable {
             @Override
             public void mousePressed(MouseEvent e) {
                 RegenerateMaze();
-                UpdateSolutionMetrics();
             }
         });
 
@@ -104,14 +113,14 @@ public class EditPage extends JFrame implements Runnable {
             @Override
             public void mousePressed(MouseEvent e) {
                 mazePanel.setDrawSolution(!toggleSolution.isSelected());
-                mazePanel.repaint();
+                MazeUpdatedEvent();
             }
         });
 
         mazePanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                UpdateSolutionMetrics();
+                MazeUpdatedEvent();
             }
         });
 
@@ -150,12 +159,13 @@ public class EditPage extends JFrame implements Runnable {
     }
 
     /**
-     * Updates the labels for the maze metrics
+     * Updates the labels for the maze metrics and repaints the maze.
      */
-    private void UpdateSolutionMetrics() {
+    private void MazeUpdatedEvent() {
         Maze maze = mazePanel.getMaze();
         solutionPct.setText(String.format("%.2f%%%n", maze.SolutionPct(maze.Solve())*100));
         deadEndsPct.setText(String.format("%.2f%%%n", maze.DeadEndPct()*100));
+        mazePanel.repaint();
     }
 
     /**
@@ -167,9 +177,15 @@ public class EditPage extends JFrame implements Runnable {
         if (toggleRandomizeImages.isSelected()) {
             maze.PlaceImagesRandom(50);
         }
+        else {
+            for (MazeImage mazeImage : maze.getImages()) {
+                if (mazeImage.isPlaced()) {
+                    maze.PlaceImage(mazeImage.getX(), mazeImage.getY(), mazeImage);
+                }
+            }
+        }
         maze.GenerateMaze();
-        maze.Solve();
-        mazePanel.repaint();
+        MazeUpdatedEvent();
     }
 
     private void ClearImages() {
@@ -177,7 +193,7 @@ public class EditPage extends JFrame implements Runnable {
         for (MazeImage image : imagesList) {
             mazePanel.getMaze().RemoveImage(image);
         }
-        mazePanel.repaint();
+        MazeUpdatedEvent();
     }
 
     /**
@@ -231,10 +247,17 @@ public class EditPage extends JFrame implements Runnable {
      * @throws ClassNotFoundException Exception
      */
     private void RestoreMaze() throws IOException, ClassNotFoundException {
-        mazePanel.setMaze(Maze.ByteArrayToMaze(saveState));
-        mazePanel.repaint();
-        UpdateTable();
-        UpdateSolutionMetrics();
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to restore the maze to the last saved state?\n" +
+                        "This will remove all changes made since the last save.",
+                "Confirm restore maze",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if (confirm == JOptionPane.YES_OPTION) {
+            mazePanel.setMaze(Maze.ByteArrayToMaze(saveState));
+            UpdateTable();
+            MazeUpdatedEvent();
+        }
     }
 
     /**
@@ -243,47 +266,6 @@ public class EditPage extends JFrame implements Runnable {
      */
     private void ExportToPNG() throws IOException {
         mazePanel.ExportToFile();
-    }
-
-    /**
-     * Creates a GridBagConstraints object for objects on the main frame
-     * @param x x location of the grid bag layout
-     * @param y y location of the grid bag layout
-     * @return GridBagConstraints object
-     */
-    private GridBagConstraints CreateOuterGBC(int x, int y) {
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = x;
-        gbc.gridy = y;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-
-        int outerPaddingSize = 20;
-        gbc.insets = new Insets((y==0) ? outerPaddingSize : 0, (x==0) ? outerPaddingSize : 0, outerPaddingSize, outerPaddingSize);
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        return gbc;
-    }
-
-    /**
-     * Creates a GridBagConstraints object for objects inside a panel
-     * @param x x location of the grid bag layout
-     * @param y y location of the grid bag layout
-     * @return GridBagConstraints object
-     */
-    private GridBagConstraints CreateInnerGBC(int x, int y) {
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = x;
-        gbc.gridy = y;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-
-        gbc.fill = GridBagConstraints.BOTH;
-        int innerPaddingSize = 5;
-        gbc.insets = new Insets((y!=0) ? innerPaddingSize : 0, (x!=0) ? innerPaddingSize : 0, 0, 0);
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        return gbc;
     }
 
     /**
@@ -321,6 +303,53 @@ public class EditPage extends JFrame implements Runnable {
         return null;
     }
 
+    /**
+     * Creates a GridBagConstraints object for objects on the main frame.
+     * Notable features include a larger padding size and padding around the outer elements.
+     * @param x x location of the grid bag layout
+     * @param y y location of the grid bag layout
+     * @return GridBagConstraints object
+     */
+    private GridBagConstraints CreateOuterGBC(int x, int y) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = x;
+        gbc.gridy = y;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+
+        int outerPaddingSize = 20;
+        gbc.insets = new Insets((y==0) ? outerPaddingSize : 0, (x==0) ? outerPaddingSize : 0, outerPaddingSize, outerPaddingSize);
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        return gbc;
+    }
+
+    /**
+     * Creates a GridBagConstraints object for objects inside a panel.
+     * Notable features include smaller padding size and no padding around the outer elements.
+     * @param x x location of the grid bag layout
+     * @param y y location of the grid bag layout
+     * @return GridBagConstraints object
+     */
+    private GridBagConstraints CreateInnerGBC(int x, int y) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = x;
+        gbc.gridy = y;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+
+        gbc.fill = GridBagConstraints.BOTH;
+        int innerPaddingSize = 5;
+        gbc.insets = new Insets((y!=0) ? innerPaddingSize : 0, (x!=0) ? innerPaddingSize : 0, 0, 0);
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        return gbc;
+    }
+
+    /**
+     * Creates 'images' JPanel object
+     * @return JPanel object
+     */
     private JPanel CreateImagesPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -377,6 +406,10 @@ public class EditPage extends JFrame implements Runnable {
         return panel;
     }
 
+    /**
+     * Creates 'generate' JPanel object
+     * @return JPanel object
+     */
     private JPanel CreateGeneratePanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -399,6 +432,10 @@ public class EditPage extends JFrame implements Runnable {
         return panel;
     }
 
+    /**
+     * Creates 'solution' JPanel object
+     * @return JPanel object
+     */
     private JPanel CreateSolutionPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -458,6 +495,10 @@ public class EditPage extends JFrame implements Runnable {
         return panel;
     }
 
+    /**
+     * Creates 'save' JPanel object
+     * @return JPanel object
+     */
     private JPanel CreateSavePanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -485,6 +526,10 @@ public class EditPage extends JFrame implements Runnable {
         return panel;
     }
 
+    /**
+     * Creates 'options' JPanel object
+     * @return JPanel object
+     */
     private JPanel CreateOptionsPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -511,6 +556,9 @@ public class EditPage extends JFrame implements Runnable {
         return panel;
     }
 
+    /**
+     * Main create GUI method. Calls other create panel methods and adds them to the main frame.
+     */
     public void CreateGUI() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc;
