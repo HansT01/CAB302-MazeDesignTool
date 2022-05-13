@@ -111,14 +111,6 @@ public class Maze implements Serializable {
     }
 
     /**
-     * Setter for date last edited.
-     * @param dateLastEdited Date last edited.
-     */
-    public void setDateLastEdited(Date dateLastEdited) {
-        this.dateLastEdited = dateLastEdited;
-    }
-
-    /**
      * Getter for maze width.
      * @return maze width.
      */

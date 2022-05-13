@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class EditPage extends JFrame implements Runnable {
     private final MazePanel mazePanel;
@@ -222,6 +221,7 @@ public class EditPage extends JFrame implements Runnable {
      */
     private void SaveMaze() throws IOException {
         saveState = Maze.MazeToByteArray(mazePanel.getMaze());
+        mazePanel.getMaze().UpdateLastEdited();
         // TODO update database row here
     }
 
