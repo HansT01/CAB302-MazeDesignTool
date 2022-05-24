@@ -101,10 +101,8 @@ public class MazeTest {
     @Test
     public void SolutionPct() {
         testMaze.GenerateMaze();
-        /*
-        double solutionPct = testMaze.SolutionPct(testMaze.Solve());
+        double solutionPct = testMaze.SolutionPct();
         assert (solutionPct == 1) : "Solution percentage " + solutionPct + " does not match 100%";
-         */
     }
     @Test
     public void DeadEndPct() {
@@ -121,6 +119,6 @@ public class MazeTest {
         assert (Objects.equals(testMaze.getTitle(), testMaze2.getTitle())) : testMaze2.getTitle() + " does not match " + testMaze.getTitle();
         assert (Objects.equals(testMaze.getAuthor(), testMaze2.getAuthor())) : testMaze2.getAuthor() + " does not match " + testMaze.getAuthor();
         assert (testMaze.getCells()[0][0] != testMaze2.getCells()[0][0]) : "Cell objects have the same reference";
-        assert (Objects.equals(Arrays.toString(testMaze.Solve().toArray()), Arrays.toString(testMaze2.Solve().toArray()))) : "Solutions are not the same";
+        assert (Objects.equals(Arrays.toString(testMaze.Solve()), Arrays.toString(testMaze2.Solve()))) : "Solutions are not the same";
     }
 }

@@ -11,10 +11,7 @@ import java.util.ArrayList;
 public class MazePanel extends JPanel {
     private Maze maze;
     private final int cellSize;
-
-    private boolean setStartCell = true;
     private boolean drawSolution = true;
-
     private boolean placingImage = false;
 
     public void setDrawSolution(boolean drawSolution) {
@@ -64,15 +61,15 @@ public class MazePanel extends JPanel {
 
         if (drawSolution) {
             int offset = cellSize / 2;
-            ArrayList<CellNode> solution = maze.Solve();
+            Cell[] solution = maze.Solve();
 
             if (solution != null) {
                 g2d.setColor(Color.RED);
-                int xOld = solution.get(0).getCell().getX() * cellSize + offset;
-                int yOld = solution.get(0).getCell().getY() * cellSize + offset;
-                for (int i = 1; i < solution.size(); i++) {
-                    int x = solution.get(i).getCell().getX() * cellSize + offset;
-                    int y = solution.get(i).getCell().getY() * cellSize + offset;
+                int xOld = solution[0].getX() * cellSize + offset;
+                int yOld = solution[0].getY() * cellSize + offset;
+                for (int i = 1; i < solution.length; i++) {
+                    int x = solution[i].getX() * cellSize + offset;
+                    int y = solution[i].getY() * cellSize + offset;
 
                     g2d.drawLine(xOld, yOld, x, y);
                     xOld = x;

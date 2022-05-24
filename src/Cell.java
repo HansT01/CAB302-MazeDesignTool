@@ -141,7 +141,7 @@ public class Cell implements Serializable {
      * @return An array of all cells with intact walls.
      */
     public ArrayList<Cell> GetClosedNeighbours() {
-        ArrayList<Cell> neighbours = new ArrayList<>();
+        ArrayList<Cell> neighbours = new ArrayList<>(4);
         Cell[][] cells = parentMaze.getCells();
         int sizeX = parentMaze.getSizeX();
         int sizeY = parentMaze.getSizeY();
@@ -171,7 +171,7 @@ public class Cell implements Serializable {
      * @return ArrayList of open cell neighbours.
      */
     public ArrayList<Cell> GetOpenNeighbours() {
-        ArrayList<Cell> neighbours = new ArrayList<>();
+        ArrayList<Cell> neighbours = new ArrayList<>(4);
         Cell[][] cells = parentMaze.getCells();
         int sizeX = parentMaze.getSizeX();
         int sizeY = parentMaze.getSizeY();

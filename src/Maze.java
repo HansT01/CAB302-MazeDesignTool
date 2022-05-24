@@ -302,20 +302,20 @@ public class Maze implements Serializable {
      * An array of the cell path from startCell to endCell.
      * An empty Cell array if no path was found.
      */
-    public ArrayList<CellNode> Solve() {
+    public Cell[] Solve() {
         /*
         AStar pathfinding pseudocode:
         Modified from https://en.wikipedia.org/wiki/A*_search_algorithm
 
         let P be a priority queue sorted by cost
-        let M be an unordered map to mark visited cells
+        let V be a 2D array to mark visited cells
         let start be the start cell
         let end be the end cell
 
         P.push(start)
         while P is not empty do
             c = P.pop()
-            M(n) = true
+            V(n) = true
             if c == end
                 return path from start
             for each unmarked neighbour n of c do
@@ -328,68 +328,46 @@ public class Maze implements Serializable {
         return null
         */
 
-        // let P be a priority queue sorted by cost
-        // let M be an unordered map to mark visited cells
-        HashSet<String> visitedNodes = new HashSet<>();
         PriorityQueue<CellNode> priorityQueue = new PriorityQueue<>();
+        boolean[][] visitedNodes = new boolean[sizeX][sizeY];
 
-        // let start be the start cell
-        // let end be the end cell
         Cell startCell = cells[startX][startY];
         Cell endCell = cells[endX][endY];
         CellNode startNode = new CellNode(startCell);
         startNode.setParent(startNode);
         startNode.setPathCost(0);
 
-        // P.push(start)
         priorityQueue.add(startNode);
-
-        // while P is not empty do
         while (!priorityQueue.isEmpty()) {
-            // c = P.pop()
             CellNode currentNode = priorityQueue.poll();
+            Cell currentCell = currentNode.getCell();
+            visitedNodes[currentCell.getX()][currentCell.getY()] = true;
 
-            // M(n) = true
-            visitedNodes.add(currentNode.toString());
-
-            // if c == end
-            if (currentNode.getCell() == endCell) {
-                // return path from start
-                ArrayList<CellNode> solution = new ArrayList<>();
-                while (currentNode.getCell() != startCell) {
-                    solution.add(currentNode);
+            // Check if solution is found
+            if (currentCell == endCell) {
+                int solutionLen = currentNode.getPathCost();
+                Cell[] solution = new Cell[solutionLen];
+                for (int i = solutionLen - 1; i >= 0; i--) {
+                    solution[i] = currentNode.getCell();
                     currentNode = currentNode.getParent();
                 }
-                solution.add(currentNode);
-                Collections.reverse(solution);
                 return solution;
             }
 
-            // for each unmarked neighbour n of c do
-            ArrayList<CellNode> neighbourNodes = new ArrayList<>();
-            for (Cell neighbourCell : currentNode.getCell().GetOpenNeighbours()) {
-                neighbourNodes.add(new CellNode(neighbourCell));
-            }
-            for (CellNode neighbourNode : neighbourNodes) {
-                if (!visitedNodes.contains(neighbourNode.toString())) {
-                    // pathCost = c.pathCost + 1
+            // Iterate through all unmarked neighbours
+            for (Cell neighbourCell : currentCell.GetOpenNeighbours()) {
+                if (!visitedNodes[neighbourCell.getX()][neighbourCell.getY()]) {
+                    CellNode neighbourNode = new CellNode(neighbourCell);
                     int pathCost = currentNode.getPathCost() + 1;
-
-                    // if pathCost < n.pathCost
                     if (pathCost < neighbourNode.getPathCost()) {
-                        // n.pathCost = pathCost
-                        // n.combinedCost = pathCost + distanceTo(n, end)
-                        // n.parent = c
                         neighbourNode.setPathCost(pathCost);
                         neighbourNode.setCombinedCost(pathCost + neighbourNode.getCell().DistanceTo(endCell));
                         neighbourNode.setParent(currentNode);
                     }
-                    // P.push(n)
                     priorityQueue.add(neighbourNode);
                 }
             }
         }
-        // return null
         return null;
     }
 
@@ -547,9 +525,10 @@ public class Maze implements Serializable {
      * Calculates the percentage of cells in maze covered by a solution.
      * @return Percentage of cells in maze covered by a solution.
      */
-    public double SolutionPct(ArrayList<CellNode> solution) {
+    public double SolutionPct() {
+        Cell[] solution = Solve();
         if (solution != null) {
-            return 1.0 * solution.size() / area;
+            return 1.0 * solution.length / area;
         }
         return 0.0;
     }
@@ -618,12 +597,12 @@ public class Maze implements Serializable {
         System.out.println();
 
         startTime = System.nanoTime();
-        ArrayList<CellNode> solution = testMaze.Solve();
+        Cell[] solution = testMaze.Solve();
         endTime = System.nanoTime();
         long solveTime = endTime - startTime;
 
-        for (CellNode node:solution) {
-            System.out.print(node.toString() + " ");
+        for (Cell cell:solution) {
+            System.out.print(cell.toString() + " ");
         }
         System.out.println();
         System.out.println();

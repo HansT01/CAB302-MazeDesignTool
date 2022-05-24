@@ -163,7 +163,7 @@ public class EditPage extends JFrame implements Runnable {
      */
     private void MazeUpdatedEvent() {
         Maze maze = mazePanel.getMaze();
-        solutionPct.setText(String.format("%.2f%%%n", maze.SolutionPct(maze.Solve())*100));
+        solutionPct.setText(String.format("%.2f%%%n", maze.SolutionPct()*100));
         deadEndsPct.setText(String.format("%.2f%%%n", maze.DeadEndPct()*100));
         mazePanel.repaint();
     }
