@@ -9,12 +9,20 @@ import java.awt.event.ActionListener;
 /**
  * Constructs window for authenticating user
  */
-public class LoginUI extends JFrame implements Runnable{
+public class LoginUI extends JFrame implements ActionListener, Runnable {
 
     // Used for opening application at location of mouse pointer on screen
     Point openLocation = MouseInfo.getPointerInfo().getLocation();
+    // Labels
+    JLabel nameLabel = new JLabel("Name");
+    JLabel passwordLabel = new JLabel("Password");
+    // Text Areas
+    JTextField nameText = new JTextField();
+    JTextField passwordText = new JTextField();
+    // Button
+    JButton login = new JButton("Login");
 
-    private void createGUI () {
+    public void createGUI () {
         // Setting up main window
         setLocation(openLocation); // Open window at location of mouse pointer
         setVisible(true);
@@ -24,19 +32,6 @@ public class LoginUI extends JFrame implements Runnable{
         setLayout(new BorderLayout());
         // Centre to screen
         setLocationRelativeTo(null);
-        
-        // Labels
-        JLabel nameLabel = new JLabel("Name");
-        JLabel passwordLabel = new JLabel("Password");
-        // Text Areas
-        JTextField nameText = new JTextField();
-        JTextField passwordText = new JTextField();
-        // Button
-        JButton login = new JButton(); login.setText("Login");
-        login.addActionListener(e -> {
-            SwingUtilities.invokeLater(new DataBaseUI());
-            dispose();
-        });
 
         // Main Panel
         JPanel panel = new JPanel();
@@ -51,10 +46,33 @@ public class LoginUI extends JFrame implements Runnable{
         panel.add(passwordText);
         panel.add(login);
 
+        // Login Button Action
+        login.addActionListener(this);
+
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // Authenticate user
+        if (e.getSource() == login) {
+            String userTxt;
+            String passTxt;
+            userTxt = nameText.getText();
+            passTxt = passwordText.getText();
+            if (userTxt.equalsIgnoreCase("Riley") && passTxt.equalsIgnoreCase("1234")) {
+                login.addActionListener(f -> {
+                    SwingUtilities.invokeLater(new DataBaseUI());
+                    dispose();
+                });
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "Invalid Credentials");
+            }
+        }
+
     }
 
     @Override
     public void run() {createGUI();}
-
-
+    public static void main(String[] args) {SwingUtilities.invokeLater(new LoginUI());} // for testing
 }
