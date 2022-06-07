@@ -1,8 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -10,9 +8,8 @@ import java.awt.event.ActionListener;
  * Constructs window for authenticating user
  */
 public class LoginUI extends JFrame implements ActionListener, Runnable {
+    GridBagManager gbm = new GridBagManager();
 
-    // Used for opening application at location of mouse pointer on screen
-    Point openLocation = MouseInfo.getPointerInfo().getLocation();
     // Labels
     JLabel nameLabel = new JLabel("Name");
     JLabel passwordLabel = new JLabel("Password");
@@ -22,43 +19,77 @@ public class LoginUI extends JFrame implements ActionListener, Runnable {
     // Button
     JButton login = new JButton("Login");
 
-    public void createGUI () {
-        // Setting up main window
-        setLocation(openLocation); // Open window at location of mouse pointer
-        setVisible(true);
-        setTitle("Login");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Set so pressing x closes window
-        setSize(500, 300);
-        setLayout(new BorderLayout());
-        // Centre to screen
+    /**
+     * Creates 'Login' JPanel object
+     * @return JPanel object
+     */
+    private JPanel CreateLoginPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder(""),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5))
+        );
+        panel.setPreferredSize(new Dimension(300, 150));
+
+        GridBagConstraints gbc;
+        int gridRow = 0;
+
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
+        gbc.gridwidth = 1;
+        panel.add(nameLabel, gbc);
+
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
+        gbc.gridwidth = 1;
+        panel.add(nameText, gbc);
+
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
+        gbc.gridwidth = 1;
+        panel.add(passwordLabel, gbc);
+
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
+        gbc.gridwidth = 1;
+        panel.add(passwordText, gbc);
+
+        gbc = gbm.CreateInnerGBC(0, gridRow);
+        gbc.gridwidth = 1;
+        panel.add(login, gbc);
+
+        return panel;
+    }
+
+
+    /**
+     * Main create GUI method. Calls other create panel methods and adds them to the main frame.
+     */
+    public void CreateGUI() {
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc;
+        int gridRow = 0;
+
+        // maze panel
+        gbc = gbm.CreateOuterGBC(0, gridRow);
+        add(CreateLoginPanel(), gbc);
+
+        // resizes window to preferred dimensions
+        pack();
+
+        // centre to screen
         setLocationRelativeTo(null);
 
-        // Main Panel
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(5,1));
-        panel.setBorder(new EmptyBorder(10,10,10,10));
-        add(panel, BorderLayout.CENTER);
-
-        // Packing
-        panel.add(nameLabel);
-        panel.add(nameText);
-        panel.add(passwordLabel);
-        panel.add(passwordText);
-        panel.add(login);
-
-        // Login Button Action
-        login.addActionListener(this);
-
+        // set defaults
+        setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
+
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
         // Authenticate user
         if (e.getSource() == login) {
-            String userTxt;
-            String passTxt;
-            userTxt = nameText.getText();
-            passTxt = passwordText.getText();
+            String userTxt = nameText.getText();
+            String passTxt = passwordText.getText();
             if (userTxt.equalsIgnoreCase("Riley") && passTxt.equalsIgnoreCase("1234")) {
                 login.addActionListener(f -> {
                     SwingUtilities.invokeLater(new DataBaseUI());
@@ -73,6 +104,7 @@ public class LoginUI extends JFrame implements ActionListener, Runnable {
     }
 
     @Override
-    public void run() {createGUI();}
+    public void run() {
+        CreateGUI();}
     public static void main(String[] args) {SwingUtilities.invokeLater(new LoginUI());} // for testing
 }

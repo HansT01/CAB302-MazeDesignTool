@@ -1,8 +1,8 @@
 import java.awt.*;
 
 public class GridBagManager extends GridBagConstraints {
-    int outerPaddingSize = 20;
-    int innerPaddingSize = 5;
+    public int outerPaddingSize = 20;
+    public int innerPaddingSize = 5;
 
     /**
      * Creates a GridBagConstraints object for objects on the main frame.
