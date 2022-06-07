@@ -10,7 +10,7 @@ public class CellNodeTest {
     CellNode testNode3;
 
     @BeforeEach
-    public void ConstructMaze() {
+    public void ConstructMaze() throws MazeException {
         testMaze = new Maze("Maze title", "Maze author", 3, 1);
         testCell1 = testMaze.getCells()[0][0];
         testCell2 = testMaze.getCells()[1][0];

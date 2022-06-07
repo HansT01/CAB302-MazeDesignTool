@@ -105,7 +105,11 @@ public class EditPage extends JFrame implements Runnable {
         generateMaze.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                RegenerateMaze();
+                try {
+                    RegenerateMaze();
+                } catch (MazeException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
@@ -171,7 +175,7 @@ public class EditPage extends JFrame implements Runnable {
     /**
      * Regenerates maze by clearing and optionally placing images randomly
      */
-    private void RegenerateMaze() {
+    private void RegenerateMaze() throws MazeException {
         Maze maze = mazePanel.getMaze();
         maze.ClearMaze();
         if (toggleRandomizeImages.isSelected()) {
@@ -225,6 +229,7 @@ public class EditPage extends JFrame implements Runnable {
             catch (Exception e) {
                 throw new InvalidInputException("Image dimensions must be a non-zero positive integer", this);
             }
+
 
             mazePanel.getMaze().getImages().add(new MazeImage(file.getName(), imageData, width, height));
             UpdateTable();
@@ -593,7 +598,7 @@ public class EditPage extends JFrame implements Runnable {
     /**
      * Main test method for testing this edit page
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, MazeException {
         // Generate maze
         Maze testMaze = new Maze("test-maze-title", "test-maze-author", 10,5);
 

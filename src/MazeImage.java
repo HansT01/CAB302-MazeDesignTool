@@ -70,7 +70,14 @@ public class MazeImage implements Serializable {
         this.sizeY = 0;
     }
 
-    public static void main(String[] args) {
+    public MazeImage(int sizeX, int sizeY) {
+        this.imageTitle = "Null image";
+        this.imageData = null;
+        this.sizeX = sizeX;
+        this.sizeY = sizeY;
+    }
+
+    public static void main(String[] args) throws MazeException {
         // Generate maze panel
         Maze testMaze = new Maze("Maze Title", "Maze Author", 5,5);
         testMaze.GenerateMaze();

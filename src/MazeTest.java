@@ -1,9 +1,7 @@
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -14,7 +12,7 @@ public class MazeTest {
     Cell testCell3;
 
     @BeforeEach
-    public void ConstructMaze() {
+    public void ConstructMaze() throws MazeException {
         testMaze = new Maze("Maze title", "Maze author", 3, 1);
         testCell1 = testMaze.getCells()[0][0];
         testCell2 = testMaze.getCells()[1][0];
@@ -30,12 +28,9 @@ public class MazeTest {
     @Test
     public void ImageTooBig() {
         assertThrows(Exception.class, () -> {
+            MazeImage mazeImage = new MazeImage(5, 5);
+            testMaze.PlaceImage(0, 0, mazeImage);
         });}
-    @Test
-    public void ImageBadIndex() {
-        assertThrows(Exception.class, () -> {
-        });
-    }
     @Test
     public void DateLastEdited() {}
     @Test
@@ -63,25 +58,25 @@ public class MazeTest {
         });
     }
     @Test
-    public void Generate1000x1000() {
+    public void Generate1000x1000() throws MazeException {
         testMaze = new Maze("Maze title", "Maze author", 1000, 1000);
         assert(testMaze.getSizeX() == 1000) : "X size " + testMaze.getSizeX() + " is not 1000";
         assert(testMaze.getSizeY() == 1000) : "Y size " + testMaze.getSizeY() + " is not 1000";
     }
     @Test
-    public void GenerateTwice() {
+    public void GenerateTwice() throws MazeException {
         testMaze.GenerateMaze();
         testMaze.GenerateMaze();
     }
     @Test
-    public void SolveSameStartEnd() {
+    public void SolveSameStartEnd() throws MazeException {
         testMaze.GenerateMaze();
         testMaze.setStartCell(0, 0);
         testMaze.setEndCell(0, 0);
         testMaze.Solve();
     }
     @Test
-    public void SolveBadIndex() {
+    public void SolveBadIndex() throws MazeException {
         testMaze.GenerateMaze();
         testMaze.setStartCell(-1, 0);
         assertThrows(Exception.class, () -> {
@@ -99,19 +94,20 @@ public class MazeTest {
     @Test
     public void PlaceImage() {}
     @Test
-    public void SolutionPct() {
+    public void SolutionPct() throws MazeException {
         testMaze.GenerateMaze();
+        System.out.println(Arrays.deepToString(testMaze.Solve()));
         double solutionPct = testMaze.SolutionPct();
         assert (solutionPct == 1) : "Solution percentage " + solutionPct + " does not match 100%";
     }
     @Test
-    public void DeadEndPct() {
+    public void DeadEndPct() throws MazeException {
         testMaze = new Maze("Maze title", "Maze author", 4, 1);
         testMaze.GenerateMaze();
         assert (testMaze.DeadEndPct() == 0.5) : "Dead end percentage " + testMaze.DeadEndPct() + " does not match 0.5";
     }
     @Test
-    public void SerializeAndDeserializeMaze() throws IOException, ClassNotFoundException {
+    public void SerializeAndDeserializeMaze() throws IOException, ClassNotFoundException, MazeException {
         testMaze.GenerateMaze();
         Maze testMaze2 = Maze.ByteArrayToMaze(Maze.MazeToByteArray(testMaze));
 

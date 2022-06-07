@@ -72,7 +72,7 @@ public class CreatePage extends JFrame implements Runnable {
             public void mousePressed(MouseEvent e) {
                 try {
                     CreateMaze();
-                } catch (IOException | InvalidInputException ex) {
+                } catch (IOException | InvalidInputException | MazeException ex) {
                     ex.printStackTrace();
                 }
             }
@@ -84,7 +84,7 @@ public class CreatePage extends JFrame implements Runnable {
      * @throws IOException Exception
      * @throws InvalidInputException Exception
      */
-    private void CreateMaze() throws IOException, InvalidInputException {
+    private void CreateMaze() throws IOException, InvalidInputException, MazeException {
         if (mazeTitle.getText().isEmpty()) {
             throw new InvalidInputException("Please input a title", this);
         }

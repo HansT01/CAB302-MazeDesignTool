@@ -26,7 +26,10 @@ public class Maze implements Serializable {
      * @param sizeX The width of the maze in cells.
      * @param sizeY The height of the maze in cells.
      */
-    public Maze(String title, String author, int sizeX, int sizeY) {
+    public Maze(String title, String author, int sizeX, int sizeY) throws MazeException {
+        if (sizeX < 1 || sizeY < 1) {
+            throw new MazeException("Maze must have positive non-zero dimensions");
+        }
         this.title = title;
         this.author = author;
         this.sizeX = sizeX;
@@ -196,7 +199,7 @@ public class Maze implements Serializable {
      * Places all images in image list randomly on the maze until no images overlap
      * @return false if no non-overlapping placements were found.
      */
-    public boolean PlaceImagesRandom(int iterations) {
+    public boolean PlaceImagesRandom(int iterations) throws MazeException {
         // unset placed images and cells covered by image
         for (MazeImage image : images) {
             RemoveImage(image);
@@ -230,7 +233,7 @@ public class Maze implements Serializable {
     /**
      * Generates a maze.
      */
-    public void GenerateMaze() {
+    public void GenerateMaze() throws MazeException {
         /*
         Random DFS maze pseudocode:
         Modified from https://en.wikipedia.org/wiki/Depth-first_search
@@ -300,7 +303,7 @@ public class Maze implements Serializable {
      * Solves maze from the startX, startY to endX, endY using the AStar algorithm.
      * @return
      * An array of the cell path from startCell to endCell.
-     * An empty Cell array if no path was found.
+     * A null value if no path was found.
      */
     public Cell[] Solve() {
         /*
@@ -345,7 +348,7 @@ public class Maze implements Serializable {
 
             // Check if solution is found
             if (currentCell == endCell) {
-                int solutionLen = currentNode.getPathCost();
+                int solutionLen = currentNode.getPathCost() + 1;
                 Cell[] solution = new Cell[solutionLen];
                 for (int i = solutionLen - 1; i >= 0; i--) {
                     solution[i] = currentNode.getCell();
@@ -421,13 +424,13 @@ public class Maze implements Serializable {
      * @param yPos y position of image.
      * @param mazeImage input image to be placed.
      */
-    public void PlaceImage(int xPos, int yPos, MazeImage mazeImage) {
+    public void PlaceImage(int xPos, int yPos, MazeImage mazeImage) throws MazeException {
         int imageSizeX = mazeImage.getSizeX();
         int imageSizeY = mazeImage.getSizeY();
 
         // check if image fits within maze
         if (!CheckInBounds(xPos, yPos, mazeImage)) {
-            return;
+            throw new MazeException("Maze image is out of bounds");
         }
 
         // if image is already placed, remove it
@@ -489,10 +492,9 @@ public class Maze implements Serializable {
      * @param xPos x position of image.
      * @param yPos y position of image.
      */
-    public void PlaceImage(int xPos, int yPos) {
+    public void PlaceImage(int xPos, int yPos) throws MazeException {
         if (selectedImage == null) {
-            System.out.println("No image is selected!");
-            return;
+            throw new MazeException("No image is selected!");
         }
         PlaceImage(xPos, yPos, selectedImage);
     }
@@ -576,7 +578,7 @@ public class Maze implements Serializable {
         return (Maze) objectInputStream.readObject();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws MazeException {
         long startTime;
         long endTime;
 

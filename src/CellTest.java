@@ -7,7 +7,7 @@ public class CellTest {
     Cell testCell3;
 
     @BeforeEach
-    public void ConstructMaze() {
+    public void ConstructMaze() throws MazeException {
         testMaze = new Maze("Maze title", "Maze author", 3, 1);
         testCell1 = testMaze.getCells()[0][0];
         testCell2 = testMaze.getCells()[1][0];
@@ -35,7 +35,7 @@ public class CellTest {
         }
     }
     @Test
-    public void GetClosedNeighboursNone() {
+    public void GetClosedNeighboursNone() throws MazeException {
         testMaze.GenerateMaze();
         assert(testCell1.GetClosedNeighbours().size() == 0) : "Test cell 1 should not have a closed neighbour";
         assert(testCell2.GetClosedNeighbours().size() == 0) : "Test cell 2 should not have a closed neighbour";
@@ -57,13 +57,13 @@ public class CellTest {
         assert(testCell3.GetOpenNeighbours().size() == 0) : "Test cell 3 should not have an open neighbour";
     }
     @Test
-    public void GetOpenNeighboursOne() {
+    public void GetOpenNeighboursOne() throws MazeException {
         testMaze.GenerateMaze();
         assert(testCell1.GetOpenNeighbours().size() == 1) : "Test cell 1 should have 1 open neighbour";
         assert(testCell3.GetOpenNeighbours().size() == 1) : "Test cell 3 should have 1 open neighbour";
     }
     @Test
-    public void GetOpenNeighboursTwo() {
+    public void GetOpenNeighboursTwo() throws MazeException {
         testMaze.GenerateMaze();
         assert(testCell2.GetOpenNeighbours().size() == 2) : "Test cell 2 should have 2 open neighbours";
     }
@@ -74,7 +74,7 @@ public class CellTest {
         assert(!testCell2.getWalls()[3]) : "Test cell 3 should have its west wall taken down";
     }
     @Test
-    public void RemoveWallY() {
+    public void RemoveWallY() throws MazeException {
         testMaze = new Maze("Maze title", "Maze author", 1, 3);
         testCell1 = testMaze.getCells()[0][0];
         testCell2 = testMaze.getCells()[0][1];

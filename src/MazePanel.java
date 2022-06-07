@@ -144,7 +144,11 @@ public class MazePanel extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                HandleClickEvent(e);
+                try {
+                    HandleClickEvent(e);
+                } catch (MazeException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
     }
@@ -156,7 +160,7 @@ public class MazePanel extends JPanel {
      * Toggles a wall near the input x, y coordinate.
      * @param e MouseEvent click event.
      */
-    private void HandleClickEvent(MouseEvent e) {
+    private void HandleClickEvent(MouseEvent e) throws MazeException {
         Cell[][] cells = maze.getCells();
         if (placingImage) {
             int x = e.getX() / cellSize;
@@ -210,7 +214,7 @@ public class MazePanel extends JPanel {
     }
 
     // For testing maze panel, do not remove!
-    public static void main(String[] args) {
+    public static void main(String[] args) throws MazeException {
         // Generate maze panel
         Maze testMaze = new Maze("Maze Title", "Maze Author", 6,4);
         testMaze.GenerateMaze();
