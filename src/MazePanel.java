@@ -159,6 +159,7 @@ public class MazePanel extends JPanel {
     /**
      * Toggles a wall near the input x, y coordinate.
      * @param e MouseEvent click event.
+     * @throws MazeException if PlaceImage method fails to place image
      */
     private void HandleClickEvent(MouseEvent e) throws MazeException {
         Cell[][] cells = maze.getCells();
@@ -169,7 +170,6 @@ public class MazePanel extends JPanel {
             int xPos = (x == maze.getSizeX()) ? x - 1 : x;
             int yPos = (y == maze.getSizeY()) ? y - 1 : y;
 
-            // If x is out of bounds
             maze.PlaceImage(xPos, yPos);
             repaint();
         }

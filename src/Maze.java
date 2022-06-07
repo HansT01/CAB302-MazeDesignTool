@@ -219,6 +219,7 @@ public class Maze implements Serializable {
     /**
      * Places all images in image list randomly on the maze until no images overlap
      * @return false if no non-overlapping placements were found.
+     * @throws MazeException if PlaceImage method fails to place image
      */
     public boolean PlaceImagesRandom(int iterations) throws MazeException {
         // unset placed images and cells covered by image

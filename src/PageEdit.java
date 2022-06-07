@@ -108,7 +108,7 @@ public class PageEdit extends JFrame implements Runnable {
             public void mousePressed(MouseEvent e) {
                 try {
                     RegenerateMaze();
-                } catch (MazeException ex) {
+                } catch (MazeException | InvalidInputException ex) {
                     ex.printStackTrace();
                 }
             }
@@ -175,11 +175,15 @@ public class PageEdit extends JFrame implements Runnable {
 
     /**
      * Regenerates maze by clearing and optionally placing images randomly
+     * @throws MazeException if PlaceImage method fails to place image
+     * @throws InvalidInputException if PlaceImagesRandom runs out of iterations
      */
-    private void RegenerateMaze() throws MazeException {
+    private void RegenerateMaze() throws MazeException, InvalidInputException {
         Maze maze = mazePanel.getMaze();
         if (toggleRandomizeImages.isSelected()) {
-            maze.PlaceImagesRandom(50);
+            if (!maze.PlaceImagesRandom(50)) {
+                throw new InvalidInputException("Ran out of iterations, unable to generate maze with given images");
+            }
         }
         else {
             for (MazeImage mazeImage : maze.getImages()) {
