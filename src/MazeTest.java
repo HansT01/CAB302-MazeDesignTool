@@ -3,6 +3,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Objects;
 
 public class MazeTest {
@@ -32,9 +33,14 @@ public class MazeTest {
             testMaze.PlaceImage(0, 0, mazeImage);
         });}
     @Test
-    public void DateLastEdited() {}
+    public void DateLastEdited() {
+        assert(testMaze.getDateLastEdited() == testMaze.getDateCreated()) : "Image date created and last edited should be the same";
+    }
     @Test
-    public void DateCreated() {}
+    public void DateCreated() {
+        Date now = new Date(System.currentTimeMillis());
+        assert (now.getTime() - testMaze.getDateCreated().getTime() < 1000) : "Date created and now is not within 1 second";
+    }
     @Test
     public void Area() {
         assert (testMaze.getArea() == testMaze.getSizeX() * testMaze.getSizeY()) : "Area does not match X * Y";
