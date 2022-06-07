@@ -3,6 +3,8 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+
+
 /**
  * Constructs window for viewing and interacting with mazes stored in database
  */
@@ -28,6 +30,8 @@ public class DataBaseUI extends JFrame implements Runnable {
     JButton b4 = new JButton();
     /** JTable used for displaying maze data */
     JTable table;
+
+    Object[][] getData();
 
     /** Constructs DataBase JFrame */
     private void createGUI() {
@@ -78,18 +82,6 @@ public class DataBaseUI extends JFrame implements Runnable {
         return table;
     }
 
-    private Object[][] getData() {
-        Object[][] data = null;
-
-        data = new Object[1][4];
-
-        data[0][0] = "test";
-        data[0][1] = "test";
-        data[0][2] = "test";
-        data[0][3] = "test";
-
-        return data;
-    }
 
 
     /**
