@@ -88,15 +88,27 @@ public class MazeTest {
         assert (testMaze.Solve() == null) : "Solution " + testMaze.Solve() + " is not null";
     }
     @Test
-    public void GenerateWithImage() {}
+    public void GenerateWithImage() throws MazeException {
+        MazeImage mazeImage = new MazeImage(1, 1);
+        testMaze.getImages().add(mazeImage);
+        assert (testMaze.Solve() == null) : "Image should obstruct solution";
+    }
     @Test
-    public void GenerateWithTwoImages() {}
+    public void GenerateWithStartAndEndImages() throws MazeException {
+        MazeImage mazeImage = new MazeImage(1, 1);
+        testMaze.setStartImage(mazeImage);
+        testMaze.setEndImage(mazeImage);
+        testMaze.GenerateMaze();
+        assert (testMaze.Solve() != null) : "Start and end images should not obstruct solution";
+    }
     @Test
-    public void PlaceImage() {}
+    public void PlaceImage() throws MazeException {
+        MazeImage mazeImage = new MazeImage(1, 1);
+        testMaze.PlaceImage(1, 0, mazeImage);
+        assert (testMaze.Solve() == null) : "Placed image should obstruct solution";}
     @Test
     public void SolutionPct() throws MazeException {
         testMaze.GenerateMaze();
-        System.out.println(Arrays.deepToString(testMaze.Solve()));
         double solutionPct = testMaze.SolutionPct();
         assert (solutionPct == 1) : "Solution percentage " + solutionPct + " does not match 100%";
     }
