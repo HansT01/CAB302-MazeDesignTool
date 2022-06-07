@@ -25,6 +25,7 @@ public class Maze implements Serializable {
      * Constructs and initialises a new Maze.
      * @param sizeX The width of the maze in cells.
      * @param sizeY The height of the maze in cells.
+     * @throws MazeException Throws maze exception if dimensions are not positive non-zero integers
      */
     public Maze(String title, String author, int sizeX, int sizeY) throws MazeException {
         if (sizeX < 1 || sizeY < 1) {

@@ -5,6 +5,7 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class MazeTest {
     Maze testMaze;
@@ -33,8 +34,10 @@ public class MazeTest {
             testMaze.PlaceImage(0, 0, mazeImage);
         });}
     @Test
-    public void DateLastEdited() {
-        assert(testMaze.getDateLastEdited() == testMaze.getDateCreated()) : "Image date created and last edited should be the same";
+    public void DateLastEdited() throws InterruptedException {
+        TimeUnit.SECONDS.sleep(1);
+        testMaze.UpdateLastEdited();
+        assert(testMaze.getDateLastEdited().getTime() > testMaze.getDateCreated().getTime()) : "Image last edited should be after date created";
     }
     @Test
     public void DateCreated() {
