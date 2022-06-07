@@ -17,10 +17,7 @@ public class JDBCDataSource implements DBDataSource {
 
 
 
-
-    public Object[][] data;
     private Connection connection;
-    private static final String GET_DATA = "SELECT * FROM mazeStorage";
     private PreparedStatement getData;
 
     public JDBCDataSource() {
@@ -28,34 +25,10 @@ public class JDBCDataSource implements DBDataSource {
         try {
             Statement st = connection.createStatement();
             st.execute(CREATE_TABLE);
-            getData = connection.prepareStatement(GET_DATA);
 
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-    }
-
-
-    public Object[][] getData() throws SQLException {
-        ResultSet rs = getData.executeQuery();;
-        int i = 0;
-        try {
-            while (rs.next()) {
-                int j = 0;
-                data[i][j++] = rs.getString("author");
-                data[i][j++] = rs.getDate("dateCreated");
-                data[i][j++] = rs.getDate("dateLastEdited");
-                data[i][j++] = rs.getInt("sizeX");
-                data[i][j++] = rs.getInt("sizeY");
-
-                i++;
-
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-
-        return data;
     }
 
 

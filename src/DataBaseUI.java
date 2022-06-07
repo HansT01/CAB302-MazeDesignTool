@@ -1,8 +1,14 @@
+import DB.db.DBConnection;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 
 /**
@@ -30,8 +36,6 @@ public class DataBaseUI extends JFrame implements Runnable {
     JButton b4 = new JButton();
     /** JTable used for displaying maze data */
     JTable table;
-
-    Object[][] getData();
 
     /** Constructs DataBase JFrame */
     private void createGUI() {
@@ -80,6 +84,30 @@ public class DataBaseUI extends JFrame implements Runnable {
         JTable table = new JTable(rowData, header);
         table.setBounds(30,40,200,300);
         return table;
+    }
+
+    private Object[][] getData() {
+        Object[][] data = null;
+        try {
+            Connection connection = DBConnection.getInstance();
+            final String GET_DATA = "SELECT * FROM mazeStorage";
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(GET_DATA);;
+            int i = 0;
+                while (rs.next()) {
+                    int j = 0;
+                    data[i][j++] = rs.getString("author");
+                    data[i][j++] = rs.getDate("dateCreated");
+                    data[i][j++] = rs.getDate("dateLastEdited");
+                    data[i][j++] = rs.getInt("sizeX");
+                    data[i][j++] = rs.getInt("sizeY");
+                    i++;
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+
+        return data;
     }
 
 
