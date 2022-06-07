@@ -1,5 +1,6 @@
 package DB.db;
 
+import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class DBConnection {
         Properties props = new Properties();
         FileInputStream in = null;
         try {
-            in = new FileInputStream("./db.props");
+            in = new FileInputStream("./src/DB/db/db.props");
             props.load(in);
             in.close();
 
@@ -45,6 +46,13 @@ public class DBConnection {
             new DBConnection();
         }
         return instance;
+    }
+
+
+    //testing
+    public static void main(String[] args) {
+        Connection test = getInstance();
+        System.out.print(test);
     }
 }
 

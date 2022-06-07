@@ -9,8 +9,8 @@ public class JDBCDataSource implements DBDataSource {
     public static final String CREATE_TABLE =
             "CREATE TABLE IF NOT EXISTS mazeStorage ("
                     + "author VARCHAR(50),"
-                    + "dateCreated DATE,"
-                    + "dateLastEdited DATE,"
+                    + "dateCreated VARCHAR(50),"
+                    + "dateLastEdited VARCHAR(50),"
                     + "sizeX VARCHAR(5),"
                     + "sizeY VARCHAR(5)" + ");";
 
@@ -31,6 +31,9 @@ public class JDBCDataSource implements DBDataSource {
         }
     }
 
+    public static void main(String[] args) {
+        new JDBCDataSource();
+    }
 
 
 }

@@ -80,7 +80,7 @@ public class DataBaseUI extends JFrame implements Runnable {
      */
     private JTable mazeTable() {
         Object[][] rowData = getData();
-        String[] header = {"Title", "Author", "Data Created", "Last Edited"};
+        String[] header = {"Author", "Date Create", "Last Edited", "SizeX", "SizeY"};
         JTable table = new JTable(rowData, header);
         table.setBounds(30,40,200,300);
         return table;
@@ -90,17 +90,27 @@ public class DataBaseUI extends JFrame implements Runnable {
         Object[][] data = null;
         try {
             Connection connection = DBConnection.getInstance();
+            System.out.print(connection);
             final String GET_DATA = "SELECT * FROM mazeStorage";
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(GET_DATA);;
+            ResultSet rs = statement.executeQuery(GET_DATA);
+
+            int rowCount = getRowCount(rs); // Row Count
+            int columnCount = getColumnCount(rs); // Column Count
+
+            data = new Object[rowCount][columnCount];
+
+            rs.beforeFirst();
+
             int i = 0;
                 while (rs.next()) {
                     int j = 0;
                     data[i][j++] = rs.getString("author");
-                    data[i][j++] = rs.getDate("dateCreated");
-                    data[i][j++] = rs.getDate("dateLastEdited");
-                    data[i][j++] = rs.getInt("sizeX");
-                    data[i][j++] = rs.getInt("sizeY");
+                    data[i][j++] = rs.getString("dateCreated");
+                    data[i][j++] = rs.getString("dateLastEdited");
+                    data[i][j++] = rs.getString("sizeX");
+                    data[i][j++] = rs.getString("sizeY");
+
                     i++;
                 }
             } catch (SQLException ex) {
@@ -108,6 +118,44 @@ public class DataBaseUI extends JFrame implements Runnable {
             }
 
         return data;
+    }
+
+    // Method to get Row Count from ResultSet Object
+    private int getRowCount(ResultSet rs) {
+
+        try {
+
+            if(rs != null) {
+
+                rs.last();
+
+                return rs.getRow();
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    // Method to get Column Count from ResultSet Object
+    private int getColumnCount(ResultSet rs) {
+
+        try {
+
+            if(rs != null)
+                return rs.getMetaData().getColumnCount();
+
+        } catch (SQLException e) {
+
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+        return 0;
     }
 
 
