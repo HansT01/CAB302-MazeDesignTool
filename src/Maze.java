@@ -53,22 +53,42 @@ public class Maze implements Serializable {
         }
     }
 
+    /**
+     * Getter for end image
+     * @return MazeImage object
+     */
     public MazeImage getStartImage() {
         return startImage;
     }
 
+    /**
+     * Getter for end image
+     * @return MazeImage object
+     */
     public MazeImage getEndImage() {
         return endImage;
     }
 
+    /**
+     * Setter for start image
+     * @param startImage MazeImage object
+     */
     public void setStartImage(MazeImage startImage) {
         this.startImage = startImage;
     }
 
+    /**
+     * Setter for end image
+     * @param endImage MazeImage object
+     */
     public void setEndImage(MazeImage endImage) {
         this.endImage = endImage;
     }
 
+    /**
+     * Setter for selected image
+     * @param selectedImage MazeImage object
+     */
     public void setSelectedImage(MazeImage selectedImage) {
         this.selectedImage = selectedImage;
     }
@@ -176,7 +196,7 @@ public class Maze implements Serializable {
     /**
      * Clears the maze to a state ready for the GenerateMaze method.
      */
-    public void ClearMaze() {
+    private void ClearMaze() {
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
                 cells[x][y].setWalls(new boolean[] {true, true, true, true});
@@ -231,7 +251,8 @@ public class Maze implements Serializable {
     }
 
     /**
-     * Generates a maze.
+     * Generates a maze. This method will generate a new maze over an existing maze.
+     * No exceptions will be raised if the generated maze is incomplete.
      */
     public void GenerateMaze() throws MazeException {
         /*
@@ -250,9 +271,11 @@ public class Maze implements Serializable {
             else if none is found
                 S.pop()
          */
-        Random r = new Random();
+        ClearMaze();
         if (startImage != null) RemoveImage(startImage);
         if (endImage != null) RemoveImage(endImage);
+
+        Random r = new Random();
 
         // let S be a stack
         // let start be the starting cell
@@ -423,6 +446,7 @@ public class Maze implements Serializable {
      * @param xPos x position of image.
      * @param yPos y position of image.
      * @param mazeImage input image to be placed.
+     * @throws MazeException throws exception if maze image does not fit within the maze
      */
     public void PlaceImage(int xPos, int yPos, MazeImage mazeImage) throws MazeException {
         int imageSizeX = mazeImage.getSizeX();
@@ -491,6 +515,7 @@ public class Maze implements Serializable {
      * If not image is specified, the method will use selected image.
      * @param xPos x position of image.
      * @param yPos y position of image.
+     * @throws MazeException throws maze exception if selected image is null
      */
     public void PlaceImage(int xPos, int yPos) throws MazeException {
         if (selectedImage == null) {
@@ -556,7 +581,6 @@ public class Maze implements Serializable {
      * Serializes a maze into a byte array
      * @param maze Input maze object
      * @return byte array
-     * @throws IOException
      */
     public static byte[] MazeToByteArray(Maze maze) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -569,8 +593,6 @@ public class Maze implements Serializable {
      * Deserializes a byte array into a maze object
      * @param byteArr Input byte array
      * @return Maze object
-     * @throws IOException
-     * @throws ClassNotFoundException
      */
     public static Maze ByteArrayToMaze(byte[] byteArr) throws IOException, ClassNotFoundException {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArr);

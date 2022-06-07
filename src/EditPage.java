@@ -177,7 +177,6 @@ public class EditPage extends JFrame implements Runnable {
      */
     private void RegenerateMaze() throws MazeException {
         Maze maze = mazePanel.getMaze();
-        maze.ClearMaze();
         if (toggleRandomizeImages.isSelected()) {
             maze.PlaceImagesRandom(50);
         }
