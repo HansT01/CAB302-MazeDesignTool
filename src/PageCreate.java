@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * Constructs window for entering information required to create new maze
  */
-public class CreatePage extends JFrame implements Runnable {
+public class PageCreate extends JFrame implements Runnable {
     private final JTextField mazeTitle = new JTextField();
     private final JTextField mazeWidth = new JTextField();
     private final JTextField mazeHeight = new JTextField();
@@ -40,9 +40,9 @@ public class CreatePage extends JFrame implements Runnable {
     final JFileChooser fc = new JFileChooser();
 
     /**
-     * Constructor for the CreatePage
+     * Constructor for the PageCreate
      */
-    public CreatePage() {
+    public PageCreate() {
         fc.setFileFilter(new FileNameExtensionFilter("Image Files", "jpeg", "jpg", "png", "gif"));
         fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
 
@@ -170,7 +170,7 @@ public class CreatePage extends JFrame implements Runnable {
             maze.PlaceImage(endX, endY, endMazeImage);
         }
 
-        EditPage editPage = new EditPage(maze, cellSize);
+        PageEdit editPage = new PageEdit(maze, cellSize);
         SwingUtilities.invokeLater(editPage);
         dispose();
     }
@@ -468,7 +468,7 @@ public class CreatePage extends JFrame implements Runnable {
      */
     public static void main(String[] args) throws IOException {
         // test page
-        CreatePage testPage = new CreatePage();
+        PageCreate testPage = new PageCreate();
         SwingUtilities.invokeLater(testPage);
     }
 }

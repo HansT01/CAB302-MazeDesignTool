@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class EditPage extends JFrame implements Runnable {
+public class PageEdit extends JFrame implements Runnable {
     private final MazePanel mazePanel;
     private final GridBagManager gbm = new GridBagManager();
     private final JToggleButton toggleSolution = new JToggleButton("Enable maze solution", true);
@@ -45,7 +45,7 @@ public class EditPage extends JFrame implements Runnable {
      * @param maze maze object
      * @param cellSize size of each cell
      */
-    public EditPage(Maze maze, int cellSize) throws IOException {
+    public PageEdit(Maze maze, int cellSize) throws IOException {
         fc.setFileFilter(new FileNameExtensionFilter("Image Files", "jpeg", "jpg", "png", "gif"));
         fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
 
@@ -73,7 +73,7 @@ public class EditPage extends JFrame implements Runnable {
                 Maze maze = mazePanel.getMaze();
                 MazeImage mazeImage = GetSelectedImage();
                 if (mazeImage == null) try {
-                    throw new InvalidInputException("Please select an image", EditPage.this);
+                    throw new InvalidInputException("Please select an image", PageEdit.this);
                 } catch (InvalidInputException ex) {
                     ex.printStackTrace();
                 }
@@ -560,7 +560,7 @@ public class EditPage extends JFrame implements Runnable {
         Maze testMaze = new Maze("test-maze-title", "test-maze-author", 10,5);
 
         // Create page with panel
-        EditPage testPage = new EditPage(testMaze, 32);
+        PageEdit testPage = new PageEdit(testMaze, 32);
         SwingUtilities.invokeLater(testPage);
     }
 }

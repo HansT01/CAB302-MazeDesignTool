@@ -14,7 +14,7 @@ import java.sql.Statement;
 /**
  * Constructs window for viewing and interacting with mazes stored in database
  */
-public class DataBaseUI extends JFrame implements Runnable {
+public class PageDatabase extends JFrame implements Runnable {
 
     /** Used for getting location of mouse pointer */
      Point openLocation = MouseInfo.getPointerInfo().getLocation();
@@ -190,7 +190,7 @@ public class DataBaseUI extends JFrame implements Runnable {
      */
     void buttonSetup() {
         b1.addActionListener(e -> {
-            SwingUtilities.invokeLater(new CreatePage());
+            SwingUtilities.invokeLater(new PageCreate());
             dispose();
         });
         b2.addActionListener(e -> {
@@ -198,7 +198,7 @@ public class DataBaseUI extends JFrame implements Runnable {
             try {
                 Maze testMaze = new Maze("Maze Title", "Maze Author", 80,50);
                 testMaze.GenerateMaze();
-                SwingUtilities.invokeLater(new EditPage(testMaze, 12));
+                SwingUtilities.invokeLater(new PageEdit(testMaze, 12));
             } catch (MazeException | IOException ex) {
                 ex.printStackTrace();
             }
@@ -208,5 +208,5 @@ public class DataBaseUI extends JFrame implements Runnable {
 
     public void run() {createGUI();}
 
-    public static void main(String[] args) {SwingUtilities.invokeLater(new DataBaseUI());}
+    public static void main(String[] args) {SwingUtilities.invokeLater(new PageDatabase());}
 }

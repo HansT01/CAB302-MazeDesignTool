@@ -1,13 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
  * Constructs window for authenticating user
  */
-public class LoginUI extends JFrame implements ActionListener, Runnable {
+public class PageLogin extends JFrame implements ActionListener, Runnable {
     GridBagManager gbm = new GridBagManager();
 
     // Labels
@@ -92,7 +91,7 @@ public class LoginUI extends JFrame implements ActionListener, Runnable {
             String passTxt = passwordText.getText();
             if (userTxt.equalsIgnoreCase("Riley") && passTxt.equalsIgnoreCase("1234")) {
                 login.addActionListener(f -> {
-                    SwingUtilities.invokeLater(new DataBaseUI());
+                    SwingUtilities.invokeLater(new PageDatabase());
                     dispose();
                 });
             }
@@ -106,5 +105,5 @@ public class LoginUI extends JFrame implements ActionListener, Runnable {
     @Override
     public void run() {
         CreateGUI();}
-    public static void main(String[] args) {SwingUtilities.invokeLater(new LoginUI());} // for testing
+    public static void main(String[] args) {SwingUtilities.invokeLater(new PageLogin());} // for testing
 }
