@@ -88,19 +88,6 @@ public class CellNode implements Comparable<CellNode> {
     }
 
     /**
-     * Equals method.
-     * @param o comparison object.
-     * @return true if both cells are equal.
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CellNode node = (CellNode) o;
-        return cell == node.cell;
-    }
-
-    /**
      * String representation of a cell node.
      * @return string representation of the cell.
      */

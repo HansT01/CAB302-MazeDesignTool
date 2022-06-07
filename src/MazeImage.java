@@ -16,46 +16,93 @@ public class MazeImage implements Serializable {
     private int y;
     private boolean isPlaced = false;
 
+    /**
+     * Getter for image title
+     * @return String object
+     */
     public String getImageTitle() {
         return imageTitle;
     }
 
+    /**
+     * Is the image placed
+     * @return true if image is placed
+     */
     public boolean isPlaced() {
         return isPlaced;
     }
 
+    /**
+     * Setter for isPlaced
+     * @param placed boolean value
+     */
     public void setPlaced(boolean placed) {
         isPlaced = placed;
     }
 
+    /**
+     * Getter for the x position
+     * @return leftmost x position
+     */
     public int getX() {
         return x;
     }
 
+    /**
+     * Setter for the x position
+     * @param x integer of the leftmost x position
+     */
     public void setX(int x) {
         this.x = x;
     }
 
+    /**
+     * Getter for the y position
+     * @return uppermost y position
+     */
     public int getY() {
         return y;
     }
 
+    /**
+     * Setter for the y position
+     * @param y integer of the uppermost y position
+     */
     public void setY(int y) {
         this.y = y;
     }
 
+    /**
+     * Getter for the x size or width
+     * @return image width in cells
+     */
     public int getSizeX() {
         return sizeX;
     }
 
+    /**
+     * Getter for the y size or height
+     * @return image height in cells
+     */
     public int getSizeY() {
         return sizeY;
     }
 
+    /**
+     * Getter for image data
+     * @return ImageIcon object containing the image data
+     */
     public ImageIcon getImageData() {
         return imageData;
     }
 
+    /**
+     * Maze image constructor
+     * @param imageTitle Title of the image
+     * @param imageData Image object containing the image data
+     * @param sizeX width of the image in cells
+     * @param sizeY height of the image in cells
+     */
     public MazeImage(String imageTitle, Image imageData, int sizeX, int sizeY) {
         this.imageTitle = imageTitle;
         this.imageData = new ImageIcon(imageData);
@@ -63,6 +110,11 @@ public class MazeImage implements Serializable {
         this.sizeY = sizeY;
     }
 
+    /**
+     * Alternative constructor with no set width or height
+     * @param imageTitle Title of the image
+     * @param imageData Image object containing the image data
+     */
     public MazeImage(String imageTitle, Image imageData) {
         this.imageTitle = imageTitle;
         this.imageData = new ImageIcon(imageData);
@@ -70,6 +122,11 @@ public class MazeImage implements Serializable {
         this.sizeY = 0;
     }
 
+    /**
+     * Alternative constructor for testing
+     * @param sizeX Image width in cells
+     * @param sizeY Image height in cells
+     */
     public MazeImage(int sizeX, int sizeY) {
         this.imageTitle = "Null image";
         this.imageData = null;

@@ -18,6 +18,7 @@ public class Cell implements Serializable {
      * Constructs and initializes a cell object
      * @param x x coordinate of the cell
      * @param y y coordinate of the cell
+     * @param maze Parent maze object that this cell resides in
      */
     public Cell(int x, int y, Maze maze) {
         this.x = x;
@@ -76,7 +77,7 @@ public class Cell implements Serializable {
     /**
      * Calculates the distance between this and the target cell.
      * @param targetCell The target cell.
-     * @return The distance between current cell and target cell in cells.
+     * @return The distance between current cell and target cell in cell units.
      */
     public double DistanceTo(Cell targetCell) {
         double xDiff = targetCell.getX()-x;
