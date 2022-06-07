@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class EditPage extends JFrame implements Runnable {
     private final MazePanel mazePanel;
+    private final GridBagManager gbm = new GridBagManager();
     private final JToggleButton toggleSolution = new JToggleButton("Enable maze solution", true);
     private final JToggleButton toggleRandomizeImages = new JToggleButton("Enable randomize images");
     private final JButton importImage = new JButton("Import image");
@@ -308,49 +309,6 @@ public class EditPage extends JFrame implements Runnable {
     }
 
     /**
-     * Creates a GridBagConstraints object for objects on the main frame.
-     * Notable features include a larger padding size and padding around the outer elements.
-     * @param x x location of the grid bag layout
-     * @param y y location of the grid bag layout
-     * @return GridBagConstraints object
-     */
-    private GridBagConstraints CreateOuterGBC(int x, int y) {
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = x;
-        gbc.gridy = y;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-
-        int outerPaddingSize = 20;
-        gbc.insets = new Insets((y==0) ? outerPaddingSize : 0, (x==0) ? outerPaddingSize : 0, outerPaddingSize, outerPaddingSize);
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        return gbc;
-    }
-
-    /**
-     * Creates a GridBagConstraints object for objects inside a panel.
-     * Notable features include smaller padding size and no padding around the outer elements.
-     * @param x x location of the grid bag layout
-     * @param y y location of the grid bag layout
-     * @return GridBagConstraints object
-     */
-    private GridBagConstraints CreateInnerGBC(int x, int y) {
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = x;
-        gbc.gridy = y;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-
-        gbc.fill = GridBagConstraints.BOTH;
-        int innerPaddingSize = 5;
-        gbc.insets = new Insets((y!=0) ? innerPaddingSize : 0, (x!=0) ? innerPaddingSize : 0, 0, 0);
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        return gbc;
-    }
-
-    /**
      * Creates 'images' JPanel object
      * @return JPanel object
      */
@@ -373,37 +331,37 @@ public class EditPage extends JFrame implements Runnable {
         int gridRow = 0;
 
         // import image button
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.gridwidth = 1;
         panel.add(importImage, gbc);
 
         // delete image button
-        gbc = CreateInnerGBC(1, gridRow++);
+        gbc = gbm.CreateInnerGBC(1, gridRow++);
         gbc.gridwidth = 1;
         panel.add(deleteImage, gbc);
 
         // import image options
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         panel.add(new Label("Image width:", Label.RIGHT), gbc);
-        gbc = CreateInnerGBC(1, gridRow++);
+        gbc = gbm.CreateInnerGBC(1, gridRow++);
         panel.add(imageWidth, gbc);
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         panel.add(new Label("Image height:", Label.RIGHT), gbc);
-        gbc = CreateInnerGBC(1, gridRow++);
+        gbc = gbm.CreateInnerGBC(1, gridRow++);
         panel.add(imageHeight, gbc);
 
         // imported images table
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
         panel.add(scrollPane, gbc);
 
         // place image button
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
         panel.add(placeImage, gbc);
 
         // clear all images button
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.gridwidth = 2;
         panel.add(clearImages, gbc);
 
@@ -426,11 +384,11 @@ public class EditPage extends JFrame implements Runnable {
         int gridRow = 0;
 
         // Generate maze button
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         panel.add(generateMaze, gbc);
 
         // Toggle randomize images
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         panel.add(toggleRandomizeImages, gbc);
 
         return panel;
@@ -457,43 +415,43 @@ public class EditPage extends JFrame implements Runnable {
         int mazeHeight = maze.getSizeY();
 
         // toggle solution
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
         panel.add(toggleSolution, gbc);
 
         // solution percentage
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
         panel.add(new JLabel("Pixels per cell: " , SwingConstants.LEFT), gbc);
-        gbc = CreateInnerGBC(1, gridRow++);
+        gbc = gbm.CreateInnerGBC(1, gridRow++);
         panel.add(new JLabel(String.format("%s", cellSize), SwingConstants.LEFT), gbc);
 
         // solution percentage
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
         panel.add(new JLabel("Maze dimensions (cells): " , SwingConstants.LEFT), gbc);
-        gbc = CreateInnerGBC(1, gridRow++);
+        gbc = gbm.CreateInnerGBC(1, gridRow++);
         panel.add(new JLabel(String.format("%sx%s", mazeWidth, mazeHeight), SwingConstants.LEFT), gbc);
 
         // solution percentage
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
         panel.add(new JLabel("Maze dimensions (pixels): " , SwingConstants.LEFT), gbc);
-        gbc = CreateInnerGBC(1, gridRow++);
+        gbc = gbm.CreateInnerGBC(1, gridRow++);
         panel.add(new JLabel(String.format("%sx%s", mazeWidth * cellSize, mazeHeight * cellSize), SwingConstants.LEFT), gbc);
 
         // solution percentage
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
         panel.add(new JLabel("Solution percentage: " , SwingConstants.LEFT), gbc);
-        gbc = CreateInnerGBC(1, gridRow++);
+        gbc = gbm.CreateInnerGBC(1, gridRow++);
         panel.add(solutionPct, gbc);
 
         // solution percentage
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
         panel.add(new JLabel("Dead ends: ", SwingConstants.LEFT), gbc);
-        gbc = CreateInnerGBC(1, gridRow);
+        gbc = gbm.CreateInnerGBC(1, gridRow);
         panel.add(deadEndsPct, gbc);
 
         return panel;
@@ -514,15 +472,15 @@ public class EditPage extends JFrame implements Runnable {
         GridBagConstraints gbc;
         int gridRow = 0;
 
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 1;
         panel.add(saveMaze, gbc);
 
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 1;
         panel.add(restoreMaze, gbc);
 
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.gridwidth = 1;
         panel.add(exportMaze, gbc);
 
@@ -541,19 +499,19 @@ public class EditPage extends JFrame implements Runnable {
         GridBagConstraints gbc;
         int gridRow = 0;
 
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 1;
         panel.add(CreateImagesPanel(), gbc);
 
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 1;
         panel.add(CreateGeneratePanel(), gbc);
 
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 1;
         panel.add(CreateSolutionPanel(), gbc);
 
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.gridwidth = 1;
         panel.add(CreateSavePanel(), gbc);
 
@@ -569,12 +527,12 @@ public class EditPage extends JFrame implements Runnable {
         int gridRow = 0;
 
         // maze panel
-        gbc = CreateOuterGBC(0, gridRow);
+        gbc = gbm.CreateOuterGBC(0, gridRow);
         gbc.anchor = GridBagConstraints.EAST;
         add(mazePanel, gbc);
 
         // options panel
-        gbc = CreateOuterGBC(1, gridRow);
+        gbc = gbm.CreateOuterGBC(1, gridRow);
         gbc.anchor = GridBagConstraints.WEST;
         add(CreateOptionsPanel(), gbc);
 

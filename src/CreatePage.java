@@ -35,6 +35,7 @@ public class CreatePage extends JFrame implements Runnable {
 
     private MazeImage startImage;
     private MazeImage endImage;
+    private final GridBagManager gbm = new GridBagManager();
 
     final JFileChooser fc = new JFileChooser();
 
@@ -234,31 +235,31 @@ public class CreatePage extends JFrame implements Runnable {
         int gridRow = 0;
 
         // input title
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
         panel.add(new JLabel("Maze Title: ", SwingUtilities.LEFT), gbc);
-        gbc = CreateInnerGBC(1, gridRow++);
+        gbc = gbm.CreateInnerGBC(1, gridRow++);
         panel.add(mazeTitle, gbc);
 
         // input width
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
         panel.add(new JLabel("Width: ", SwingUtilities.LEFT), gbc);
-        gbc = CreateInnerGBC(1, gridRow++);
+        gbc = gbm.CreateInnerGBC(1, gridRow++);
         panel.add(mazeWidth, gbc);
 
         // input height
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
         panel.add(new JLabel("Height: ", SwingUtilities.LEFT), gbc);
-        gbc = CreateInnerGBC(1, gridRow++);
+        gbc = gbm.CreateInnerGBC(1, gridRow++);
         panel.add(mazeHeight, gbc);
 
         // input cell size
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
         panel.add(new JLabel("Cell size (pixels): ", SwingUtilities.LEFT), gbc);
-        gbc = CreateInnerGBC(1, gridRow);
+        gbc = gbm.CreateInnerGBC(1, gridRow);
         panel.add(cellSizeInput, gbc);
 
         return panel;
@@ -280,41 +281,41 @@ public class CreatePage extends JFrame implements Runnable {
         int gridRow = 0;
 
         // start cell label
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
         panel.add(new JLabel("Start cell", SwingUtilities.LEFT), gbc);
 
         // start x input
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
         panel.add(new JLabel("x: ", SwingUtilities.LEFT), gbc);
-        gbc = CreateInnerGBC(1, gridRow++);
+        gbc = gbm.CreateInnerGBC(1, gridRow++);
         panel.add(startCellXField, gbc);
 
         // start y input
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
         panel.add(new JLabel("y: ", SwingUtilities.LEFT), gbc);
-        gbc = CreateInnerGBC(1, gridRow++);
+        gbc = gbm.CreateInnerGBC(1, gridRow++);
         panel.add(startCellYField, gbc);
 
         // end cell label
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
         panel.add(new JLabel("End cell", SwingUtilities.LEFT), gbc);
 
         // end x input
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
         panel.add(new JLabel("x: ", SwingUtilities.LEFT), gbc);
-        gbc = CreateInnerGBC(1, gridRow++);
+        gbc = gbm.CreateInnerGBC(1, gridRow++);
         panel.add(endCellXField, gbc);
 
         // end y input
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
         panel.add(new JLabel("y: ", SwingUtilities.LEFT), gbc);
-        gbc = CreateInnerGBC(1, gridRow);
+        gbc = gbm.CreateInnerGBC(1, gridRow);
         panel.add(endCellYField, gbc);
 
         return panel;
@@ -336,27 +337,27 @@ public class CreatePage extends JFrame implements Runnable {
         int gridRow = 0;
 
         // start image label
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
         panel.add(startImageLabel, gbc);
 
         // import start image
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
         panel.add(importStartImage, gbc);
 
         // start image width
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
         panel.add(new JLabel("Width: ", SwingUtilities.LEFT), gbc);
-        gbc = CreateInnerGBC(1, gridRow++);
+        gbc = gbm.CreateInnerGBC(1, gridRow++);
         panel.add(startImageWidthField, gbc);
 
         // start image height
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
         panel.add(new JLabel("Height: ", SwingUtilities.LEFT), gbc);
-        gbc = CreateInnerGBC(1, gridRow);
+        gbc = gbm.CreateInnerGBC(1, gridRow);
         panel.add(startImageHeightField, gbc);
 
         return panel;
@@ -378,27 +379,27 @@ public class CreatePage extends JFrame implements Runnable {
         int gridRow = 0;
 
         // end image label
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
         panel.add(endImageLabel, gbc);
 
         // import end image
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 2;
         panel.add(importEndImage, gbc);
 
         // end image width
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
         panel.add(new JLabel("Width: ", SwingUtilities.LEFT), gbc);
-        gbc = CreateInnerGBC(1, gridRow++);
+        gbc = gbm.CreateInnerGBC(1, gridRow++);
         panel.add(endImageWidthField, gbc);
 
         // end image height
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
         panel.add(new JLabel("Height: ", SwingUtilities.LEFT), gbc);
-        gbc = CreateInnerGBC(1, gridRow);
+        gbc = gbm.CreateInnerGBC(1, gridRow);
         panel.add(endImageHeightField, gbc);
 
         return panel;
@@ -417,21 +418,21 @@ public class CreatePage extends JFrame implements Runnable {
         int gridRow = 0;
 
         // maze panel
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         panel.add(CreateMazePanel(), gbc);
 
         // start-end panel
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         panel.add(CreateStartEndPanel(), gbc);
 
         // images panel
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         panel.add(CreateStartImagePanel(), gbc);
-        gbc = CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         panel.add(CreateEndImagePanel(), gbc);
 
         // create maze button
-        gbc = CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         panel.add(createMaze, gbc);
         return panel;
     }
@@ -443,7 +444,7 @@ public class CreatePage extends JFrame implements Runnable {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc;
 
-        gbc = CreateOuterGBC(0, 0);
+        gbc = gbm.CreateOuterGBC(0, 0);
         add(CreateMainPanel(), gbc);
 
         // resizes window to preferred dimensions
@@ -455,47 +456,6 @@ public class CreatePage extends JFrame implements Runnable {
         // set defaults
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-
-    /**
-     * Creates a GridBagConstraints object for objects inside a panel
-     * @param x x location of the grid bag layout
-     * @param y y location of the grid bag layout
-     * @return GridBagConstraints object
-     */
-    private GridBagConstraints CreateInnerGBC(int x, int y) {
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = x;
-        gbc.gridy = y;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-
-        gbc.fill = GridBagConstraints.BOTH;
-        int innerPaddingSize = 5;
-        gbc.insets = new Insets((y!=0) ? innerPaddingSize : 0, (x!=0) ? innerPaddingSize : 0, 0, 0);
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        return gbc;
-    }
-
-    /**
-     * Creates a GridBagConstraints object for objects on the main frame
-     * @param x x location of the grid bag layout
-     * @param y y location of the grid bag layout
-     * @return GridBagConstraints object
-     */
-    private GridBagConstraints CreateOuterGBC(int x, int y) {
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = x;
-        gbc.gridy = y;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-
-        int outerPaddingSize = 20;
-        gbc.insets = new Insets((y==0) ? outerPaddingSize : 0, (x==0) ? outerPaddingSize : 0, outerPaddingSize, outerPaddingSize);
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        return gbc;
     }
 
     @Override
