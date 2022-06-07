@@ -203,16 +203,6 @@ public class MazePanel extends JPanel {
         }
     }
 
-    /**
-     * Gets the cell indices at an x, y coordinate.
-     * @param xPx x coordinate in pixels.
-     * @param yPx y coordinate in pixels.
-     * @return x and y indices for a cell in this maze.
-     */
-    public int[] TranslateToIndex(int xPx, int yPx) {
-        return new int[] {xPx / maze.getSizeX(), yPx / maze.getSizeY()};
-    }
-
     // For testing maze panel, do not remove!
     public static void main(String[] args) throws MazeException {
         // Generate maze panel
