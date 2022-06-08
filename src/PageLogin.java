@@ -1,3 +1,5 @@
+import DB.db.DBConnection;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -118,7 +120,23 @@ public class PageLogin extends JFrame implements Runnable {
     public void run() {
         CreateGUI();
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
+
+        // Setup Login DB
+        Connection connection = DBConnection.getInstance();
+        Statement statement = connection.createStatement();
+        statement.execute("DROP DATABASE IF EXISTS login;");
+        statement.execute("CREATE DATABASE login;");
+        statement.execute("use login;");
+        statement.execute("CREATE TABLE user ( name varchar(45) NOT NULL," +
+                "password varchar(45) NOT NULL," +
+                "PRIMARY KEY (`name`));");
+        // Enter Accounts
+        statement.execute("INSERT IGNORE INTO user VALUES('Test', '1234');");
+        statement.execute("INSERT IGNORE INTO user VALUES('Test123', '1234');");
+        statement.execute("INSERT IGNORE INTO user VALUES('Test321', '1234');");
+        // Close Connection
+        connection.close();
         SwingUtilities.invokeLater(new PageLogin());
-    } // for testing
+    }
 }
