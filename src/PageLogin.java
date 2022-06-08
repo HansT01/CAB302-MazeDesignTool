@@ -7,7 +7,7 @@ import java.sql.*;
 /**
  * Constructs window for authenticating user
  */
-public class PageLogin extends JFrame implements ActionListener, Runnable {
+public class PageLogin extends JFrame implements Runnable {
     GridBagManager gbm = new GridBagManager();
 
     // Labels
@@ -82,45 +82,43 @@ public class PageLogin extends JFrame implements ActionListener, Runnable {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Login Button Action Event
-        login.addActionListener(this);
-    }
+        login.addActionListener(new ActionListener() {
 
+        public void actionPerformed(ActionEvent e) {
 
+            // Authenticate user
+            if (e.getSource() == login) {
+                String userTxt = nameText.getText();
+                String passTxt = passwordText.getText();
+                try {
+                    Connection connection = (Connection) DriverManager.getConnection("jdbc:mariadb://localhost:3306/login", "root", "password");
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
+                    PreparedStatement auth = (PreparedStatement) connection.prepareStatement("Select name, password from user where name=? and password=?");
 
-        // Authenticate user
-        if (e.getSource() == login) {
-            String userTxt = nameText.getText();
-            String passTxt = passwordText.getText();
-            try {
-                Connection connection = (Connection) DriverManager.getConnection("jdbc:mariadb://localhost:3306/login", "root", "password");
-
-                PreparedStatement auth = (PreparedStatement) connection.prepareStatement("Select name, password from user where name=? and password=?");
-
-                auth.setString(1, userTxt);
-                auth.setString(2, passTxt);
-                ResultSet rs = auth.executeQuery();
-                if (rs.next()) {
-                    login.addActionListener(f -> {
+                    auth.setString(1, userTxt);
+                    auth.setString(2, passTxt);
+                    ResultSet rs = auth.executeQuery();
+                    if (rs.next()) {
+                        JOptionPane.showMessageDialog(login, "Valid Credentials");
                         SwingUtilities.invokeLater(new PageDatabase());
                         dispose();
-                    });
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(login, "Invalid Credentials");
+                    }
+                } catch (SQLException sqlException) {
+                    sqlException.printStackTrace();
                 }
-                else {
-                    JOptionPane.showMessageDialog(this, "Invalid Credentials");
-                }
-            }
-            catch (SQLException sqlException) {
-                sqlException.printStackTrace();
             }
         }
-
+    });
     }
 
     @Override
     public void run() {
-        CreateGUI();}
-    public static void main(String[] args) {SwingUtilities.invokeLater(new PageLogin());} // for testing
+        CreateGUI();
+    }
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new PageLogin());
+    } // for testing
 }
