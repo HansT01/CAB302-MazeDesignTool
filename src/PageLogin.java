@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.*;
 
 /**
  * Constructs window for authenticating user
@@ -79,24 +80,40 @@ public class PageLogin extends JFrame implements ActionListener, Runnable {
         // set defaults
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Login Button Action Event
+        login.addActionListener(this);
     }
 
 
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
         // Authenticate user
         if (e.getSource() == login) {
             String userTxt = nameText.getText();
             String passTxt = passwordText.getText();
-            if (userTxt.equalsIgnoreCase("Riley") && passTxt.equalsIgnoreCase("1234")) {
-                login.addActionListener(f -> {
-                    SwingUtilities.invokeLater(new PageDatabase());
-                    dispose();
-                });
+            try {
+                Connection connection = (Connection) DriverManager.getConnection("jdbc:mariadb://localhost:3306/login", "root", "password");
+
+                PreparedStatement auth = (PreparedStatement) connection.prepareStatement("Select name, password from user where name=? and password=?");
+
+                auth.setString(1, userTxt);
+                auth.setString(2, passTxt);
+                ResultSet rs = auth.executeQuery();
+                if (rs.next()) {
+                    login.addActionListener(f -> {
+                        SwingUtilities.invokeLater(new PageDatabase());
+                        dispose();
+                    });
+                }
+                else {
+                    JOptionPane.showMessageDialog(this, "Invalid Credentials");
+                }
             }
-            else {
-                JOptionPane.showMessageDialog(this, "Invalid Credentials");
+            catch (SQLException sqlException) {
+                sqlException.printStackTrace();
             }
         }
 
