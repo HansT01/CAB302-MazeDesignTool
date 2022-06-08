@@ -41,6 +41,8 @@ public class PageDatabase extends JFrame implements Runnable {
     /** JButton used for Export */
     JButton exportButton = new JButton("Export");
 
+    JButton loginButton = new JButton("Login");
+
     private final JTable mazesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"Title", "Author", "Date created", "Last edited", "SizeX", "SizeY"})) {
         // make rows uneditable
         @Override
@@ -116,6 +118,10 @@ public class PageDatabase extends JFrame implements Runnable {
         gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 1;
         panel.add(exportButton, gbc);
+
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
+        gbc.gridwidth = 1;
+        panel.add(loginButton, gbc);
 
         return panel;
     }
@@ -254,6 +260,13 @@ public class PageDatabase extends JFrame implements Runnable {
 
             UpdateTable();
 
+        });
+        loginButton.addActionListener(e -> {
+            try {
+                SwingUtilities.invokeLater(new PageLogin());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
     }
 
