@@ -6,11 +6,14 @@ public class JDBCDataSource implements DBDataSource {
 
     public static final String CREATE_TABLE =
             "CREATE TABLE IF NOT EXISTS mazeStorage ("
+                    + "title VARCHAR(50),"
                     + "author VARCHAR(50),"
-                    + "dateCreated VARCHAR(50),"
-                    + "dateLastEdited VARCHAR(50),"
-                    + "sizeX VARCHAR(5),"
-                    + "sizeY VARCHAR(5)" + ");";
+                    + "dateCreated INT,"
+                    + "dateLastEdited INT,"
+                    + "sizeX INT,"
+                    + "sizeY INT,"
+                    + "cellSize INT,"
+                    + "serialization MEDIUMBLOB"+ ");";
 
 
 

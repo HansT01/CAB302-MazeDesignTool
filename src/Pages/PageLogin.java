@@ -127,7 +127,8 @@ public class PageLogin extends JFrame implements Runnable {
         // Setup Login DB
         Connection connection = DBConnection.getInstance();
         Statement statement = connection.createStatement();
-        JDBCDataSource.main(new JDBCDataSource());
+        statement.execute("CREATE DATABASE IF NOT EXISTS cab302;");
+        statement.execute("use cab302;");
         statement.execute("DROP TABLE IF EXISTS user;");
         statement.execute("CREATE TABLE user ( name varchar(45) NOT NULL," +
                 "password varchar(45) NOT NULL," +
@@ -136,6 +137,7 @@ public class PageLogin extends JFrame implements Runnable {
         statement.execute("INSERT IGNORE INTO user VALUES('Test', '1234');");
         statement.execute("INSERT IGNORE INTO user VALUES('Test123', '1234');");
         statement.execute("INSERT IGNORE INTO user VALUES('Test321', '1234');");
+        JDBCDataSource.main(new JDBCDataSource());
         SwingUtilities.invokeLater(new PageLogin());
     }
 }
