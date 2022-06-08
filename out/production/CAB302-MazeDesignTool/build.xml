@@ -1,0 +1,13 @@
+<project name ="CAB302-MazeDesignTool">
+
+    <target name="compile">
+        <mkdir dir="target" />
+        <javac scdir="src" destdir="target" includeantruntime="false" />
+    </target>
+
+    <target name ="test">
+        <mkdir dir="testtarget" />
+        <javac scdir="test" destdir="testtarget" includeantruntime="false" />
+    </target>
+
+</project>
