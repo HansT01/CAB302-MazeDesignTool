@@ -1,8 +1,6 @@
 package DB.db;
 
 import java.sql.*;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class JDBCDataSource implements DBDataSource {
 
@@ -24,6 +22,8 @@ public class JDBCDataSource implements DBDataSource {
         connection = DBConnection.getInstance();
         try {
             Statement st = connection.createStatement();
+            st.execute("CREATE DATABASE IF NOT EXISTS cab302;");
+            st.execute("use cab302;");
             st.execute(CREATE_TABLE);
 
         } catch (SQLException ex) {
@@ -31,11 +31,8 @@ public class JDBCDataSource implements DBDataSource {
         }
     }
 
-    public static void main(String[] args) {
-        new JDBCDataSource();
+    public static void main(JDBCDataSource args) {
     }
 
 
 }
-
-

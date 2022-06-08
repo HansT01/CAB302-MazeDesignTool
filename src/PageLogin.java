@@ -1,4 +1,5 @@
 import DB.db.DBConnection;
+import DB.db.JDBCDataSource;
 
 import javax.swing.*;
 import java.awt.*;
@@ -86,34 +87,34 @@ public class PageLogin extends JFrame implements Runnable {
         // Login Button Action Event
         login.addActionListener(new ActionListener() {
 
-        public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
 
-            // Authenticate user
-            if (e.getSource() == login) {
-                String userTxt = nameText.getText();
-                String passTxt = passwordText.getText();
-                try {
-                    Connection connection = (Connection) DriverManager.getConnection("jdbc:mariadb://localhost:3306/login", "root", "password");
+                // Authenticate user
+                if (e.getSource() == login) {
+                    String userTxt = nameText.getText();
+                    String passTxt = passwordText.getText();
+                    try {
+                        Connection connection = (Connection) DriverManager.getConnection("jdbc:mariadb://localhost:3306/login", "root", "password");
 
-                    PreparedStatement auth = (PreparedStatement) connection.prepareStatement("Select name, password from user where name=? and password=?");
+                        PreparedStatement auth = (PreparedStatement) connection.prepareStatement("Select name, password from user where name=? and password=?");
 
-                    auth.setString(1, userTxt);
-                    auth.setString(2, passTxt);
-                    ResultSet rs = auth.executeQuery();
-                    if (rs.next()) {
-                        JOptionPane.showMessageDialog(login, "Valid Credentials");
-                        SwingUtilities.invokeLater(new PageDatabase());
-                        dispose();
+                        auth.setString(1, userTxt);
+                        auth.setString(2, passTxt);
+                        ResultSet rs = auth.executeQuery();
+                        if (rs.next()) {
+                            dispose();
+                            JOptionPane.showMessageDialog(login, "Valid Credentials");
+                            SwingUtilities.invokeLater(new PageDatabase());
+                        }
+                        else {
+                            JOptionPane.showMessageDialog(login, "Invalid Credentials");
+                        }
+                    } catch (SQLException sqlException) {
+                        sqlException.printStackTrace();
                     }
-                    else {
-                        JOptionPane.showMessageDialog(login, "Invalid Credentials");
-                    }
-                } catch (SQLException sqlException) {
-                    sqlException.printStackTrace();
                 }
             }
-        }
-    });
+        });
     }
 
     @Override
@@ -135,8 +136,7 @@ public class PageLogin extends JFrame implements Runnable {
         statement.execute("INSERT IGNORE INTO user VALUES('Test', '1234');");
         statement.execute("INSERT IGNORE INTO user VALUES('Test123', '1234');");
         statement.execute("INSERT IGNORE INTO user VALUES('Test321', '1234');");
-        // Close Connection
-        connection.close();
+        JDBCDataSource.main(new JDBCDataSource());
         SwingUtilities.invokeLater(new PageLogin());
     }
 }

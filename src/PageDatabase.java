@@ -1,4 +1,5 @@
 import DB.db.DBConnection;
+import DB.db.JDBCDataSource;
 
 import javax.swing.*;
 import java.awt.*;
@@ -208,5 +209,8 @@ public class PageDatabase extends JFrame implements Runnable {
 
     public void run() {createGUI();}
 
-    public static void main(String[] args) {SwingUtilities.invokeLater(new PageDatabase());}
+    public static void main(String[] args) {
+        new JDBCDataSource();
+        SwingUtilities.invokeLater(new PageDatabase());
+    }
 }
