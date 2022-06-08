@@ -1,0 +1,21 @@
+<project name="CAB302-MazeDesignTool">
+    <target name="compile">
+        <mkdir dir="target" />
+        <javac srcdir="src" destdir="target" includeantruntime="false" />
+    </target>
+
+    <path id="junit.classpath">
+        <fileset dir="lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="test">
+        <mkdir dir="testtarget" />
+        <javac srcdir="tests" destdir="testtarget" includeantruntime="false">
+            <classpath refid="junit.classpath" />
+            <classpath location="target" />
+        </javac>
+        <junitlauncher printsummary="true" failureproperty="junit.failure">?</junitlauncher>
+    </target>
+</project>
