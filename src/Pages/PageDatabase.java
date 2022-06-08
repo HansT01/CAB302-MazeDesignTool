@@ -151,7 +151,6 @@ public class PageDatabase extends JFrame implements Runnable {
         Object[][] data = null;
         try {
             Connection connection = DBConnection.getInstance();
-            System.out.print(connection);
             final String GET_DATA = "SELECT * FROM mazeStorage";
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(GET_DATA);
@@ -218,9 +217,7 @@ public class PageDatabase extends JFrame implements Runnable {
                 int selectedRow = mazesTable.getSelectedRow();
                 int selectedColumn = mazesTable.getSelectedColumn();
                 String selectedCellValue = (String) mazesTable.getValueAt(mazesTable.getSelectedRow(), mazesTable.getSelectedColumn());
-                System.out.println(selectedCellValue);
-                System.out.println(selectedRow);
-                System.out.println(selectedColumn);
+
             }
             @Override
             public void mouseReleased(MouseEvent e) {}
