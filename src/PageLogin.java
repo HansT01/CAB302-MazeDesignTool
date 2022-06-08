@@ -94,8 +94,7 @@ public class PageLogin extends JFrame implements Runnable {
                     String userTxt = nameText.getText();
                     String passTxt = passwordText.getText();
                     try {
-                        Connection connection = (Connection) DriverManager.getConnection("jdbc:mariadb://localhost:3306/login", "root", "password");
-
+                        Connection connection = DBConnection.getInstance();
                         PreparedStatement auth = (PreparedStatement) connection.prepareStatement("Select name, password from user where name=? and password=?");
 
                         auth.setString(1, userTxt);
@@ -126,9 +125,8 @@ public class PageLogin extends JFrame implements Runnable {
         // Setup Login DB
         Connection connection = DBConnection.getInstance();
         Statement statement = connection.createStatement();
-        statement.execute("DROP DATABASE IF EXISTS login;");
-        statement.execute("CREATE DATABASE login;");
-        statement.execute("use login;");
+        JDBCDataSource.main(new JDBCDataSource());
+        statement.execute("DROP TABLE IF EXISTS user;");
         statement.execute("CREATE TABLE user ( name varchar(45) NOT NULL," +
                 "password varchar(45) NOT NULL," +
                 "PRIMARY KEY (`name`));");
@@ -136,7 +134,6 @@ public class PageLogin extends JFrame implements Runnable {
         statement.execute("INSERT IGNORE INTO user VALUES('Test', '1234');");
         statement.execute("INSERT IGNORE INTO user VALUES('Test123', '1234');");
         statement.execute("INSERT IGNORE INTO user VALUES('Test321', '1234');");
-        JDBCDataSource.main(new JDBCDataSource());
         SwingUtilities.invokeLater(new PageLogin());
     }
 }

@@ -30,7 +30,7 @@ public class DBConnection {
             String schema = props.getProperty("jdbc.schema");
 
             // get a connection
-            instance = DriverManager.getConnection(url + "/", username,
+            instance = DriverManager.getConnection(url + "/" + schema, username,
                     password);
         } catch (SQLException sqle) {
             System.err.println(sqle);
