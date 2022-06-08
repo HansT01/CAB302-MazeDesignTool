@@ -2,6 +2,7 @@ import DB.db.DBConnection;
 import DB.db.JDBCDataSource;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -10,6 +11,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 
 /**
@@ -18,7 +20,9 @@ import java.sql.Statement;
 public class PageDatabase extends JFrame implements Runnable {
 
     /** Used for getting location of mouse pointer */
-     Point openLocation = MouseInfo.getPointerInfo().getLocation();
+    Point openLocation = MouseInfo.getPointerInfo().getLocation();
+
+    GridBagManager gbm = new GridBagManager();
 
     /** Value of column of cell clicked on */
     int selectedColumn;
@@ -28,63 +32,115 @@ public class PageDatabase extends JFrame implements Runnable {
     String selectedCellValue;
 
     /** JButton used for New */
-    JButton b1 = new JButton();
+    JButton newButton = new JButton("New");
     /** JButton used for Edit */
-    JButton b2 = new JButton();
+    JButton editButton = new JButton("Edit");
     /** JButton used for Delete */
-    JButton b3 = new JButton();
+    JButton deleteButton = new JButton("Delete");
     /** JButton used for Export */
-    JButton b4 = new JButton();
-    /** JTable used for displaying maze data */
-    JTable table;
+    JButton exportButton = new JButton("Export");
 
-    /** Constructs DataBase JFrame */
-    private void createGUI() {
-        // Adjusting window
-        setLocation(openLocation); // Open window at location of mouse pointer
-        setVisible(true);
-        setTitle("Maze DataBase");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Set so pressing x closes window not whole program
-        setSize(500, 500);
-        setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
-        // Centre to screen
-        setLocationRelativeTo(null);
+    private final JTable mazesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"Author", "Date Create", "Last Edited", "SizeX", "SizeY"})) {
+        // make rows uneditable
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
 
-        // Table
-        table = mazeTable();
+    public PageDatabase() {
         listenerSetup();
-        JScrollPane scroller = new JScrollPane(table);
+        UpdateTable();
+    }
 
-        // Panel for buttons and whatnot
-        JPanel p1 = new JPanel();
-        p1.setLayout((new GridLayout(4,1)));
-        // Buttons
-        b1.setText("New");
-        b2.setText("Edit");
-        b3.setText("Delete");
-        b4.setText("Export");
-        // Adding buttons to panel
-        p1.add(b1);
-        p1.add(b2);
-        p1.add(b3);
-        p1.add(b4);
-        // Packing
-        add(scroller); // Scroll panel for table
-        add(p1);
-        // Setup listeners
-        buttonSetup();
+    public void UpdateTable() {
+        // get current model
+        DefaultTableModel tm = (DefaultTableModel) mazesTable.getModel();
+        tm.setRowCount(0);
+
+        // create new data array
+        Object[][] data = getData();
+        for (Object[] row : data) {
+            tm.addRow(row);
+        }
+
+        // update table model
+        mazesTable.setModel(tm);
+        tm.fireTableDataChanged();
+    }
+
+    private JPanel CreateTablePanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+
+        JScrollPane scrollPane = new JScrollPane(mazesTable);
+        scrollPane.setPreferredSize(new Dimension(200,300));
+
+        GridBagConstraints gbc;
+        int gridRow = 0;
+
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
+        gbc.gridwidth = 1;
+        panel.add(scrollPane, gbc);
+
+        return panel;
+    }
+
+    private JPanel CreateOptionsPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder("???"),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5))
+        );
+
+        GridBagConstraints gbc;
+        int gridRow = 0;
+
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
+        gbc.gridwidth = 1;
+        panel.add(newButton, gbc);
+
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
+        gbc.gridwidth = 1;
+        panel.add(editButton, gbc);
+
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
+        gbc.gridwidth = 1;
+        panel.add(deleteButton, gbc);
+
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
+        gbc.gridwidth = 1;
+        panel.add(exportButton, gbc);
+
+        return panel;
     }
 
     /**
-     * Constructs JTable used for displaying information stored in database
-     * @return Table for displaying maze data
+     * Main create GUI method. Calls other create panel methods and adds them to the main frame.
      */
-    private JTable mazeTable() {
-        Object[][] rowData = getData();
-        String[] header = {"Author", "Date Create", "Last Edited", "SizeX", "SizeY"};
-        JTable table = new JTable(rowData, header);
-        table.setBounds(30,40,200,300);
-        return table;
+    public void CreateGUI() {
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc;
+        int gridRow = 0;
+
+        // table panel
+        gbc = gbm.CreateOuterGBC(0, gridRow);
+        add(CreateTablePanel(), gbc);
+
+        // options panel
+        gbc = gbm.CreateOuterGBC(1, gridRow);
+        add(CreateOptionsPanel(), gbc);
+
+        // resizes window to preferred dimensions
+        pack();
+
+        // centre to screen
+        setLocationRelativeTo(null);
+
+        // set defaults
+        setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private Object[][] getData() {
@@ -96,83 +152,68 @@ public class PageDatabase extends JFrame implements Runnable {
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(GET_DATA);
 
-            int rowCount = getRowCount(rs); // Row Count
-            int columnCount = getColumnCount(rs); // Column Count
+            int rowCount = getRowCount(rs);         // Row Count
+            int columnCount = getColumnCount(rs);   // Column Count
 
             data = new Object[rowCount][columnCount];
 
             rs.beforeFirst();
 
             int i = 0;
-                while (rs.next()) {
-                    int j = 0;
-                    data[i][j++] = rs.getString("author");
-                    data[i][j++] = rs.getString("dateCreated");
-                    data[i][j++] = rs.getString("dateLastEdited");
-                    data[i][j++] = rs.getString("sizeX");
-                    data[i][j++] = rs.getString("sizeY");
+            while (rs.next()) {
+                int j = 0;
+                data[i][j++] = rs.getString("author");
+                data[i][j++] = rs.getString("dateCreated");
+                data[i][j++] = rs.getString("dateLastEdited");
+                data[i][j++] = rs.getString("sizeX");
+                data[i][j] = rs.getString("sizeY");
 
-                    i++;
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+                i++;
             }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
 
         return data;
     }
 
     // Method to get Row Count from ResultSet Object
     private int getRowCount(ResultSet rs) {
-
         try {
-
             if(rs != null) {
-
                 rs.last();
-
                 return rs.getRow();
             }
-
         } catch (SQLException e) {
-
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-
         return 0;
     }
 
     // Method to get Column Count from ResultSet Object
     private int getColumnCount(ResultSet rs) {
-
         try {
-
-            if(rs != null)
-                return rs.getMetaData().getColumnCount();
-
+            if (rs != null) return rs.getMetaData().getColumnCount();
         } catch (SQLException e) {
-
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-
         return 0;
     }
-
-
 
     /**
      * Adds listener for mousePressed event
      */
     private void listenerSetup(){
-        table.addMouseListener(new MouseListener() {
+        mazesTable.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {}
             @Override
             public void mousePressed(MouseEvent e) {
-                int selectedRow = table.getSelectedRow();
-                int selectedColumn =table.getSelectedColumn();
-                String selectedCellValue = (String) table.getValueAt(table.getSelectedRow() , table.getSelectedColumn());
+                int selectedRow = mazesTable.getSelectedRow();
+                int selectedColumn = mazesTable.getSelectedColumn();
+                String selectedCellValue = (String) mazesTable.getValueAt(mazesTable.getSelectedRow(), mazesTable.getSelectedColumn());
                 System.out.println(selectedCellValue);
                 System.out.println(selectedRow);
                 System.out.println(selectedColumn);
@@ -184,17 +225,11 @@ public class PageDatabase extends JFrame implements Runnable {
             @Override
             public void mouseExited(MouseEvent e) {}
         });
-    }
-
-    /**
-     * Adds actionListeners for buttons
-     */
-    void buttonSetup() {
-        b1.addActionListener(e -> {
+        newButton.addActionListener(e -> {
             SwingUtilities.invokeLater(new PageCreate());
             dispose();
         });
-        b2.addActionListener(e -> {
+        editButton.addActionListener(e -> {
             // Create maze panel - This will later implement parameters from the database
             try {
                 Maze testMaze = new Maze("Maze Title", "Maze Author", 80,50);
@@ -204,13 +239,14 @@ public class PageDatabase extends JFrame implements Runnable {
                 ex.printStackTrace();
             }
         });
-        b3.addActionListener(e -> System.out.println("get pranked nerd"));
+        deleteButton.addActionListener(e -> System.out.println("get pranked nerd"));
     }
 
-    public void run() {createGUI();}
+    public void run() {CreateGUI();}
 
     public static void main(String[] args) {
         new JDBCDataSource();
-        SwingUtilities.invokeLater(new PageDatabase());
+        PageDatabase page = new PageDatabase();
+        SwingUtilities.invokeLater(page);
     }
 }

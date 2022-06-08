@@ -14,6 +14,32 @@ public class MazePanel extends JPanel {
     private boolean drawSolution = true;
     private boolean placingImage = false;
 
+    /**
+     * Constructs the maze panel.
+     * @param maze The Maze object to be rendered.
+     * @param cellSize The size of each cell in the maze. The size should be even for proper rendering.
+     */
+    public MazePanel(Maze maze, int cellSize) {
+        super();
+        this.maze = maze;
+        this.cellSize = cellSize;
+
+        setPreferredSize(new Dimension(maze.getSizeX()*cellSize + 1, maze.getSizeY()*cellSize + 1));
+        setBackground(Color.white);
+
+        // Sourced from: https://stackhowto.com/how-to-get-mouse-position-on-click-relative-to-jframe/
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                try {
+                    HandleClickEvent(e);
+                } catch (MazeException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+    }
+
     public void setDrawSolution(boolean drawSolution) {
         this.drawSolution = drawSolution;
     }
@@ -125,32 +151,6 @@ public class MazePanel extends JPanel {
     public void ExportToFile() throws IOException {
         File outputFile = new File(maze.getTitle() + ".png");
         ImageIO.write(PrintToImage(), "png", outputFile);
-    }
-
-    /**
-     * Constructs the maze panel.
-     * @param maze The Maze object to be rendered.
-     * @param cellSize The size of each cell in the maze. The size should be even for proper rendering.
-     */
-    public MazePanel(Maze maze, int cellSize) {
-        super();
-        this.maze = maze;
-        this.cellSize = cellSize;
-
-        setPreferredSize(new Dimension(maze.getSizeX()*cellSize + 1, maze.getSizeY()*cellSize + 1));
-        setBackground(Color.white);
-
-        // Sourced from: https://stackhowto.com/how-to-get-mouse-position-on-click-relative-to-jframe/
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                try {
-                    HandleClickEvent(e);
-                } catch (MazeException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
     }
 
 
