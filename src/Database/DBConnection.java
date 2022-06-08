@@ -26,10 +26,9 @@ public class DBConnection {
             String url = props.getProperty("jdbc.url");
             String username = props.getProperty("jdbc.username");
             String password = props.getProperty("jdbc.password");
-            String schema = props.getProperty("jdbc.schema");
 
             // get a connection
-            instance = DriverManager.getConnection(url + "/" + schema, username,
+            instance = DriverManager.getConnection(url + "/", username,
                     password);
         } catch (SQLException sqle) {
             System.err.println(sqle);
