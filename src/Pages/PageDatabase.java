@@ -215,8 +215,8 @@ public class PageDatabase extends JFrame implements Runnable {
             @Override
             public void mousePressed(MouseEvent e) {
                 int selectedRow = mazesTable.getSelectedRow();
-                int selectedColumn = mazesTable.getSelectedColumn();
-                String selectedCellValue = (String) mazesTable.getValueAt(mazesTable.getSelectedRow(), mazesTable.getSelectedColumn());
+                // int selectedColumn = mazesTable.getSelectedColumn();
+                // String selectedCellValue = (String) mazesTable.getValueAt(mazesTable.getSelectedRow(), mazesTable.getSelectedColumn());
 
             }
             @Override
@@ -240,7 +240,18 @@ public class PageDatabase extends JFrame implements Runnable {
                 ex.printStackTrace();
             }
         });
-        deleteButton.addActionListener(e -> System.out.println("get pranked nerd"));
+        deleteButton.addActionListener(e -> {
+            String title = mazesTable.getModel().getValueAt(selectedRow, 0).toString();
+            String author = mazesTable.getModel().getValueAt(selectedRow, 1).toString();
+
+            Connection connection = DBConnection.getInstance();
+            final String DELETE = "DELETE FROM mazeStorage WHERE author="+ title + " AND author=" + author;
+
+
+            System.out.println(DELETE);
+            
+            UpdateTable();
+        });
     }
 
     public void run() {CreateGUI();}
