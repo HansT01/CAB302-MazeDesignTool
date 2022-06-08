@@ -16,8 +16,6 @@ public class JDBCDataSource implements DBDataSource {
                     + "serialization MEDIUMBLOB"+ ");";
 
 
-
-
     private Connection connection;
     private PreparedStatement getData;
 

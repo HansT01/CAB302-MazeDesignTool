@@ -41,7 +41,7 @@ public class PageDatabase extends JFrame implements Runnable {
     /** JButton used for Export */
     JButton exportButton = new JButton("Export");
 
-    private final JTable mazesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"Author", "Date created", "Last edited", "SizeX", "SizeY"})) {
+    private final JTable mazesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"Title", "Author", "Date created", "Last edited", "SizeX", "SizeY"})) {
         // make rows uneditable
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -165,18 +165,17 @@ public class PageDatabase extends JFrame implements Runnable {
             int i = 0;
             while (rs.next()) {
                 int j = 0;
+                data[i][j++] = rs.getString("title");
                 data[i][j++] = rs.getString("author");
                 data[i][j++] = rs.getString("dateCreated");
                 data[i][j++] = rs.getString("dateLastEdited");
                 data[i][j++] = rs.getString("sizeX");
                 data[i][j] = rs.getString("sizeY");
-
                 i++;
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-
         return data;
     }
 
@@ -233,9 +232,7 @@ public class PageDatabase extends JFrame implements Runnable {
         editButton.addActionListener(e -> {
             // Create maze panel - This will later implement parameters from the database
             try {
-                Maze testMaze = new Maze("Maze.Maze Title", "Maze.Maze Author", 80,50);
-                testMaze.GenerateMaze();
-                SwingUtilities.invokeLater(new PageEdit(testMaze, 12));
+                SwingUtilities.invokeLater(new PageCreate());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -244,13 +241,19 @@ public class PageDatabase extends JFrame implements Runnable {
             String title = mazesTable.getModel().getValueAt(selectedRow, 0).toString();
             String author = mazesTable.getModel().getValueAt(selectedRow, 1).toString();
 
-            Connection connection = DBConnection.getInstance();
-            final String DELETE = "DELETE FROM mazeStorage WHERE author="+ title + " AND author=" + author;
+            try {
+                Connection connection = DBConnection.getInstance();
+                final String DELETE = "DELETE FROM mazeStorage WHERE title="+ "'" + title + "'" + " AND author=" + "'" + author + "'";
 
+                Statement statement = connection.createStatement();
+                statement.executeQuery(DELETE);
 
-            System.out.println(DELETE);
-            
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+
             UpdateTable();
+
         });
     }
 
