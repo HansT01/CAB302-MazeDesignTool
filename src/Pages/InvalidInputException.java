@@ -1,3 +1,5 @@
+package Pages;
+
 import javax.swing.*;
 import java.awt.*;
 

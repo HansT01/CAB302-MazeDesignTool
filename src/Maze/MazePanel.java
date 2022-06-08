@@ -1,3 +1,5 @@
+package Maze;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +18,7 @@ public class MazePanel extends JPanel {
 
     /**
      * Constructs the maze panel.
-     * @param maze The Maze object to be rendered.
+     * @param maze The Maze.Maze object to be rendered.
      * @param cellSize The size of each cell in the maze. The size should be even for proper rendering.
      */
     public MazePanel(Maze maze, int cellSize) {
@@ -206,7 +208,7 @@ public class MazePanel extends JPanel {
     // For testing maze panel, do not remove!
     public static void main(String[] args) throws MazeException {
         // Generate maze panel
-        Maze testMaze = new Maze("Maze Title", "Maze Author", 6,4);
+        Maze testMaze = new Maze("Maze.Maze Title", "Maze.Maze Author", 6,4);
         testMaze.GenerateMaze();
         MazePanel mazePanel = new MazePanel(testMaze, 64);
 

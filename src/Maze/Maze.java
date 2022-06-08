@@ -1,3 +1,5 @@
+package Maze;
+
 import java.io.*;
 import java.util.*;
 
@@ -22,14 +24,14 @@ public class Maze implements Serializable {
     private MazeImage selectedImage;
 
     /**
-     * Constructs and initialises a new Maze.
+     * Constructs and initialises a new Maze.Maze.
      * @param sizeX The width of the maze in cells.
      * @param sizeY The height of the maze in cells.
      * @throws MazeException Throws maze exception if dimensions are not positive non-zero integers
      */
     public Maze(String title, String author, int sizeX, int sizeY) throws MazeException {
         if (sizeX < 1 || sizeY < 1) {
-            throw new MazeException("Maze must have positive non-zero dimensions");
+            throw new MazeException("Maze.Maze must have positive non-zero dimensions");
         }
         this.title = title;
         this.author = author;
@@ -56,7 +58,7 @@ public class Maze implements Serializable {
 
     /**
      * Getter for end image
-     * @return MazeImage object
+     * @return Maze.MazeImage object
      */
     public MazeImage getStartImage() {
         return startImage;
@@ -64,7 +66,7 @@ public class Maze implements Serializable {
 
     /**
      * Getter for end image
-     * @return MazeImage object
+     * @return Maze.MazeImage object
      */
     public MazeImage getEndImage() {
         return endImage;
@@ -72,7 +74,7 @@ public class Maze implements Serializable {
 
     /**
      * Setter for start image
-     * @param startImage MazeImage object
+     * @param startImage Maze.MazeImage object
      */
     public void setStartImage(MazeImage startImage) {
         this.startImage = startImage;
@@ -80,7 +82,7 @@ public class Maze implements Serializable {
 
     /**
      * Setter for end image
-     * @param endImage MazeImage object
+     * @param endImage Maze.MazeImage object
      */
     public void setEndImage(MazeImage endImage) {
         this.endImage = endImage;
@@ -88,7 +90,7 @@ public class Maze implements Serializable {
 
     /**
      * Setter for selected image
-     * @param selectedImage MazeImage object
+     * @param selectedImage Maze.MazeImage object
      */
     public void setSelectedImage(MazeImage selectedImage) {
         this.selectedImage = selectedImage;
@@ -104,7 +106,7 @@ public class Maze implements Serializable {
 
     /**
      * Getter for title.
-     * @return Maze title.
+     * @return Maze.Maze title.
      */
     public String getTitle() {
         return title;
@@ -112,7 +114,7 @@ public class Maze implements Serializable {
 
     /**
      * Getter for author.
-     * @return Maze author.
+     * @return Maze.Maze author.
      */
     public String getAuthor() {
         return author;
@@ -120,7 +122,7 @@ public class Maze implements Serializable {
 
     /**
      * Getter for date created.
-     * @return Maze date creation time.
+     * @return Maze.Maze date creation time.
      */
     public Date getDateCreated() {
         return dateCreated;
@@ -128,7 +130,7 @@ public class Maze implements Serializable {
 
     /**
      * Getter for date last edited
-     * @return Maze date last edited.
+     * @return Maze.Maze date last edited.
      */
     public Date getDateLastEdited() {
         return dateLastEdited;
@@ -152,7 +154,7 @@ public class Maze implements Serializable {
 
     /**
      * Getter for images in maze.
-     * @return ArrayList of MazeImage.
+     * @return ArrayList of Maze.MazeImage.
      */
     public ArrayList<MazeImage> getImages() {
         return images;
@@ -456,7 +458,7 @@ public class Maze implements Serializable {
 
         // check if image fits within maze
         if (!CheckInBounds(xPos, yPos, mazeImage)) {
-            throw new MazeException("Maze image is out of bounds");
+            throw new MazeException("Maze.Maze image is out of bounds");
         }
 
         // if image is already placed, remove it
@@ -494,7 +496,7 @@ public class Maze implements Serializable {
      * Checks if image at input x and y location remains in bounds
      * @param xPos x position of image
      * @param yPos y position of image
-     * @param mazeImage MazeImage object
+     * @param mazeImage Maze.MazeImage object
      * @return true if image is in bounds, false otherwise
      */
     public boolean CheckInBounds(int xPos, int yPos, MazeImage mazeImage) {
@@ -594,7 +596,7 @@ public class Maze implements Serializable {
     /**
      * Deserializes a byte array into a maze object
      * @param byteArr Input byte array
-     * @return Maze object
+     * @return Maze.Maze object
      */
     public static Maze ByteArrayToMaze(byte[] byteArr) throws IOException, ClassNotFoundException {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArr);
@@ -607,7 +609,7 @@ public class Maze implements Serializable {
         long endTime;
 
         startTime = System.nanoTime();
-        Maze testMaze = new Maze("Maze title", "Maze author", 6, 4);
+        Maze testMaze = new Maze("Maze.Maze title", "Maze.Maze author", 6, 4);
         endTime = System.nanoTime();
         long constructTime = endTime - startTime;
 

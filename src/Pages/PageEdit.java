@@ -1,3 +1,10 @@
+package Pages;
+
+import Maze.Maze;
+import Maze.MazeException;
+import Maze.MazeImage;
+import Maze.MazePanel;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -320,7 +327,7 @@ public class PageEdit extends JFrame implements Runnable {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder("Maze images editor"),
+                BorderFactory.createTitledBorder("Maze.Maze images editor"),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5))
         );
 
@@ -380,7 +387,7 @@ public class PageEdit extends JFrame implements Runnable {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder("Maze options"),
+                BorderFactory.createTitledBorder("Maze.Maze options"),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5))
         );
 
@@ -406,7 +413,7 @@ public class PageEdit extends JFrame implements Runnable {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder("Maze metrics"),
+                BorderFactory.createTitledBorder("Maze.Maze metrics"),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5))
         );
 
@@ -433,14 +440,14 @@ public class PageEdit extends JFrame implements Runnable {
         // solution percentage
         gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
-        panel.add(new JLabel("Maze dimensions (cells): " , SwingConstants.LEFT), gbc);
+        panel.add(new JLabel("Maze.Maze dimensions (cells): " , SwingConstants.LEFT), gbc);
         gbc = gbm.CreateInnerGBC(1, gridRow++);
         panel.add(new JLabel(String.format("%sx%s", mazeWidth, mazeHeight), SwingConstants.LEFT), gbc);
 
         // solution percentage
         gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
-        panel.add(new JLabel("Maze dimensions (pixels): " , SwingConstants.LEFT), gbc);
+        panel.add(new JLabel("Maze.Maze dimensions (pixels): " , SwingConstants.LEFT), gbc);
         gbc = gbm.CreateInnerGBC(1, gridRow++);
         panel.add(new JLabel(String.format("%sx%s", mazeWidth * cellSize, mazeHeight * cellSize), SwingConstants.LEFT), gbc);
 

@@ -1,3 +1,5 @@
+package Maze;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -97,7 +99,7 @@ public class MazeImage implements Serializable {
     }
 
     /**
-     * Maze image constructor
+     * Maze.Maze image constructor
      * @param imageTitle Title of the image
      * @param imageData Image object containing the image data
      * @param sizeX width of the image in cells
@@ -136,7 +138,7 @@ public class MazeImage implements Serializable {
 
     public static void main(String[] args) throws MazeException {
         // Generate maze panel
-        Maze testMaze = new Maze("Maze Title", "Maze Author", 5,5);
+        Maze testMaze = new Maze("Maze.Maze Title", "Maze.Maze Author", 5,5);
         testMaze.GenerateMaze();
         MazePanel mazePanel = new MazePanel(testMaze, 64);
 

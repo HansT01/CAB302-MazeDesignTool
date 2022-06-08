@@ -1,4 +1,4 @@
-package DB.db;
+package Database;
 
 public interface DBDataSource {
 

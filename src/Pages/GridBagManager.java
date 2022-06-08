@@ -1,3 +1,5 @@
+package Pages;
+
 import java.awt.*;
 
 public class GridBagManager extends GridBagConstraints {

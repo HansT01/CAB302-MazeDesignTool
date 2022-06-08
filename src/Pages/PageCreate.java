@@ -1,3 +1,9 @@
+package Pages;
+
+import Maze.Maze;
+import Maze.MazeException;
+import Maze.MazeImage;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -40,7 +46,7 @@ public class PageCreate extends JFrame implements Runnable {
     final JFileChooser fc = new JFileChooser();
 
     /**
-     * Constructor for the PageCreate
+     * Constructor for the Pages.PageCreate
      */
     public PageCreate() {
         fc.setFileFilter(new FileNameExtensionFilter("Image Files", "jpeg", "jpg", "png", "gif"));
@@ -81,7 +87,7 @@ public class PageCreate extends JFrame implements Runnable {
     }
 
     /**
-     * Creates maze with the input fields. If any input fields are invalid, an InvalidInputException will be raised.
+     * Creates maze with the input fields. If any input fields are invalid, an Pages.InvalidInputException will be raised.
      * @throws IOException Exception
      * @throws InvalidInputException Exception
      */
@@ -102,7 +108,7 @@ public class PageCreate extends JFrame implements Runnable {
         }
 
         if (sizeX <= 0 || sizeY <= 0 || cellSize <= 0) {
-            throw new InvalidInputException("Maze dimensions cannot be zero or negative", this);
+            throw new InvalidInputException("Maze.Maze dimensions cannot be zero or negative", this);
         }
 
         // TODO change author to use database username
@@ -196,7 +202,7 @@ public class PageCreate extends JFrame implements Runnable {
 
     /**
      * Opens a dialogue for the user to import an image
-     * @return MazeImage object with no size properties
+     * @return Maze.MazeImage object with no size properties
      */
     private MazeImage ImportImage() throws InvalidInputException {
         int returnVal = fc.showOpenDialog(this);
@@ -227,7 +233,7 @@ public class PageCreate extends JFrame implements Runnable {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder("Maze properties"),
+                BorderFactory.createTitledBorder("Maze.Maze properties"),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5))
         );
 
@@ -237,7 +243,7 @@ public class PageCreate extends JFrame implements Runnable {
         // input title
         gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
-        panel.add(new JLabel("Maze Title: ", SwingUtilities.LEFT), gbc);
+        panel.add(new JLabel("Maze.Maze Title: ", SwingUtilities.LEFT), gbc);
         gbc = gbm.CreateInnerGBC(1, gridRow++);
         panel.add(mazeTitle, gbc);
 
@@ -258,7 +264,7 @@ public class PageCreate extends JFrame implements Runnable {
         // input cell size
         gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.weightx = 0;
-        panel.add(new JLabel("Cell size (pixels): ", SwingUtilities.LEFT), gbc);
+        panel.add(new JLabel("Maze.Cell size (pixels): ", SwingUtilities.LEFT), gbc);
         gbc = gbm.CreateInnerGBC(1, gridRow);
         panel.add(cellSizeInput, gbc);
 

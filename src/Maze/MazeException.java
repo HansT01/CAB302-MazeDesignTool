@@ -1,3 +1,5 @@
+package Maze;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -6,6 +8,6 @@ public class MazeException extends Exception {
         System.out.println(message);
     }
     public MazeException() {
-        System.out.println("Maze exception has occurred");
+        System.out.println("Maze.Maze exception has occurred");
     }
 }

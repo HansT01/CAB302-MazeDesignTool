@@ -1,17 +1,18 @@
-import DB.db.DBConnection;
-import DB.db.JDBCDataSource;
+package Pages;
+
+import Database.DBConnection;
+import Database.JDBCDataSource;
+import Maze.Maze;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 
 
 /**
@@ -40,7 +41,7 @@ public class PageDatabase extends JFrame implements Runnable {
     /** JButton used for Export */
     JButton exportButton = new JButton("Export");
 
-    private final JTable mazesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"Author", "Date Create", "Last Edited", "SizeX", "SizeY"})) {
+    private final JTable mazesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"Author", "Date created", "Last edited", "SizeX", "SizeY"})) {
         // make rows uneditable
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -52,6 +53,7 @@ public class PageDatabase extends JFrame implements Runnable {
         listenerSetup();
         UpdateTable();
     }
+
 
     public void UpdateTable() {
         // get current model
@@ -74,7 +76,9 @@ public class PageDatabase extends JFrame implements Runnable {
         panel.setLayout(new GridBagLayout());
 
         JScrollPane scrollPane = new JScrollPane(mazesTable);
-        scrollPane.setPreferredSize(new Dimension(200,300));
+        mazesTable.getColumnModel().getColumn(0).setPreferredWidth(150);
+        mazesTable.getColumnModel().getColumn(1).setPreferredWidth(75);
+        mazesTable.getColumnModel().getColumn(2).setPreferredWidth(75);
 
         GridBagConstraints gbc;
         int gridRow = 0;
@@ -232,10 +236,10 @@ public class PageDatabase extends JFrame implements Runnable {
         editButton.addActionListener(e -> {
             // Create maze panel - This will later implement parameters from the database
             try {
-                Maze testMaze = new Maze("Maze Title", "Maze Author", 80,50);
+                Maze testMaze = new Maze("Maze.Maze Title", "Maze.Maze Author", 80,50);
                 testMaze.GenerateMaze();
                 SwingUtilities.invokeLater(new PageEdit(testMaze, 12));
-            } catch (MazeException | IOException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         });

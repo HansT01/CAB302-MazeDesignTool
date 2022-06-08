@@ -1,3 +1,5 @@
+package Maze;
+
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -15,15 +17,15 @@ public class MazeTest {
 
     @BeforeEach
     public void ConstructMaze() throws MazeException {
-        testMaze = new Maze("Maze title", "Maze author", 3, 1);
+        testMaze = new Maze("Maze.Maze title", "Maze.Maze author", 3, 1);
         testCell1 = testMaze.getCells()[0][0];
         testCell2 = testMaze.getCells()[1][0];
         testCell3 = testMaze.getCells()[2][0];
     }
     @Test
     public void MazeDetails() {
-        assert (testMaze.getAuthor() == "Maze author") : testMaze.getAuthor() + " does not match " + "Maze author";
-        assert (testMaze.getTitle() == "Maze title") : testMaze.getTitle() + " does not match " + "Maze title";
+        assert (testMaze.getAuthor() == "Maze.Maze author") : testMaze.getAuthor() + " does not match " + "Maze.Maze author";
+        assert (testMaze.getTitle() == "Maze.Maze title") : testMaze.getTitle() + " does not match " + "Maze.Maze title";
         assert (testMaze.getSizeX() == 3) : "Test maze of x size 3 does not match";
         assert (testMaze.getSizeY() == 1) : "Test maze of y size 1 does not match";
     }
@@ -51,24 +53,24 @@ public class MazeTest {
     @Test
     public void NegativeDimensions() {
         assertThrows(Exception.class, () -> {
-            testMaze = new Maze("Maze title", "Maze author", -1, 1);
+            testMaze = new Maze("Maze.Maze title", "Maze.Maze author", -1, 1);
         });
         assertThrows(Exception.class, () -> {
-            testMaze = new Maze("Maze title", "Maze author", 1, -1);
+            testMaze = new Maze("Maze.Maze title", "Maze.Maze author", 1, -1);
         });
     }
     @Test
     public void GenerateZeroDimensions() {
         assertThrows(Exception.class, () -> {
-            testMaze = new Maze("Maze title", "Maze author", 0, 1);
+            testMaze = new Maze("Maze.Maze title", "Maze.Maze author", 0, 1);
         });
         assertThrows(Exception.class, () -> {
-            testMaze = new Maze("Maze title", "Maze author", 1, 0);
+            testMaze = new Maze("Maze.Maze title", "Maze.Maze author", 1, 0);
         });
     }
     @Test
     public void Generate1000x1000() throws MazeException {
-        testMaze = new Maze("Maze title", "Maze author", 1000, 1000);
+        testMaze = new Maze("Maze.Maze title", "Maze.Maze author", 1000, 1000);
         assert(testMaze.getSizeX() == 1000) : "X size " + testMaze.getSizeX() + " is not 1000";
         assert(testMaze.getSizeY() == 1000) : "Y size " + testMaze.getSizeY() + " is not 1000";
     }
@@ -123,7 +125,7 @@ public class MazeTest {
     }
     @Test
     public void DeadEndPct() throws MazeException {
-        testMaze = new Maze("Maze title", "Maze author", 4, 1);
+        testMaze = new Maze("Maze.Maze title", "Maze.Maze author", 4, 1);
         testMaze.GenerateMaze();
         assert (testMaze.DeadEndPct() == 0.5) : "Dead end percentage " + testMaze.DeadEndPct() + " does not match 0.5";
     }
@@ -132,10 +134,10 @@ public class MazeTest {
         testMaze.GenerateMaze();
         Maze testMaze2 = Maze.ByteArrayToMaze(Maze.MazeToByteArray(testMaze));
 
-        assert (testMaze != testMaze2) : "Maze objects should not have the same reference";
+        assert (testMaze != testMaze2) : "Maze.Maze objects should not have the same reference";
         assert (Objects.equals(testMaze.getTitle(), testMaze2.getTitle())) : testMaze2.getTitle() + " does not match " + testMaze.getTitle();
         assert (Objects.equals(testMaze.getAuthor(), testMaze2.getAuthor())) : testMaze2.getAuthor() + " does not match " + testMaze.getAuthor();
-        assert (testMaze.getCells()[0][0] != testMaze2.getCells()[0][0]) : "Cell objects have the same reference";
+        assert (testMaze.getCells()[0][0] != testMaze2.getCells()[0][0]) : "Maze.Cell objects have the same reference";
         assert (Objects.equals(Arrays.toString(testMaze.Solve()), Arrays.toString(testMaze2.Solve()))) : "Solutions are not the same";
     }
 }

@@ -1,5 +1,7 @@
-import DB.db.DBConnection;
-import DB.db.JDBCDataSource;
+package Pages;
+
+import Database.DBConnection;
+import Database.JDBCDataSource;
 
 import javax.swing.*;
 import java.awt.*;

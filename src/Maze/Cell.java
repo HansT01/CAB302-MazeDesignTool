@@ -1,3 +1,5 @@
+package Maze;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
