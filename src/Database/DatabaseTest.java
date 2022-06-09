@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
 import java.util.Arrays;
 
@@ -77,5 +79,16 @@ public class DatabaseTest {
         byte[] ba2 = Maze.MazeToByteArray(testMaze2);
 
         assert (!Arrays.equals(ba, ba2)) : "Byte arrays should no longer be equal";
+    }
+
+    @Test
+    public void PasswordHash() throws NoSuchAlgorithmException, InvalidKeySpecException {
+        DBConnection.setUsername("username");
+        DBConnection.setPassword("password");
+
+        String hash = data.HashString(DBConnection.getPassword());
+        System.out.println(hash);
+
+        assert (data.MatchHash(DBConnection.getPassword(), hash)) : "OH NO HASH WRONG";
     }
 }

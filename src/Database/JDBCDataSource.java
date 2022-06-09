@@ -2,9 +2,19 @@ package Database;
 
 import Maze.Maze;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.interfaces.PBEKey;
+import javax.crypto.spec.PBEKeySpec;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.Security;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.sql.*;
+import java.util.Base64;
+import java.util.Random;
 
 public class JDBCDataSource implements DBDataSource {
     public static final String CREATE_MAZE_TABLE =
@@ -24,7 +34,7 @@ public class JDBCDataSource implements DBDataSource {
             "CREATE TABLE IF NOT EXISTS user (" +
             "username varchar(255) NOT NULL," +
             "password varchar(255) NOT NULL," +
-            "PRIMARY KEY (`name`));";
+            "PRIMARY KEY (`username`));";
     private static final String INSERT_MAZE =
             "INSERT INTO mazeStorage " +
             "(title, author, dateCreated, dateLastEdited, sizeX, sizeY, cellSize, serialization) " +
@@ -43,7 +53,7 @@ public class JDBCDataSource implements DBDataSource {
             "WHERE id = ?;";
     private static final String GET_MAZE_BY_ID = "SELECT * FROM mazeStorage WHERE id = ?;";
     private static final String GET_ALL_MAZES = "SELECT * FROM mazeStorage;";
-    private static final String GET_USERNAME_PASSWORD = "SELECT name, password FROM user WHERE name=? and password=?;";
+    private static final String GET_USER = "SELECT password FROM user WHERE name=?";
 
 
     private PreparedStatement addMaze;
@@ -90,7 +100,7 @@ public class JDBCDataSource implements DBDataSource {
             updateMaze = connection.prepareStatement(UPDATE_MAZE);
             getMazeByID = connection.prepareStatement(GET_MAZE_BY_ID);
             getAllMazes = connection.prepareStatement(GET_ALL_MAZES);
-            getUser = connection.prepareStatement(GET_USERNAME_PASSWORD);
+            getUser = connection.prepareStatement(GET_USER);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -172,16 +182,52 @@ public class JDBCDataSource implements DBDataSource {
     public boolean VerifyUser() {
         try {
             getUser.setString(1, DBConnection.getUsername());
-            getUser.setString(2, DBConnection.getPassword());
             ResultSet rs = getUser.executeQuery();
             rs.beforeFirst();
             if (rs.next()) {
+                rs.getString(1).equals(DBConnection.getPassword());
                 return true;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return false;
+    }
+
+    public String HashString(String str) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        // https://stackoverflow.com/questions/2860943/how-can-i-hash-a-password-in-java
+        SecureRandom r = new SecureRandom();
+
+        // Salt rounds
+        byte[] salt = new byte[16];
+        r.nextBytes(salt);
+
+        // Generate byte array hash with salt rounds
+        KeySpec spec = new PBEKeySpec(str.toCharArray(), salt, 65536, 128);
+        SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        byte[] hash = f.generateSecret(spec).getEncoded();
+
+        // Convert hash back to string
+        Base64.Encoder enc = Base64.getEncoder();
+        return enc.encodeToString(salt) + ":" + enc.encodeToString(hash);
+    }
+
+    public boolean MatchHash(String str, String hash) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        Base64.Encoder enc = Base64.getEncoder();
+        Base64.Decoder dec = Base64.getDecoder();
+
+        // Split
+        String[] hSplit = hash.split(":", 2);
+        String salt = hSplit[0];
+        String hash1 = hSplit[1];
+
+        // Generate byte array hash with salt rounds
+        KeySpec spec = new PBEKeySpec(str.toCharArray(), dec.decode(salt), 65536, 128);
+        SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        byte[] strHash = f.generateSecret(spec).getEncoded();
+
+        String hash2 = enc.encodeToString(strHash);
+        return hash1.equals(hash2);
     }
 
     public static void main(JDBCDataSource args) {
