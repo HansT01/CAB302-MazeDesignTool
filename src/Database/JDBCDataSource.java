@@ -93,7 +93,7 @@ public class JDBCDataSource implements DBDataSource {
         }
     }
 
-    public int addMaze(Maze maze, int cellSize) {
+    public int addMaze(Maze maze) {
         try {
             addMaze.setString(1, maze.getTitle());
             addMaze.setString(2, maze.getAuthor());
@@ -101,7 +101,7 @@ public class JDBCDataSource implements DBDataSource {
             addMaze.setLong(4, maze.getDateLastEdited().getTime());
             addMaze.setInt(5, maze.getSizeX());
             addMaze.setInt(6, maze.getSizeY());
-            addMaze.setInt(7, cellSize);
+            addMaze.setInt(7, maze.getCellSize());
             addMaze.setBinaryStream(8, new ByteArrayInputStream(Maze.MazeToByteArray(maze)));
             addMaze.execute();
 
@@ -124,7 +124,7 @@ public class JDBCDataSource implements DBDataSource {
         }
     }
 
-    public void updateMaze(int id, Maze maze, int cellSize) {
+    public void updateMaze(int id, Maze maze) {
         try {
             updateMaze.setString(1, maze.getTitle());
             updateMaze.setString(2, maze.getAuthor());
@@ -132,7 +132,7 @@ public class JDBCDataSource implements DBDataSource {
             updateMaze.setLong(4, maze.getDateLastEdited().getTime());
             updateMaze.setInt(5, maze.getSizeX());
             updateMaze.setInt(6, maze.getSizeY());
-            updateMaze.setInt(7, cellSize);
+            updateMaze.setInt(7, maze.getCellSize());
             updateMaze.setBinaryStream(8, new ByteArrayInputStream(Maze.MazeToByteArray(maze)));
             updateMaze.setInt(9, id);
             updateMaze.execute();

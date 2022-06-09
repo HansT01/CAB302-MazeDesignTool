@@ -10,10 +10,7 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -230,11 +227,7 @@ public class PageDatabase extends JFrame implements Runnable {
         });
         editButton.addActionListener(e -> {
             // Create maze panel - This will later implement parameters from the database
-            try {
-                SwingUtilities.invokeLater(new PageCreate());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            EditMaze();
         });
         deleteButton.addActionListener(e -> {
             String title = mazesTable.getModel().getValueAt(selectedRow, 0).toString();
@@ -262,6 +255,24 @@ public class PageDatabase extends JFrame implements Runnable {
             }
         });
         deleteButton.addActionListener(e -> System.out.println("get pranked nerd"));
+    }
+
+
+    public void EditMaze() {
+        int selectedRow = mazesTable.getSelectedRow();
+        System.out.println(selectedRow);
+        if (selectedRow != -1) {
+            try {
+                tableData.absolute(selectedRow + 1);
+                int id = tableData.getInt("id");
+                Blob b = tableData.getBlob("serialization");
+                Maze maze = Maze.ByteArrayToMaze(b.getBytes(1, (int) b.length()));
+                SwingUtilities.invokeLater(new PageEdit(maze, id));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+        }
     }
 
     public void run() {CreateGUI();}

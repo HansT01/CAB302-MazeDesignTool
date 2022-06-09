@@ -11,15 +11,12 @@ import java.sql.*;
 import java.util.Arrays;
 
 public class DatabaseTest {
-    Connection connection;
     Statement statement;
-
     JDBCDataSource data;
 
     @BeforeEach
-    public void CreateDatabase() throws SQLException, MazeException {
-        connection = DBConnection.getInstance();
-        statement = connection.createStatement();
+    public void CreateDatabase() throws SQLException {
+        statement = DBConnection.getInstance().createStatement();
         data = new JDBCDataSource("cab302test");
     }
 
@@ -34,7 +31,7 @@ public class DatabaseTest {
         byte[] ba = Maze.MazeToByteArray(testMaze);
 
         // Add maze to database
-        int id = data.addMaze(testMaze, 16);
+        int id = data.addMaze(testMaze);
         assert (id != 0) : "Problem has occurred in SQL query";
 
         // Retrieve maze from database
@@ -50,7 +47,7 @@ public class DatabaseTest {
         byte[] ba = Maze.MazeToByteArray(testMaze);
 
         // Add maze to database
-        int id = data.addMaze(testMaze, 16);
+        int id = data.addMaze(testMaze);
         assert (id != 0) : "Problem has occurred in SQL query";
 
         // Delete maze from database
@@ -68,12 +65,12 @@ public class DatabaseTest {
         byte[] ba = Maze.MazeToByteArray(testMaze);
 
         // Add maze to database
-        int id = data.addMaze(testMaze, 16);
+        int id = data.addMaze(testMaze);
         assert (id != 0) : "Problem has occurred in SQL query";
 
         // Update maze in database
         testMaze.GenerateMaze();
-        data.updateMaze(id, testMaze, 16);
+        data.updateMaze(id, testMaze);
 
         // Retrieve deleted maze from database
         Maze testMaze2 = data.getMaze(id);

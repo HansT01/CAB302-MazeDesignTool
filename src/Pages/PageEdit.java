@@ -1,5 +1,6 @@
 package Pages;
 
+import Database.JDBCDataSource;
 import Maze.Maze;
 import Maze.MazeException;
 import Maze.MazeImage;
@@ -36,6 +37,7 @@ public class PageEdit extends JFrame implements Runnable {
     private final JButton exportMaze = new JButton("Export to PNG");
 
     private byte[] saveState;
+    private int mazeID;
 
     private final JTable imagesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"File name", "Width", "Height"})) {
         // make rows uneditable
@@ -51,17 +53,37 @@ public class PageEdit extends JFrame implements Runnable {
      * Constructs the edit page
      * @param maze maze object
      */
+    public PageEdit(Maze maze, int id) throws IOException {
+        fc.setFileFilter(new FileNameExtensionFilter("Image Files", "jpeg", "jpg", "png", "gif"));
+        fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
+
+        mazePanel = new MazePanel(maze);
+        saveState = Maze.MazeToByteArray(maze);
+        mazeID = id;
+
+        UpdateTable();
+        MazeUpdatedEvent();
+        SetupListenerEvents();
+    }
+
+    /**
+     * Constructs the edit page
+     * @param maze maze object
+     */
     public PageEdit(Maze maze) throws IOException {
         fc.setFileFilter(new FileNameExtensionFilter("Image Files", "jpeg", "jpg", "png", "gif"));
         fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
 
         mazePanel = new MazePanel(maze);
         saveState = Maze.MazeToByteArray(maze);
+        mazeID = -1;
+
         UpdateTable();
-
-
         MazeUpdatedEvent();
+        SetupListenerEvents();
+    }
 
+    private void SetupListenerEvents() {
         importImage.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -251,9 +273,16 @@ public class PageEdit extends JFrame implements Runnable {
      * @throws IOException IOException
      */
     private void SaveMaze() throws IOException {
-        saveState = Maze.MazeToByteArray(mazePanel.getMaze());
-        mazePanel.getMaze().UpdateLastEdited();
-        // TODO update database row here
+        Maze maze = mazePanel.getMaze();
+        maze.UpdateLastEdited();
+        saveState = Maze.MazeToByteArray(maze);
+
+        JDBCDataSource ds = new JDBCDataSource();
+        if (mazeID == -1) {
+            mazeID = ds.addMaze(maze);
+        } else {
+            ds.updateMaze(mazeID, maze);
+        }
     }
 
     /**
