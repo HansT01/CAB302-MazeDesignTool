@@ -58,7 +58,7 @@ public class Maze implements Serializable {
 
     /**
      * Getter for end image
-     * @return Maze.MazeImage object
+     * @return MazeImage object
      */
     public MazeImage getStartImage() {
         return startImage;
@@ -66,7 +66,7 @@ public class Maze implements Serializable {
 
     /**
      * Getter for end image
-     * @return Maze.MazeImage object
+     * @return MazeImage object
      */
     public MazeImage getEndImage() {
         return endImage;
@@ -74,7 +74,7 @@ public class Maze implements Serializable {
 
     /**
      * Setter for start image
-     * @param startImage Maze.MazeImage object
+     * @param startImage MazeImage object
      */
     public void setStartImage(MazeImage startImage) {
         this.startImage = startImage;
@@ -82,7 +82,7 @@ public class Maze implements Serializable {
 
     /**
      * Setter for end image
-     * @param endImage Maze.MazeImage object
+     * @param endImage MazeImage object
      */
     public void setEndImage(MazeImage endImage) {
         this.endImage = endImage;
@@ -90,7 +90,7 @@ public class Maze implements Serializable {
 
     /**
      * Setter for selected image
-     * @param selectedImage Maze.MazeImage object
+     * @param selectedImage MazeImage object
      */
     public void setSelectedImage(MazeImage selectedImage) {
         this.selectedImage = selectedImage;
@@ -106,7 +106,7 @@ public class Maze implements Serializable {
 
     /**
      * Getter for title.
-     * @return Maze.Maze title.
+     * @return Maze title.
      */
     public String getTitle() {
         return title;
@@ -114,7 +114,7 @@ public class Maze implements Serializable {
 
     /**
      * Getter for author.
-     * @return Maze.Maze author.
+     * @return Maze author.
      */
     public String getAuthor() {
         return author;
@@ -122,7 +122,7 @@ public class Maze implements Serializable {
 
     /**
      * Getter for date created.
-     * @return Maze.Maze date creation time.
+     * @return Maze date creation time.
      */
     public Date getDateCreated() {
         return dateCreated;
@@ -130,7 +130,7 @@ public class Maze implements Serializable {
 
     /**
      * Getter for date last edited
-     * @return Maze.Maze date last edited.
+     * @return Maze date last edited.
      */
     public Date getDateLastEdited() {
         return dateLastEdited;
