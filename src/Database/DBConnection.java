@@ -10,6 +10,8 @@ import java.util.Properties;
 
 public class DBConnection {
     private static Connection instance = null;
+    private static String username;
+    private static String password;
 
     private DBConnection() {
         Properties props = new Properties();
@@ -21,19 +23,30 @@ public class DBConnection {
 
             // specify the data source, username and password
             String url = props.getProperty("jdbc.url");
-            String username = props.getProperty("jdbc.username");
-            String password = props.getProperty("jdbc.password");
+            String dbUser = props.getProperty("jdbc.username");
+            String dbPassword = props.getProperty("jdbc.password");
 
             // get a connection
-            instance = DriverManager.getConnection(url + "/", username,
-                    password);
-        } catch (SQLException sqle) {
-            System.err.println(sqle);
-        } catch (FileNotFoundException fnfe) {
-            System.err.println(fnfe);
-        } catch (IOException ex) {
+            instance = DriverManager.getConnection(url + "/", dbUser, dbPassword);
+        } catch (SQLException | IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public static String getUsername() {
+        return username;
+    }
+
+    public static String getPassword() {
+        return password;
+    }
+
+    public static void setUsername(String s) {
+        username = s;
+    }
+
+    public static void setPassword(String s) {
+        password = s;
     }
 
     public static Connection getInstance() {

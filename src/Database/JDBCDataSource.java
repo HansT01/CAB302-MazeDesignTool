@@ -5,11 +5,9 @@ import Maze.Maze;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
 
 public class JDBCDataSource implements DBDataSource {
-
-    public static final String CREATE_TABLE =
+    public static final String CREATE_MAZE_TABLE =
             "CREATE TABLE IF NOT EXISTS mazeStorage ("
                     + "title VARCHAR(50) ,"
                     + "author VARCHAR(50) ,"
@@ -22,12 +20,18 @@ public class JDBCDataSource implements DBDataSource {
                     + "id int NOT NULL AUTO_INCREMENT,"
                     + "PRIMARY KEY (id)"
                     + ");";
-
-    private static final String INSERT_MAZE = "INSERT INTO mazeStorage "
-            + "(title, author, dateCreated, dateLastEdited, sizeX, sizeY, cellSize, serialization) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+    public static final String CREATE_USERS_TABLE =
+            "CREATE TABLE IF NOT EXISTS user (" +
+            "username varchar(255) NOT NULL," +
+            "password varchar(255) NOT NULL," +
+            "PRIMARY KEY (`name`));";
+    private static final String INSERT_MAZE =
+            "INSERT INTO mazeStorage " +
+            "(title, author, dateCreated, dateLastEdited, sizeX, sizeY, cellSize, serialization) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
     private static final String DELETE_MAZE = "DELETE FROM mazeStorage WHERE id = ?;";
-    private static final String UPDATE_MAZE = "UPDATE mazeStorage SET " +
+    private static final String UPDATE_MAZE =
+            "UPDATE mazeStorage SET " +
             "title = ?," +
             "author = ?," +
             "dateCreated = ?," +
@@ -37,22 +41,20 @@ public class JDBCDataSource implements DBDataSource {
             "cellSize = ?," +
             "serialization = ?" +
             "WHERE id = ?;";
-    private static final String GET_MAZE_BY_TITLE_AUTHOR = "SELECT * FROM mazeStorage WHERE title = ? AND author = ?;";
     private static final String GET_MAZE_BY_ID = "SELECT * FROM mazeStorage WHERE id = ?;";
     private static final String GET_ALL_MAZES = "SELECT * FROM mazeStorage;";
+    private static final String GET_USERNAME_PASSWORD = "SELECT name, password FROM user WHERE name=? and password=?;";
 
 
     private PreparedStatement addMaze;
     private PreparedStatement deleteMaze;
     private PreparedStatement updateMaze;
-    private PreparedStatement getMazeByTitleAuthor;
     private PreparedStatement getMazeByID;
     private PreparedStatement getAllMazes;
-    private PreparedStatement getLastInsertID;
+    private PreparedStatement getUser;
 
 
     private Connection connection;
-    private PreparedStatement getData;
 
     /**
      * Default constructor using database named cab302.
@@ -80,14 +82,15 @@ public class JDBCDataSource implements DBDataSource {
             st.execute("CREATE DATABASE IF NOT EXISTS " + database + ";");
             st.execute("use " + database + ";");
 
-            st.execute(CREATE_TABLE);
+            st.execute(CREATE_MAZE_TABLE);
+            st.execute(CREATE_USERS_TABLE);
+
             addMaze = connection.prepareStatement(INSERT_MAZE, Statement.RETURN_GENERATED_KEYS);
             deleteMaze = connection.prepareStatement(DELETE_MAZE);
             updateMaze = connection.prepareStatement(UPDATE_MAZE);
-            getMazeByTitleAuthor = connection.prepareStatement(GET_MAZE_BY_TITLE_AUTHOR);
             getMazeByID = connection.prepareStatement(GET_MAZE_BY_ID);
             getAllMazes = connection.prepareStatement(GET_ALL_MAZES);
-            getLastInsertID = connection.prepareStatement("SELECT LAST_INSERT_ID();");
+            getUser = connection.prepareStatement(GET_USERNAME_PASSWORD);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -159,12 +162,26 @@ public class JDBCDataSource implements DBDataSource {
 
     public ResultSet GetAllDocuments() {
         try {
-            ResultSet rs = getAllMazes.executeQuery();
-            return rs;
+            return getAllMazes.executeQuery();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    public boolean VerifyUser() {
+        try {
+            getUser.setString(1, DBConnection.getUsername());
+            getUser.setString(2, DBConnection.getPassword());
+            ResultSet rs = getUser.executeQuery();
+            rs.beforeFirst();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 
     public static void main(JDBCDataSource args) {

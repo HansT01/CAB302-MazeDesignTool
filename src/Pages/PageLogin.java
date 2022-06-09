@@ -14,22 +14,24 @@ import java.sql.*;
  */
 public class PageLogin extends JFrame implements Runnable {
     GridBagManager gbm = new GridBagManager();
+    JDBCDataSource data;
 
     // Labels
     JLabel nameLabel = new JLabel("Name");
     JLabel passwordLabel = new JLabel("Password");
     // Text Areas
-    JTextField nameText = new JTextField();
+    JTextField usernameText = new JTextField();
     JTextField passwordText = new JTextField();
     // Button
     JButton login = new JButton("Login");
-    // Associate user who logs in as the author
-    public static String author;
+
     /**
      * Creates 'Login' JPanel object
      * @return JPanel object
      */
     private JPanel CreateLoginPanel() {
+        data = new JDBCDataSource();
+
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         panel.setBorder(BorderFactory.createCompoundBorder(
@@ -47,7 +49,7 @@ public class PageLogin extends JFrame implements Runnable {
 
         gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 1;
-        panel.add(nameText, gbc);
+        panel.add(usernameText, gbc);
 
         gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 1;
@@ -85,39 +87,30 @@ public class PageLogin extends JFrame implements Runnable {
 
         // set defaults
         setVisible(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // Login Button Action Event
         login.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-
-                // Authenticate user
-                if (e.getSource() == login) {
-                    String userTxt = nameText.getText();
-                    author = nameText.getText();
-                    String passTxt = passwordText.getText();
-                    try {
-                        Connection connection = DBConnection.getInstance();
-                        PreparedStatement auth = (PreparedStatement) connection.prepareStatement("Select name, password from user where name=? and password=?");
-
-                        auth.setString(1, userTxt);
-                        auth.setString(2, passTxt);
-                        ResultSet rs = auth.executeQuery();
-                        if (rs.next()) {
-                            dispose();
-                            JOptionPane.showMessageDialog(login, "Valid Credentials");
-                            SwingUtilities.invokeLater(new PageDatabase());
-                        }
-                        else {
-                            JOptionPane.showMessageDialog(login, "Invalid Credentials");
-                        }
-                    } catch (SQLException sqlException) {
-                        sqlException.printStackTrace();
-                    }
+                try {
+                    AttemptLogin();
+                } catch (InvalidInputException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
+    }
+
+    public void AttemptLogin() throws InvalidInputException {
+        DBConnection.setUsername(usernameText.getText());
+        DBConnection.setPassword(passwordText.getText());
+        if (data.VerifyUser()) {
+            SwingUtilities.invokeLater(new PageDatabase());
+            dispose();
+        } else {
+            throw new InvalidInputException("Login credentials are wrong!", this);
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package Pages;
 
+import Database.DBConnection;
 import Maze.Maze;
 import Maze.MazeException;
 import Maze.MazeImage;
@@ -111,9 +112,7 @@ public class PageCreate extends JFrame implements Runnable {
             throw new InvalidInputException("Maze dimensions cannot be zero or negative", this);
         }
 
-        // TODO change author to use database username
-        String author = PageLogin.author;
-        Maze maze = new Maze(mazeTitle.getText(), author, sizeX, sizeY, cellSize);
+        Maze maze = new Maze(mazeTitle.getText(), DBConnection.getUsername(), sizeX, sizeY, cellSize);
 
         int startX;
         int startY;
@@ -462,7 +461,7 @@ public class PageCreate extends JFrame implements Runnable {
 
         // set defaults
         setVisible(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     @Override

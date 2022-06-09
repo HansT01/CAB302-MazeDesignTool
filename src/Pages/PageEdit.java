@@ -583,7 +583,7 @@ public class PageEdit extends JFrame implements Runnable {
 
         // set defaults
         setVisible(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     @Override

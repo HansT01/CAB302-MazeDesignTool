@@ -19,21 +19,12 @@ import java.util.Date;
  * Constructs window for viewing and interacting with mazes stored in database
  */
 public class PageDatabase extends JFrame implements Runnable {
-
-    /** Used for getting location of mouse pointer */
-    Point openLocation = MouseInfo.getPointerInfo().getLocation();
     JDBCDataSource data;
     ResultSet tableData;
 
     GridBagManager gbm = new GridBagManager();
 
-    /** Value of column of cell clicked on */
-    int selectedColumn;
-    /** Value of row of cell clicked on */
-    int selectedRow;
-    /** Data in cell clicked on */
-    String selectedCellValue;
-
+    JButton refreshButton = new JButton("Refresh table");
     /** JButton used for New */
     JButton newButton = new JButton("New");
     /** JButton used for Edit */
@@ -42,7 +33,6 @@ public class PageDatabase extends JFrame implements Runnable {
     JButton deleteButton = new JButton("Delete");
     /** JButton used for Export */
     JButton exportButton = new JButton("Export");
-    JButton loginButton = new JButton("Login");
 
     private final JTable mazesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"Title", "Author", "Date created", "Last edited", "SizeX", "SizeY", "Cell Size"})) {
         // make rows uneditable
@@ -150,6 +140,10 @@ public class PageDatabase extends JFrame implements Runnable {
 
         gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 1;
+        panel.add(refreshButton, gbc);
+
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
+        gbc.gridwidth = 1;
         panel.add(newButton, gbc);
 
         gbc = gbm.CreateInnerGBC(0, gridRow++);
@@ -160,13 +154,9 @@ public class PageDatabase extends JFrame implements Runnable {
         gbc.gridwidth = 1;
         panel.add(deleteButton, gbc);
 
-        gbc = gbm.CreateInnerGBC(0, gridRow++);
-        gbc.gridwidth = 1;
-        panel.add(exportButton, gbc);
-
         gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.gridwidth = 1;
-        panel.add(loginButton, gbc);
+        panel.add(exportButton, gbc);
 
         return panel;
     }
@@ -195,72 +185,30 @@ public class PageDatabase extends JFrame implements Runnable {
 
         // set defaults
         setVisible(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     /**
      * Adds listener for mousePressed event
      */
     private void listenerSetup(){
-        mazesTable.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {}
-            @Override
-            public void mousePressed(MouseEvent e) {
-                int selectedRow = mazesTable.getSelectedRow();
-                int selectedColumn = mazesTable.getSelectedColumn();
-                String selectedCellValue = (String) mazesTable.getValueAt(mazesTable.getSelectedRow(), mazesTable.getSelectedColumn());
-                System.out.println(selectedCellValue);
-                System.out.println(selectedRow);
-                System.out.println(selectedColumn);
-            }
-            @Override
-            public void mouseReleased(MouseEvent e) {}
-            @Override
-            public void mouseEntered(MouseEvent e) {}
-            @Override
-            public void mouseExited(MouseEvent e) {}
+        refreshButton.addActionListener(e -> {
+            UpdateTable();
         });
         newButton.addActionListener(e -> {
             SwingUtilities.invokeLater(new PageCreate());
-            dispose();
         });
         editButton.addActionListener(e -> {
-            // Create maze panel - This will later implement parameters from the database
             EditMaze();
         });
         deleteButton.addActionListener(e -> {
-            String title = mazesTable.getModel().getValueAt(selectedRow, 0).toString();
-            String author = mazesTable.getModel().getValueAt(selectedRow, 1).toString();
-            try {
-                Connection connection = DBConnection.getInstance();
-                final String DELETE = "DELETE FROM mazeStorage WHERE title="+ "'" + title + "'" + " AND author=" + "'" + author + "'";
-
-                Statement statement = connection.createStatement();
-                statement.executeQuery(DELETE);
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-            UpdateTable();
+            DeleteMaze();
         });
-        loginButton.addActionListener(e -> {
-            try {
-                SwingUtilities.invokeLater(new PageLogin());
-                Maze testMaze = new Maze("Maze Title", "Maze Author", 80,50, 16);
-                testMaze.GenerateMaze();
-                SwingUtilities.invokeLater(new PageEdit(testMaze));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
-        deleteButton.addActionListener(e -> System.out.println("get pranked nerd"));
     }
 
 
     public void EditMaze() {
         int selectedRow = mazesTable.getSelectedRow();
-        System.out.println(selectedRow);
         if (selectedRow != -1) {
             try {
                 tableData.absolute(selectedRow + 1);
@@ -271,7 +219,19 @@ public class PageDatabase extends JFrame implements Runnable {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+        }
+    }
 
+    public void DeleteMaze() {
+        int selectedRow = mazesTable.getSelectedRow();
+        if (selectedRow != -1) {
+            try {
+                tableData.absolute(selectedRow + 1);
+                int id = tableData.getInt("id");
+                data.deleteMaze(id);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
