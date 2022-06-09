@@ -23,7 +23,8 @@ public class PageLogin extends JFrame implements Runnable {
     JTextField passwordText = new JTextField();
     // Button
     JButton login = new JButton("Login");
-
+    // Associate user who logs in as the author
+    public static String author;
     /**
      * Creates 'Login' JPanel object
      * @return JPanel object
@@ -94,6 +95,7 @@ public class PageLogin extends JFrame implements Runnable {
                 // Authenticate user
                 if (e.getSource() == login) {
                     String userTxt = nameText.getText();
+                    author = nameText.getText();
                     String passTxt = passwordText.getText();
                     try {
                         Connection connection = DBConnection.getInstance();

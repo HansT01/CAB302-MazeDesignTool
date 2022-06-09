@@ -112,7 +112,8 @@ public class PageCreate extends JFrame implements Runnable {
         }
 
         // TODO change author to use database username
-        Maze maze = new Maze(mazeTitle.getText(), "STEVE", sizeX, sizeY, cellSize);
+        String author = PageLogin.author;
+        Maze maze = new Maze(mazeTitle.getText(), author, sizeX, sizeY, cellSize);
 
         int startX;
         int startY;
