@@ -1,9 +1,10 @@
-package Database;
-
+import Database.DBConnection;
+import Database.JDBCDataSource;
 import Maze.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import Database.*;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;

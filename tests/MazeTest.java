@@ -1,3 +1,4 @@
+import Maze.Maze;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -6,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import Maze.*;
 
 public class MazeTest {
     Maze testMaze;
@@ -15,7 +17,7 @@ public class MazeTest {
 
     @BeforeEach
     public void ConstructMaze() throws MazeException {
-        testMaze = new Maze("Maze title", "Maze author", 3, 1);
+        testMaze = new Maze("Maze title", "Maze author", 3, 1, 16);
         testCell1 = testMaze.getCells()[0][0];
         testCell2 = testMaze.getCells()[1][0];
         testCell3 = testMaze.getCells()[2][0];
@@ -51,24 +53,24 @@ public class MazeTest {
     @Test
     public void NegativeDimensions() {
         assertThrows(Exception.class, () -> {
-            testMaze = new Maze("Maze title", "Maze author", -1, 1);
+            testMaze = new Maze("Maze title", "Maze author", -1, 1, 16);
         });
         assertThrows(Exception.class, () -> {
-            testMaze = new Maze("Maze title", "Maze author", 1, -1);
+            testMaze = new Maze("Maze title", "Maze author", 1, -1, 16);
         });
     }
     @Test
     public void GenerateZeroDimensions() {
         assertThrows(Exception.class, () -> {
-            testMaze = new Maze("Maze title", "Maze author", 0, 1);
+            testMaze = new Maze("Maze title", "Maze author", 0, 1, 16);
         });
         assertThrows(Exception.class, () -> {
-            testMaze = new Maze("Maze title", "Maze author", 1, 0);
+            testMaze = new Maze("Maze title", "Maze author", 1, 0, 16);
         });
     }
     @Test
     public void Generate1000x1000() throws MazeException {
-        testMaze = new Maze("Maze title", "Maze author", 1000, 1000);
+        testMaze = new Maze("Maze title", "Maze author", 1000, 1000, 16);
         assert(testMaze.getSizeX() == 1000) : "X size " + testMaze.getSizeX() + " is not 1000";
         assert(testMaze.getSizeY() == 1000) : "Y size " + testMaze.getSizeY() + " is not 1000";
     }
@@ -123,7 +125,7 @@ public class MazeTest {
     }
     @Test
     public void DeadEndPct() throws MazeException {
-        testMaze = new Maze("Maze title", "Maze author", 4, 1);
+        testMaze = new Maze("Maze title", "Maze author", 4, 1, 16);
         testMaze.GenerateMaze();
         assert (testMaze.DeadEndPct() == 0.5) : "Dead end percentage " + testMaze.DeadEndPct() + " does not match 0.5";
     }

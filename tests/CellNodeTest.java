@@ -1,3 +1,5 @@
+import Maze.*;
+
 import org.junit.jupiter.api.*;
 
 public class CellNodeTest {
@@ -11,7 +13,7 @@ public class CellNodeTest {
 
     @BeforeEach
     public void ConstructMaze() throws MazeException {
-        testMaze = new Maze("Maze title", "Maze author", 3, 1);
+        testMaze = new Maze("Maze title", "Maze author", 3, 1, 16);
         testCell1 = testMaze.getCells()[0][0];
         testCell2 = testMaze.getCells()[1][0];
         testCell3 = testMaze.getCells()[2][0];

@@ -4,9 +4,10 @@
         <javac srcdir="src" destdir="target" includeantruntime="false" />
     </target>
 
+
     <path id="junit.classpath">
         <fileset dir="lib">
-            <include name="*.jar"/>
+            <include name="*.jar" />
         </fileset>
     </path>
 
@@ -16,6 +17,15 @@
             <classpath refid="junit.classpath" />
             <classpath location="target" />
         </javac>
-        <junitlauncher printsummary="true" failureproperty="junit.failure">?</junitlauncher>
+
+<!--    <target name="test">-->
+<!--        <mkdir dir="testtarget" />-->
+<!--        <javac srcdir="tests" destdir="testtarget" includeantruntime="false">-->
+<!--            <classpath location="lib/junit-jupiter-api-5.4.2.jar" />-->
+<!--        </javac>-->
+
+<!--        <junitlauncher printsummary="true" failureproperty="junit.failure">-->
+<!--            <classpath refid="junit.classpath" />-->
+<!--        </junitlauncher>-->
     </target>
 </project>
