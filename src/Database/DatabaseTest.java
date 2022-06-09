@@ -32,7 +32,7 @@ public class DatabaseTest {
         Maze testMaze = new Maze("test-maze-title", "test-maze-author", 10,10);
         byte[] ba = Maze.MazeToByteArray(testMaze);
         // TODO method to add maze row
-        statement.execute(String.format("INSERT INTO `mazeStorage` (serialization)", ));
+        statement.execute(String.format("INSERT INTO `mazeStorage` (serialization)"));
 
 
         // Get maze from database

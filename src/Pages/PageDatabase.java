@@ -6,6 +6,7 @@ import Maze.Maze;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -40,10 +41,9 @@ public class PageDatabase extends JFrame implements Runnable {
     JButton deleteButton = new JButton("Delete");
     /** JButton used for Export */
     JButton exportButton = new JButton("Export");
-
     JButton loginButton = new JButton("Login");
 
-    private final JTable mazesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"Title", "Author", "Date created", "Last edited", "SizeX", "SizeY"})) {
+    private final JTable mazesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"Title", "Author", "Date created", "Last edited", "SizeX", "SizeY", "Cell Size"})) {
         // make rows uneditable
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -78,9 +78,18 @@ public class PageDatabase extends JFrame implements Runnable {
         panel.setLayout(new GridBagLayout());
 
         JScrollPane scrollPane = new JScrollPane(mazesTable);
-        mazesTable.getColumnModel().getColumn(0).setPreferredWidth(150);
-        mazesTable.getColumnModel().getColumn(1).setPreferredWidth(75);
-        mazesTable.getColumnModel().getColumn(2).setPreferredWidth(75);
+
+        TableColumnModel tcm = mazesTable.getColumnModel();
+
+        tcm.getColumn(0).setPreferredWidth(200);
+        tcm.getColumn(1).setPreferredWidth(100);
+        tcm.getColumn(2).setPreferredWidth(100);
+        tcm.getColumn(3).setPreferredWidth(100);
+        tcm.getColumn(4).setPreferredWidth(50);
+        tcm.getColumn(5).setPreferredWidth(50);
+        tcm.getColumn(6).setPreferredWidth(50);
+
+
 
         GridBagConstraints gbc;
         int gridRow = 0;
@@ -99,6 +108,8 @@ public class PageDatabase extends JFrame implements Runnable {
                 BorderFactory.createTitledBorder("???"),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5))
         );
+
+        panel.setPreferredSize(new Dimension(150, 300));
 
         GridBagConstraints gbc;
         int gridRow = 0;
@@ -157,6 +168,7 @@ public class PageDatabase extends JFrame implements Runnable {
         Object[][] data = null;
         try {
             Connection connection = DBConnection.getInstance();
+            System.out.print(connection);
             final String GET_DATA = "SELECT * FROM mazeStorage";
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(GET_DATA);
@@ -176,12 +188,15 @@ public class PageDatabase extends JFrame implements Runnable {
                 data[i][j++] = rs.getString("dateCreated");
                 data[i][j++] = rs.getString("dateLastEdited");
                 data[i][j++] = rs.getString("sizeX");
-                data[i][j] = rs.getString("sizeY");
+                data[i][j++] = rs.getString("sizeY");
+                data[i][j++] = rs.getString("cellSize");
+                data[i][j] = rs.getString("serialization");
                 i++;
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+
         return data;
     }
 
@@ -220,9 +235,11 @@ public class PageDatabase extends JFrame implements Runnable {
             @Override
             public void mousePressed(MouseEvent e) {
                 int selectedRow = mazesTable.getSelectedRow();
-                // int selectedColumn = mazesTable.getSelectedColumn();
-                // String selectedCellValue = (String) mazesTable.getValueAt(mazesTable.getSelectedRow(), mazesTable.getSelectedColumn());
-
+                int selectedColumn = mazesTable.getSelectedColumn();
+                String selectedCellValue = (String) mazesTable.getValueAt(mazesTable.getSelectedRow(), mazesTable.getSelectedColumn());
+                System.out.println(selectedCellValue);
+                System.out.println(selectedRow);
+                System.out.println(selectedColumn);
             }
             @Override
             public void mouseReleased(MouseEvent e) {}
@@ -246,7 +263,6 @@ public class PageDatabase extends JFrame implements Runnable {
         deleteButton.addActionListener(e -> {
             String title = mazesTable.getModel().getValueAt(selectedRow, 0).toString();
             String author = mazesTable.getModel().getValueAt(selectedRow, 1).toString();
-
             try {
                 Connection connection = DBConnection.getInstance();
                 final String DELETE = "DELETE FROM mazeStorage WHERE title="+ "'" + title + "'" + " AND author=" + "'" + author + "'";
@@ -257,17 +273,19 @@ public class PageDatabase extends JFrame implements Runnable {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-
             UpdateTable();
-
         });
         loginButton.addActionListener(e -> {
             try {
                 SwingUtilities.invokeLater(new PageLogin());
+                Maze testMaze = new Maze("Maze Title", "Maze Author", 80,50);
+                testMaze.GenerateMaze();
+                SwingUtilities.invokeLater(new PageEdit(testMaze, 12));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         });
+        deleteButton.addActionListener(e -> System.out.println("get pranked nerd"));
     }
 
     public void run() {CreateGUI();}
