@@ -8,18 +8,19 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.Arrays;
 
 public class DatabaseTest {
     Connection connection;
     Statement statement;
 
+    JDBCDataSource data;
+
     @BeforeEach
     public void CreateDatabase() throws SQLException, MazeException {
         connection = DBConnection.getInstance();
         statement = connection.createStatement();
-        statement.execute("CREATE DATABASE IF NOT EXISTS cab302test;");
-        statement.execute("USE cab302test;");
-        JDBCDataSource.main(new JDBCDataSource());
+        data = new JDBCDataSource("cab302test");
     }
 
     @AfterEach
@@ -28,18 +29,56 @@ public class DatabaseTest {
     }
 
     @Test
-    public void AddMaze() throws MazeException, IOException, SQLException {
+    public void AddMaze() throws MazeException, IOException {
         Maze testMaze = new Maze("test-maze-title", "test-maze-author", 10,10);
         byte[] ba = Maze.MazeToByteArray(testMaze);
-        // TODO method to add maze row
-        statement.execute(String.format("INSERT INTO `mazeStorage` (serialization)"));
+
+        // Add maze to database
+        int id = data.addMaze(testMaze, 16);
+        assert (id != 0) : "Problem has occurred in SQL query";
+
+        // Retrieve maze from database
+        Maze testMaze2 = data.getMaze(id);
+        byte[] ba2 = Maze.MazeToByteArray(testMaze2);
+
+        assert(Arrays.equals(ba, ba2)) : "Byte arrays do not match";
+    }
+
+    @Test
+    public void DeleteMaze() throws MazeException, IOException {
+        Maze testMaze = new Maze("test-maze-title", "test-maze-author", 10,10);
+        byte[] ba = Maze.MazeToByteArray(testMaze);
+
+        // Add maze to database
+        int id = data.addMaze(testMaze, 16);
+        assert (id != 0) : "Problem has occurred in SQL query";
+
+        // Delete maze from database
+        data.deleteMaze(id);
+
+        // Retrieve deleted maze from database
+        Maze testMaze2 = data.getMaze(id);
+        assert (testMaze2 == null) : "Get maze should return null value";
+    }
 
 
-        // Get maze from database
-        ResultSet rs = statement.executeQuery("SELECT * FROM mazeStorage");
-        Blob b = rs.getBlob("serialization");
-        byte[] ba2 = b.getBytes(1, (int) b.length());
+    @Test
+    public void UpdateMaze() throws MazeException, IOException {
+        Maze testMaze = new Maze("test-maze-title", "test-maze-author", 10,10);
+        byte[] ba = Maze.MazeToByteArray(testMaze);
 
-        assert(ba == ba2) : "Byte arrays do not match";
+        // Add maze to database
+        int id = data.addMaze(testMaze, 16);
+        assert (id != 0) : "Problem has occurred in SQL query";
+
+        // Update maze in database
+        testMaze.GenerateMaze();
+        data.updateMaze(id, testMaze, 16);
+
+        // Retrieve deleted maze from database
+        Maze testMaze2 = data.getMaze(id);
+        byte[] ba2 = Maze.MazeToByteArray(testMaze2);
+
+        assert (!Arrays.equals(ba, ba2)) : "Byte arrays should no longer be equal";
     }
 }
