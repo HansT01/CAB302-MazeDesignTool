@@ -48,6 +48,7 @@ public class JDBCDataSource implements DBDataSource {
     private PreparedStatement getMazeByTitleAuthor;
     private PreparedStatement getMazeByID;
     private PreparedStatement getAllMazes;
+    private PreparedStatement getLastInsertID;
 
 
     private Connection connection;
@@ -80,12 +81,13 @@ public class JDBCDataSource implements DBDataSource {
             st.execute("use " + database + ";");
 
             st.execute(CREATE_TABLE);
-            addMaze = connection.prepareStatement(INSERT_MAZE);
+            addMaze = connection.prepareStatement(INSERT_MAZE, Statement.RETURN_GENERATED_KEYS);
             deleteMaze = connection.prepareStatement(DELETE_MAZE);
             updateMaze = connection.prepareStatement(UPDATE_MAZE);
             getMazeByTitleAuthor = connection.prepareStatement(GET_MAZE_BY_TITLE_AUTHOR);
             getMazeByID = connection.prepareStatement(GET_MAZE_BY_ID);
             getAllMazes = connection.prepareStatement(GET_ALL_MAZES);
+            getLastInsertID = connection.prepareStatement("SELECT LAST_INSERT_ID();");
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -103,12 +105,9 @@ public class JDBCDataSource implements DBDataSource {
             addMaze.setBinaryStream(8, new ByteArrayInputStream(Maze.MazeToByteArray(maze)));
             addMaze.execute();
 
-            getMazeByTitleAuthor.setString(1, maze.getTitle());
-            getMazeByTitleAuthor.setString(2, maze.getAuthor());
-            ResultSet rs = getMazeByTitleAuthor.executeQuery();
-            rs.beforeFirst();
+            ResultSet rs = addMaze.getGeneratedKeys();
             if (rs.next()) {
-                return rs.getInt("id");
+                return rs.getInt(1);
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
@@ -158,24 +157,16 @@ public class JDBCDataSource implements DBDataSource {
         return null;
     }
 
-    public ArrayList<Maze> getAllMazes() {
-        ArrayList<Maze> mazes = new ArrayList<>();
+    public ResultSet GetAllDocuments() {
         try {
             ResultSet rs = getAllMazes.executeQuery();
-            rs.beforeFirst();
-            while (rs.next()) {
-                Blob b = rs.getBlob("serialization");
-                byte[] ba = b.getBytes(1, (int) b.length());
-                mazes.add(Maze.ByteArrayToMaze(ba));
-            }
-        } catch (SQLException | IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            return rs;
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        return mazes;
+        return null;
     }
 
     public static void main(JDBCDataSource args) {
     }
-
-
 }
