@@ -1,6 +1,5 @@
 package Pages;
 
-import Database.DBConnection;
 import Database.JDBCDataSource;
 import Maze.Maze;
 
@@ -8,10 +7,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -228,7 +224,7 @@ public class PageDatabase extends JFrame implements Runnable {
             try {
                 tableData.absolute(selectedRow + 1);
                 int id = tableData.getInt("id");
-                data.deleteMaze(id);
+                data.DeleteMaze(id);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

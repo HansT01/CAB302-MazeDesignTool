@@ -17,7 +17,7 @@ public class PageLogin extends JFrame implements Runnable {
     JDBCDataSource data;
 
     // Labels
-    JLabel nameLabel = new JLabel("Name");
+    JLabel nameLabel = new JLabel("Username");
     JLabel passwordLabel = new JLabel("Password");
     // Text Areas
     JTextField usernameText = new JTextField();
@@ -118,9 +118,14 @@ public class PageLogin extends JFrame implements Runnable {
         CreateGUI();
     }
     public static void main(String[] args) throws SQLException {
+        JDBCDataSource data = new JDBCDataSource();
+        data.DeleteUser("Test");
+        DBConnection.setUsername("Test");
+        DBConnection.setPassword("1234");
+        data.AddUser();
 
         // Setup Login DB
-        Connection connection = DBConnection.getInstance();
+        /*Connection connection = DBConnection.getInstance();
         Statement statement = connection.createStatement();
         statement.execute("CREATE DATABASE IF NOT EXISTS cab302;");
         statement.execute("use cab302;");
@@ -131,8 +136,7 @@ public class PageLogin extends JFrame implements Runnable {
         // Enter Accounts
         statement.execute("INSERT IGNORE INTO user VALUES('Test', '1234');");
         statement.execute("INSERT IGNORE INTO user VALUES('Test123', '1234');");
-        statement.execute("INSERT IGNORE INTO user VALUES('Test321', '1234');");
-        JDBCDataSource.main(new JDBCDataSource());
+        statement.execute("INSERT IGNORE INTO user VALUES('Test321', '1234');");*/
         SwingUtilities.invokeLater(new PageLogin());
     }
 }

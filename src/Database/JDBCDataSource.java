@@ -3,18 +3,15 @@ package Database;
 import Maze.Maze;
 
 import javax.crypto.SecretKeyFactory;
-import javax.crypto.interfaces.PBEKey;
 import javax.crypto.spec.PBEKeySpec;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.Security;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.sql.*;
 import java.util.Base64;
-import java.util.Random;
 
 public class JDBCDataSource implements DBDataSource {
     public static final String CREATE_MAZE_TABLE =
@@ -31,9 +28,9 @@ public class JDBCDataSource implements DBDataSource {
                     + "PRIMARY KEY (id)"
                     + ");";
     public static final String CREATE_USERS_TABLE =
-            "CREATE TABLE IF NOT EXISTS user (" +
+            "CREATE TABLE IF NOT EXISTS users (" +
             "username varchar(255) NOT NULL," +
-            "password varchar(255) NOT NULL," +
+            "hash varchar(255) NOT NULL," +
             "PRIMARY KEY (`username`));";
     private static final String INSERT_MAZE =
             "INSERT INTO mazeStorage " +
@@ -53,7 +50,10 @@ public class JDBCDataSource implements DBDataSource {
             "WHERE id = ?;";
     private static final String GET_MAZE_BY_ID = "SELECT * FROM mazeStorage WHERE id = ?;";
     private static final String GET_ALL_MAZES = "SELECT * FROM mazeStorage;";
-    private static final String GET_USER = "SELECT password FROM user WHERE name=?";
+
+    private static final String GET_HASH = "SELECT hash FROM users WHERE username = ?";
+    private static final String INSERT_USER = "INSERT INTO users (username, hash) VALUES (?, ?);";
+    private static final String DELETE_USER = "DELETE FROM users WHERE username = ?;";
 
 
     private PreparedStatement addMaze;
@@ -61,7 +61,10 @@ public class JDBCDataSource implements DBDataSource {
     private PreparedStatement updateMaze;
     private PreparedStatement getMazeByID;
     private PreparedStatement getAllMazes;
-    private PreparedStatement getUser;
+
+    private PreparedStatement getHash;
+    private PreparedStatement addUser;
+    private PreparedStatement deleteUser;
 
 
     private Connection connection;
@@ -100,13 +103,16 @@ public class JDBCDataSource implements DBDataSource {
             updateMaze = connection.prepareStatement(UPDATE_MAZE);
             getMazeByID = connection.prepareStatement(GET_MAZE_BY_ID);
             getAllMazes = connection.prepareStatement(GET_ALL_MAZES);
-            getUser = connection.prepareStatement(GET_USER);
+
+            getHash = connection.prepareStatement(GET_HASH);
+            addUser = connection.prepareStatement(INSERT_USER);
+            deleteUser = connection.prepareStatement(DELETE_USER);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
-    public int addMaze(Maze maze) {
+    public int AddMaze(Maze maze) {
         try {
             addMaze.setString(1, maze.getTitle());
             addMaze.setString(2, maze.getAuthor());
@@ -128,7 +134,7 @@ public class JDBCDataSource implements DBDataSource {
         return 0;
     }
 
-    public void deleteMaze(int id) {
+    public void DeleteMaze(int id) {
         try {
             deleteMaze.setInt(1, id);
             deleteMaze.execute();
@@ -137,7 +143,7 @@ public class JDBCDataSource implements DBDataSource {
         }
     }
 
-    public void updateMaze(int id, Maze maze) {
+    public void UpdateMaze(int id, Maze maze) {
         try {
             updateMaze.setString(1, maze.getTitle());
             updateMaze.setString(2, maze.getAuthor());
@@ -154,7 +160,7 @@ public class JDBCDataSource implements DBDataSource {
         }
     }
 
-    public Maze getMaze(int id) {
+    public Maze GetMaze(int id) {
         try {
             getMazeByID.setInt(1, id);
             ResultSet rs = getMazeByID.executeQuery();
@@ -179,14 +185,37 @@ public class JDBCDataSource implements DBDataSource {
         return null;
     }
 
+    public void AddUser() {
+        try {
+            String username = DBConnection.getUsername();
+            String password = DBConnection.getPassword();
+            String hash = HashString(password);
+
+            addUser.setString(1, username);
+            addUser.setString(2, hash);
+            addUser.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void DeleteUser(String username) {
+        try {
+            deleteUser.setString(1, username);
+            deleteUser.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean VerifyUser() {
         try {
-            getUser.setString(1, DBConnection.getUsername());
-            ResultSet rs = getUser.executeQuery();
+            getHash.setString(1, DBConnection.getUsername());
+            ResultSet rs = getHash.executeQuery();
             rs.beforeFirst();
             if (rs.next()) {
-                rs.getString(1).equals(DBConnection.getPassword());
-                return true;
+                String hash = rs.getString(1);
+                return MatchHash(DBConnection.getPassword(), hash);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

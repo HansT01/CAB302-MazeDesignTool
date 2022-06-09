@@ -279,9 +279,9 @@ public class PageEdit extends JFrame implements Runnable {
 
         JDBCDataSource ds = new JDBCDataSource();
         if (mazeID == -1) {
-            mazeID = ds.addMaze(maze);
+            mazeID = ds.AddMaze(maze);
         } else {
-            ds.updateMaze(mazeID, maze);
+            ds.UpdateMaze(mazeID, maze);
         }
     }
 
