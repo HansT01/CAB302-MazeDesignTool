@@ -138,9 +138,9 @@ public class MazeImage implements Serializable {
 
     public static void main(String[] args) throws MazeException {
         // Generate maze panel
-        Maze testMaze = new Maze("Maze.Maze Title", "Maze.Maze Author", 5,5);
+        Maze testMaze = new Maze("Maze Title", "Maze Author", 5,5, 64);
         testMaze.GenerateMaze();
-        MazePanel mazePanel = new MazePanel(testMaze, 64);
+        MazePanel mazePanel = new MazePanel(testMaze);
 
         // Create new frame
         JFrame frame = new JFrame();

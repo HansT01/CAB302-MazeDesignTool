@@ -30,7 +30,7 @@ public class DatabaseTest {
 
     @Test
     public void AddMaze() throws MazeException, IOException {
-        Maze testMaze = new Maze("test-maze-title", "test-maze-author", 10,10);
+        Maze testMaze = new Maze("test-maze-title", "test-maze-author", 10,10, 16);
         byte[] ba = Maze.MazeToByteArray(testMaze);
 
         // Add maze to database
@@ -46,7 +46,7 @@ public class DatabaseTest {
 
     @Test
     public void DeleteMaze() throws MazeException, IOException {
-        Maze testMaze = new Maze("test-maze-title", "test-maze-author", 10,10);
+        Maze testMaze = new Maze("test-maze-title", "test-maze-author", 10,10, 16);
         byte[] ba = Maze.MazeToByteArray(testMaze);
 
         // Add maze to database
@@ -64,7 +64,7 @@ public class DatabaseTest {
 
     @Test
     public void UpdateMaze() throws MazeException, IOException {
-        Maze testMaze = new Maze("test-maze-title", "test-maze-author", 10,10);
+        Maze testMaze = new Maze("test-maze-title", "test-maze-author", 10,10, 16);
         byte[] ba = Maze.MazeToByteArray(testMaze);
 
         // Add maze to database

@@ -112,7 +112,7 @@ public class PageCreate extends JFrame implements Runnable {
         }
 
         // TODO change author to use database username
-        Maze maze = new Maze(mazeTitle.getText(), "STEVE", sizeX, sizeY);
+        Maze maze = new Maze(mazeTitle.getText(), "STEVE", sizeX, sizeY, cellSize);
 
         int startX;
         int startY;
@@ -176,7 +176,7 @@ public class PageCreate extends JFrame implements Runnable {
             maze.PlaceImage(endX, endY, endMazeImage);
         }
 
-        PageEdit editPage = new PageEdit(maze, cellSize);
+        PageEdit editPage = new PageEdit(maze);
         SwingUtilities.invokeLater(editPage);
         dispose();
     }

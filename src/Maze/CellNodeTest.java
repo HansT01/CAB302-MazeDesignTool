@@ -13,7 +13,7 @@ public class CellNodeTest {
 
     @BeforeEach
     public void ConstructMaze() throws MazeException {
-        testMaze = new Maze("Maze.Maze title", "Maze.Maze author", 3, 1);
+        testMaze = new Maze("Maze title", "Maze author", 3, 1, 16);
         testCell1 = testMaze.getCells()[0][0];
         testCell2 = testMaze.getCells()[1][0];
         testCell3 = testMaze.getCells()[2][0];
@@ -23,8 +23,8 @@ public class CellNodeTest {
     }
     @Test
     public void DefaultFields() {
-        assert (testNode1.getCell() == testCell1) : "Maze.Cell node 1 should have cell 1 in its fields";
-        assert (testNode1.getParent() == null) : "Maze.Cell node 1 should not have a null parent node";
+        assert (testNode1.getCell() == testCell1) : "Cell node 1 should have cell 1 in its fields";
+        assert (testNode1.getParent() == null) : "Cell node 1 should not have a null parent node";
         assert (testNode1.getCombinedCost() == Double.MAX_VALUE) : "Combined cost " + testNode1.getCombinedCost() + " should be " + Double.MAX_VALUE;
         assert (testNode1.getPathCost() == Integer.MAX_VALUE) : "Path cost " + testNode1.getPathCost() + " should be " + Integer.MAX_VALUE;
     }

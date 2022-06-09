@@ -10,7 +10,7 @@ public class CellTest {
 
     @BeforeEach
     public void ConstructMaze() throws MazeException {
-        testMaze = new Maze("Maze.Maze title", "Maze.Maze author", 3, 1);
+        testMaze = new Maze("Maze title", "Maze author", 3, 1, 16);
         testCell1 = testMaze.getCells()[0][0];
         testCell2 = testMaze.getCells()[1][0];
         testCell3 = testMaze.getCells()[2][0];
@@ -77,7 +77,7 @@ public class CellTest {
     }
     @Test
     public void RemoveWallY() throws MazeException {
-        testMaze = new Maze("Maze.Maze title", "Maze.Maze author", 1, 3);
+        testMaze = new Maze("Maze title", "Maze author", 1, 3, 16);
         testCell1 = testMaze.getCells()[0][0];
         testCell2 = testMaze.getCells()[0][1];
         testCell3 = testMaze.getCells()[0][2];

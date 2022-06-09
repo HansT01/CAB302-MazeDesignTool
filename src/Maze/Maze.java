@@ -11,6 +11,7 @@ public class Maze implements Serializable {
 
     private final int sizeX;
     private final int sizeY;
+    private final int cellSize;
     private final int area;
     private final Cell[][] cells;
     private int startX;
@@ -29,7 +30,7 @@ public class Maze implements Serializable {
      * @param sizeY The height of the maze in cells.
      * @throws MazeException Throws maze exception if dimensions are not positive non-zero integers
      */
-    public Maze(String title, String author, int sizeX, int sizeY) throws MazeException {
+    public Maze(String title, String author, int sizeX, int sizeY, int cellSize) throws MazeException {
         if (sizeX < 1 || sizeY < 1) {
             throw new MazeException("Maze.Maze must have positive non-zero dimensions");
         }
@@ -37,6 +38,7 @@ public class Maze implements Serializable {
         this.author = author;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
+        this.cellSize = cellSize;
         this.dateCreated = new Date(System.currentTimeMillis());
         this.dateLastEdited = new Date(System.currentTimeMillis());
         this.area = sizeX * sizeY;
@@ -150,6 +152,15 @@ public class Maze implements Serializable {
      */
     public int getSizeY() {
         return sizeY;
+    }
+
+
+    /**
+     * Getter for cell size.
+     * @return cell size.
+     */
+    public int getCellSize() {
+        return cellSize;
     }
 
     /**
@@ -609,7 +620,7 @@ public class Maze implements Serializable {
         long endTime;
 
         startTime = System.nanoTime();
-        Maze testMaze = new Maze("Maze.Maze title", "Maze.Maze author", 6, 4);
+        Maze testMaze = new Maze("Maze title", "Maze author", 6, 4, 16);
         endTime = System.nanoTime();
         long constructTime = endTime - startTime;
 

@@ -5,6 +5,7 @@ import Maze.Maze;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class JDBCDataSource implements DBDataSource {
 
@@ -38,6 +39,7 @@ public class JDBCDataSource implements DBDataSource {
             "WHERE id = ?;";
     private static final String GET_MAZE_BY_TITLE_AUTHOR = "SELECT * FROM mazeStorage WHERE title = ? AND author = ?;";
     private static final String GET_MAZE_BY_ID = "SELECT * FROM mazeStorage WHERE id = ?;";
+    private static final String GET_ALL_MAZES = "SELECT * FROM mazeStorage;";
 
 
     private PreparedStatement addMaze;
@@ -45,6 +47,7 @@ public class JDBCDataSource implements DBDataSource {
     private PreparedStatement updateMaze;
     private PreparedStatement getMazeByTitleAuthor;
     private PreparedStatement getMazeByID;
+    private PreparedStatement getAllMazes;
 
 
     private Connection connection;
@@ -82,6 +85,7 @@ public class JDBCDataSource implements DBDataSource {
             updateMaze = connection.prepareStatement(UPDATE_MAZE);
             getMazeByTitleAuthor = connection.prepareStatement(GET_MAZE_BY_TITLE_AUTHOR);
             getMazeByID = connection.prepareStatement(GET_MAZE_BY_ID);
+            getAllMazes = connection.prepareStatement(GET_ALL_MAZES);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -152,6 +156,22 @@ public class JDBCDataSource implements DBDataSource {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public ArrayList<Maze> getAllMazes() {
+        ArrayList<Maze> mazes = new ArrayList<>();
+        try {
+            ResultSet rs = getAllMazes.executeQuery();
+            rs.beforeFirst();
+            while (rs.next()) {
+                Blob b = rs.getBlob("serialization");
+                byte[] ba = b.getBytes(1, (int) b.length());
+                mazes.add(Maze.ByteArrayToMaze(ba));
+            }
+        } catch (SQLException | IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return mazes;
     }
 
     public static void main(JDBCDataSource args) {

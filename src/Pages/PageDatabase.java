@@ -278,9 +278,9 @@ public class PageDatabase extends JFrame implements Runnable {
         loginButton.addActionListener(e -> {
             try {
                 SwingUtilities.invokeLater(new PageLogin());
-                Maze testMaze = new Maze("Maze Title", "Maze Author", 80,50);
+                Maze testMaze = new Maze("Maze Title", "Maze Author", 80,50, 16);
                 testMaze.GenerateMaze();
-                SwingUtilities.invokeLater(new PageEdit(testMaze, 12));
+                SwingUtilities.invokeLater(new PageEdit(testMaze));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

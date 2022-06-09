@@ -12,19 +12,17 @@ import java.util.ArrayList;
 
 public class MazePanel extends JPanel {
     private Maze maze;
-    private final int cellSize;
     private boolean drawSolution = true;
     private boolean placingImage = false;
 
     /**
      * Constructs the maze panel.
      * @param maze The Maze.Maze object to be rendered.
-     * @param cellSize The size of each cell in the maze. The size should be even for proper rendering.
      */
-    public MazePanel(Maze maze, int cellSize) {
+    public MazePanel(Maze maze) {
         super();
         this.maze = maze;
-        this.cellSize = cellSize;
+        int cellSize = maze.getCellSize();
 
         setPreferredSize(new Dimension(maze.getSizeX()*cellSize + 1, maze.getSizeY()*cellSize + 1));
         setBackground(Color.white);
@@ -50,10 +48,6 @@ public class MazePanel extends JPanel {
         return maze;
     }
 
-    public int getCellSize() {
-        return cellSize;
-    }
-
     public void setMaze(Maze maze) {
         this.maze = maze;
     }
@@ -64,6 +58,8 @@ public class MazePanel extends JPanel {
 
     public void paint(Graphics g) {
         Cell[][] cells = maze.getCells();
+        int cellSize = maze.getCellSize();
+
         Graphics2D g2d = (Graphics2D) g;
         g2d.clearRect(0, 0, getWidth(), getHeight());
         g2d.setColor(Color.WHITE);
@@ -165,6 +161,7 @@ public class MazePanel extends JPanel {
      */
     private void HandleClickEvent(MouseEvent e) throws MazeException {
         Cell[][] cells = maze.getCells();
+        int cellSize = maze.getCellSize();
         if (placingImage) {
             int x = e.getX() / cellSize;
             int y = e.getY() / cellSize;
@@ -208,9 +205,9 @@ public class MazePanel extends JPanel {
     // For testing maze panel, do not remove!
     public static void main(String[] args) throws MazeException {
         // Generate maze panel
-        Maze testMaze = new Maze("Maze.Maze Title", "Maze.Maze Author", 6,4);
+        Maze testMaze = new Maze("Maze Title", "Maze Author", 6,4, 64);
         testMaze.GenerateMaze();
-        MazePanel mazePanel = new MazePanel(testMaze, 64);
+        MazePanel mazePanel = new MazePanel(testMaze);
 
         // Create new frame
         JFrame frame = new JFrame();

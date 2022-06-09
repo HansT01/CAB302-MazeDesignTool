@@ -50,13 +50,12 @@ public class PageEdit extends JFrame implements Runnable {
     /**
      * Constructs the edit page
      * @param maze maze object
-     * @param cellSize size of each cell
      */
-    public PageEdit(Maze maze, int cellSize) throws IOException {
+    public PageEdit(Maze maze) throws IOException {
         fc.setFileFilter(new FileNameExtensionFilter("Image Files", "jpeg", "jpg", "png", "gif"));
         fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
 
-        mazePanel = new MazePanel(maze, cellSize);
+        mazePanel = new MazePanel(maze);
         saveState = Maze.MazeToByteArray(maze);
         UpdateTable();
 
@@ -421,7 +420,7 @@ public class PageEdit extends JFrame implements Runnable {
         int gridRow = 0;
 
         Maze maze = mazePanel.getMaze();
-        int cellSize = mazePanel.getCellSize();
+        int cellSize = maze.getCellSize();
         int mazeWidth = maze.getSizeX();
         int mazeHeight = maze.getSizeY();
 
@@ -568,10 +567,10 @@ public class PageEdit extends JFrame implements Runnable {
      */
     public static void main(String[] args) throws IOException, MazeException {
         // Generate maze
-        Maze testMaze = new Maze("test-maze-title", "test-maze-author", 10,5);
+        Maze testMaze = new Maze("test-maze-title", "test-maze-author", 10,5, 32);
 
         // Create page with panel
-        PageEdit testPage = new PageEdit(testMaze, 32);
+        PageEdit testPage = new PageEdit(testMaze);
         SwingUtilities.invokeLater(testPage);
     }
 }
