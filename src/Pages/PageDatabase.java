@@ -14,6 +14,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Date;
 
 
 /**
@@ -23,6 +25,8 @@ public class PageDatabase extends JFrame implements Runnable {
 
     /** Used for getting location of mouse pointer */
     Point openLocation = MouseInfo.getPointerInfo().getLocation();
+    JDBCDataSource data;
+    ResultSet tableData;
 
     GridBagManager gbm = new GridBagManager();
 
@@ -52,6 +56,7 @@ public class PageDatabase extends JFrame implements Runnable {
     };
 
     public PageDatabase() {
+        data = new JDBCDataSource();
         listenerSetup();
         UpdateTable();
     }
@@ -62,15 +67,49 @@ public class PageDatabase extends JFrame implements Runnable {
         DefaultTableModel tm = (DefaultTableModel) mazesTable.getModel();
         tm.setRowCount(0);
 
-        // create new data array
-        Object[][] data = getData();
-        for (Object[] row : data) {
+        tableData = data.GetAllDocuments();
+        String[][] rows = ParseData();
+
+        if (rows == null) return;
+        for (String[] row : rows) {
             tm.addRow(row);
         }
 
         // update table model
         mazesTable.setModel(tm);
         tm.fireTableDataChanged();
+    }
+
+    private String[][] ParseData() {
+        try {
+            tableData.last();
+            int rowCount = tableData.getRow();
+            int colCount = tableData.getMetaData().getColumnCount();
+
+            String[][] result = new String[rowCount][colCount];
+
+            int i = 0;
+            tableData.beforeFirst();
+            while(tableData.next()) {
+                int j = 0;
+                result[i][j++] = tableData.getString("title");
+                result[i][j++] = tableData.getString("author");
+
+                Date dateCreated = new Date(tableData.getLong("dateCreated"));
+                Date dateLastEdited = new Date(tableData.getLong("dateLastEdited"));
+                result[i][j++] = dateCreated.toString();
+                result[i][j++] = dateLastEdited.toString();
+
+                result[i][j++] = tableData.getString("sizeX");
+                result[i][j++] = tableData.getString("sizeY");
+                result[i][j] = tableData.getString("cellSize");
+                i++;
+            }
+            return result;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     private JPanel CreateTablePanel() {
@@ -88,8 +127,6 @@ public class PageDatabase extends JFrame implements Runnable {
         tcm.getColumn(4).setPreferredWidth(50);
         tcm.getColumn(5).setPreferredWidth(50);
         tcm.getColumn(6).setPreferredWidth(50);
-
-
 
         GridBagConstraints gbc;
         int gridRow = 0;
@@ -130,7 +167,7 @@ public class PageDatabase extends JFrame implements Runnable {
         gbc.gridwidth = 1;
         panel.add(exportButton, gbc);
 
-        gbc = gbm.CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.gridwidth = 1;
         panel.add(loginButton, gbc);
 
@@ -162,67 +199,6 @@ public class PageDatabase extends JFrame implements Runnable {
         // set defaults
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-
-    private Object[][] getData() {
-        Object[][] data = null;
-        try {
-            Connection connection = DBConnection.getInstance();
-            System.out.print(connection);
-            final String GET_DATA = "SELECT * FROM mazeStorage";
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(GET_DATA);
-
-            int rowCount = getRowCount(rs);         // Row Count
-            int columnCount = getColumnCount(rs);   // Column Count
-
-            data = new Object[rowCount][columnCount];
-
-            rs.beforeFirst();
-
-            int i = 0;
-            while (rs.next()) {
-                int j = 0;
-                data[i][j++] = rs.getString("title");
-                data[i][j++] = rs.getString("author");
-                data[i][j++] = rs.getString("dateCreated");
-                data[i][j++] = rs.getString("dateLastEdited");
-                data[i][j++] = rs.getString("sizeX");
-                data[i][j++] = rs.getString("sizeY");
-                data[i][j++] = rs.getString("cellSize");
-                data[i][j] = rs.getString("serialization");
-                i++;
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-
-        return data;
-    }
-
-    // Method to get Row Count from ResultSet Object
-    private int getRowCount(ResultSet rs) {
-        try {
-            if(rs != null) {
-                rs.last();
-                return rs.getRow();
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    // Method to get Column Count from ResultSet Object
-    private int getColumnCount(ResultSet rs) {
-        try {
-            if (rs != null) return rs.getMetaData().getColumnCount();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return 0;
     }
 
     /**
