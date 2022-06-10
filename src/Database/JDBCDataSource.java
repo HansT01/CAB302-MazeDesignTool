@@ -50,6 +50,7 @@ public class JDBCDataSource {
             "WHERE id = ?;";
     private static final String GET_MAZE_BY_ID = "SELECT * FROM mazeStorage WHERE id = ?;";
     private static final String GET_MAZES_BY_USER = "SELECT * FROM mazeStorage WHERE author = ?;";
+    private static final String GET_ALL_MAZES = "SELECT * FROM mazeStorage;";
 
     private static final String GET_HASH = "SELECT hash FROM users WHERE username = ?";
     private static final String INSERT_USER = "INSERT INTO users (username, hash) VALUES (?, ?);";
@@ -61,6 +62,7 @@ public class JDBCDataSource {
     private PreparedStatement updateMaze;
     private PreparedStatement getMazeByID;
     private PreparedStatement getUserMazes;
+    private PreparedStatement getAllMazes;
 
     private PreparedStatement getHash;
     private PreparedStatement addUser;
@@ -103,12 +105,34 @@ public class JDBCDataSource {
             updateMaze = connection.prepareStatement(UPDATE_MAZE);
             getMazeByID = connection.prepareStatement(GET_MAZE_BY_ID);
             getUserMazes = connection.prepareStatement(GET_MAZES_BY_USER);
+            getAllMazes = connection.prepareStatement(GET_ALL_MAZES);
 
             getHash = connection.prepareStatement(GET_HASH);
             addUser = connection.prepareStatement(INSERT_USER);
             deleteUser = connection.prepareStatement(DELETE_USER);
+
+            CreateAdminAccount("password");
         } catch (SQLException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public void CreateAdminAccount(String password) {
+        try {
+            // Check if admin account already exists
+            getHash.setString(1, "admin");
+            ResultSet rs = getHash.executeQuery();
+            if (rs.next()) {
+                return;
+            }
+
+            // Check hash password and add admin user
+            String hash = HashString(password);
+            addUser.setString(1, "admin");
+            addUser.setString(2, hash);
+            addUser.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -181,8 +205,12 @@ public class JDBCDataSource {
             return null;
         }
         try {
-            getUserMazes.setString(1, DBConnection.getUsername());
-            return getUserMazes.executeQuery();
+            if (DBConnection.getUsername().equals("admin")) {
+                return getAllMazes.executeQuery();
+            } else {
+                getUserMazes.setString(1, DBConnection.getUsername());
+                return getUserMazes.executeQuery();
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
