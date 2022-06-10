@@ -1,4 +1,4 @@
-package Pages;
+package GUI;
 
 import Database.DBConnection;
 import Maze.Maze;

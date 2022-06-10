@@ -1,4 +1,6 @@
-package Maze;
+package GUI;
+
+import Maze.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

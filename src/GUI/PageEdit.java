@@ -1,10 +1,9 @@
-package Pages;
+package GUI;
 
 import Database.JDBCDataSource;
 import Maze.Maze;
 import Maze.MazeException;
 import Maze.MazeImage;
-import Maze.MazePanel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
