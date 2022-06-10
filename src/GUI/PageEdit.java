@@ -38,6 +38,9 @@ public class PageEdit extends JFrame implements Runnable {
     private byte[] saveState;
     private int mazeID;
 
+    /**
+     * Initializes JTable and disables ability to edit maze.
+     */
     private final JTable imagesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"File name", "Width", "Height"})) {
         // make rows uneditable
         @Override
@@ -82,6 +85,9 @@ public class PageEdit extends JFrame implements Runnable {
         SetupListenerEvents();
     }
 
+    /**
+     * Sets up listener events for all buttons.
+     */
     private void SetupListenerEvents() {
         importImage.addMouseListener(new MouseAdapter() {
             @Override

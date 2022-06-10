@@ -38,11 +38,16 @@ public class PageDatabase extends JFrame implements Runnable {
         }
     };
 
+    /**
+     * Default constructor for PageDatabase.
+     */
     public PageDatabase() {
         listenerSetup();
     }
 
-
+    /**
+     * Updates the table with new data
+     */
     public void UpdateTable() {
         // get current model
         DefaultTableModel tm = (DefaultTableModel) mazesTable.getModel();
@@ -61,6 +66,10 @@ public class PageDatabase extends JFrame implements Runnable {
         tm.fireTableDataChanged();
     }
 
+    /**
+     * Parses ResultSet object from tableData into strings
+     * @return 2D array of strings to be displayed on a JTable
+     */
     private String[][] ParseData() {
         try {
             tableData.last();
@@ -93,6 +102,10 @@ public class PageDatabase extends JFrame implements Runnable {
         return null;
     }
 
+    /**
+     * Creates panel for the mazes table.
+     * @return JPanel object
+     */
     private JPanel CreateTablePanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -101,10 +114,10 @@ public class PageDatabase extends JFrame implements Runnable {
 
         TableColumnModel tcm = mazesTable.getColumnModel();
 
-        tcm.getColumn(0).setPreferredWidth(200);
-        tcm.getColumn(1).setPreferredWidth(100);
-        tcm.getColumn(2).setPreferredWidth(100);
-        tcm.getColumn(3).setPreferredWidth(100);
+        tcm.getColumn(0).setPreferredWidth(300);
+        tcm.getColumn(1).setPreferredWidth(300);
+        tcm.getColumn(2).setPreferredWidth(200);
+        tcm.getColumn(3).setPreferredWidth(200);
         tcm.getColumn(4).setPreferredWidth(50);
         tcm.getColumn(5).setPreferredWidth(50);
         tcm.getColumn(6).setPreferredWidth(50);
@@ -119,6 +132,10 @@ public class PageDatabase extends JFrame implements Runnable {
         return panel;
     }
 
+    /**
+     * Creates panel for button options
+     * @return JPanel object
+     */
     private JPanel CreateOptionsPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -202,7 +219,9 @@ public class PageDatabase extends JFrame implements Runnable {
         });
     }
 
-
+    /**
+     * Edit button event handler.
+     */
     public void EditMaze() {
         int selectedRow = mazesTable.getSelectedRow();
         if (selectedRow != -1) {
@@ -218,6 +237,9 @@ public class PageDatabase extends JFrame implements Runnable {
         }
     }
 
+    /**
+     * Delete button event handler.
+     */
     public void DeleteMaze() {
         int selectedRow = mazesTable.getSelectedRow();
         if (selectedRow != -1) {
@@ -231,6 +253,7 @@ public class PageDatabase extends JFrame implements Runnable {
         }
     }
 
+    @Override
     public void run() {
         CreateGUI();
         data = new JDBCDataSource();

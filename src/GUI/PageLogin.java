@@ -100,6 +100,10 @@ public class PageLogin extends JFrame implements Runnable {
         });
     }
 
+    /**
+     * Login button event handler.
+     * @throws InvalidInputException
+     */
     public void AttemptLogin() throws InvalidInputException {
         DBConnection.setUsername(usernameText.getText());
         DBConnection.setPassword(passwordText.getText());

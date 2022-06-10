@@ -42,21 +42,33 @@ public class MazePanel extends JPanel {
         });
     }
 
+    /**
+     * Setter for drawSolution toggle.
+     * @param drawSolution Boolean value
+     */
     public void setDrawSolution(boolean drawSolution) {
         this.drawSolution = drawSolution;
     }
 
+    /**
+     * Getter for maze object.
+     * @return Maze object
+     */
     public Maze getMaze() {
         return maze;
     }
 
+    /**
+     * Setter for maze object
+     * @param maze Maze object
+     */
     public void setMaze(Maze maze) {
         this.maze = maze;
     }
 
     /**
-     * Setter for placingImage.
-     * @param placingImage
+     * Setter for placingImage toggle.
+     * @param placingImage boolean value
      */
     public void setPlacingImage(boolean placingImage) {
         this.placingImage = placingImage;
