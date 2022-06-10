@@ -101,10 +101,10 @@ public class PageDatabase extends JFrame implements Runnable {
             Connection connection = DBConnection.getInstance();
             Statement st = connection.createStatement();
             if (complete == true) {
-                tableData = st.executeQuery("SELECT * FROM mazestorage WHERE complete IS true;");
+                tableData = st.executeQuery("SELECT * FROM mazeStorage WHERE complete IS true;");
             }
             else {
-                tableData = st.executeQuery("SELECT * FROM mazestorage WHERE complete IS false;");
+                tableData = st.executeQuery("SELECT * FROM mazeStorage WHERE complete IS false;");
             }
             tableData.last();
             int rowCount = tableData.getRow();
