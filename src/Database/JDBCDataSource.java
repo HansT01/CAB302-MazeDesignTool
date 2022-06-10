@@ -49,7 +49,7 @@ public class JDBCDataSource {
             "serialization = ?" +
             "WHERE id = ?;";
     private static final String GET_MAZE_BY_ID = "SELECT * FROM mazeStorage WHERE id = ?;";
-    private static final String GET_ALL_MAZES = "SELECT * FROM mazeStorage;";
+    private static final String GET_MAZES_BY_USER = "SELECT * FROM mazeStorage WHERE author = ?;";
 
     private static final String GET_HASH = "SELECT hash FROM users WHERE username = ?";
     private static final String INSERT_USER = "INSERT INTO users (username, hash) VALUES (?, ?);";
@@ -60,7 +60,7 @@ public class JDBCDataSource {
     private PreparedStatement deleteMaze;
     private PreparedStatement updateMaze;
     private PreparedStatement getMazeByID;
-    private PreparedStatement getAllMazes;
+    private PreparedStatement getUserMazes;
 
     private PreparedStatement getHash;
     private PreparedStatement addUser;
@@ -102,7 +102,7 @@ public class JDBCDataSource {
             deleteMaze = connection.prepareStatement(DELETE_MAZE);
             updateMaze = connection.prepareStatement(UPDATE_MAZE);
             getMazeByID = connection.prepareStatement(GET_MAZE_BY_ID);
-            getAllMazes = connection.prepareStatement(GET_ALL_MAZES);
+            getUserMazes = connection.prepareStatement(GET_MAZES_BY_USER);
 
             getHash = connection.prepareStatement(GET_HASH);
             addUser = connection.prepareStatement(INSERT_USER);
@@ -176,16 +176,20 @@ public class JDBCDataSource {
         return null;
     }
 
-    public ResultSet GetAllDocuments() {
+    public ResultSet GetUserMazes() {
+        if (!VerifyUser()) {
+            return null;
+        }
         try {
-            return getAllMazes.executeQuery();
+            getUserMazes.setString(1, DBConnection.getUsername());
+            return getUserMazes.executeQuery();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return null;
     }
 
-    public void AddUser() {
+    public boolean AddUser() {
         try {
             String username = DBConnection.getUsername();
             String password = DBConnection.getPassword();
@@ -194,9 +198,11 @@ public class JDBCDataSource {
             addUser.setString(1, username);
             addUser.setString(2, hash);
             addUser.execute();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     public void DeleteUser(String username) {

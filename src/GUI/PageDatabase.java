@@ -53,7 +53,7 @@ public class PageDatabase extends JFrame implements Runnable {
         DefaultTableModel tm = (DefaultTableModel) mazesTable.getModel();
         tm.setRowCount(0);
 
-        tableData = data.GetAllDocuments();
+        tableData = data.GetUserMazes();
         String[][] rows = ParseData();
 
         if (rows == null) return;
