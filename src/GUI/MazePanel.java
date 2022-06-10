@@ -24,9 +24,8 @@ public class MazePanel extends JPanel {
     public MazePanel(Maze maze) {
         super();
         this.maze = maze;
-        int cellSize = maze.getCellSize();
 
-        setPreferredSize(new Dimension(maze.getSizeX()*cellSize + 1, maze.getSizeY()*cellSize + 1));
+        setPreferredSize(new Dimension(GetImageWidth(), GetImageHeight()));
         setBackground(Color.white);
 
         // Sourced from: https://stackhowto.com/how-to-get-mouse-position-on-click-relative-to-jframe/
@@ -74,6 +73,15 @@ public class MazePanel extends JPanel {
         this.placingImage = placingImage;
     }
 
+
+    public int GetImageWidth() {
+        return maze.getSizeX() * maze.getCellSize() + 1;
+    }
+
+    public int GetImageHeight() {
+        return maze.getSizeY() * maze.getCellSize() + 1;
+    }
+
     /**
      * Paint method that is responsible for displaying the maze.
      * @param g Instance of the Graphics class
@@ -83,9 +91,9 @@ public class MazePanel extends JPanel {
         int cellSize = maze.getCellSize();
 
         Graphics2D g2d = (Graphics2D) g;
-        g2d.clearRect(0, 0, getWidth(), getHeight());
+        g2d.clearRect(0, 0, GetImageWidth(), GetImageHeight());
         g2d.setColor(Color.WHITE);
-        g2d.fillRect(0, 0, getWidth(), getHeight());
+        g2d.fillRect(0, 0, GetImageWidth(), GetImageHeight());
 
         ArrayList<MazeImage> images = maze.getImages();
         if (maze.getStartImage() != null) {
@@ -157,7 +165,7 @@ public class MazePanel extends JPanel {
      */
     public BufferedImage PrintToImage() {
         // https://stackoverflow.com/questions/1349220/convert-jpanel-to-image
-        BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+        BufferedImage image = new BufferedImage(GetImageWidth(), GetImageHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g = image.createGraphics();
         paint(g);
         g.dispose();
@@ -165,16 +173,22 @@ public class MazePanel extends JPanel {
     }
 
     /**
-     * Exports this maze panel to a png file named after the maze's title
+     * Exports this maze panel to a png file named after the maze's author and title
      * @throws IOException
      */
     public void ExportToFile() throws IOException {
-        File outputFile = new File(maze.getTitle() + ".png");
+        File outputDir = new File("export");
+        if (!outputDir.exists()) {
+            outputDir.mkdir();
+        }
+
+        File outputFile = new File("./export/" + maze.getAuthor() + "_" + maze.getTitle() + ".png");
+        if (!outputFile.exists()) {
+            outputFile.delete();
+        }
+
         ImageIO.write(PrintToImage(), "png", outputFile);
     }
-
-
-
 
     /**
      * Toggles a wall near the input x, y coordinate.

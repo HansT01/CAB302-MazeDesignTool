@@ -337,6 +337,9 @@ public class Maze implements Serializable {
                 cellStack.pop();
             }
         }
+        for (MazeImage image : images) {
+            if (image.isPlaced()) PlaceImage(image.getX(), image.getY(), image);
+        }
         if (startImage != null) PlaceImage(startX, startY, startImage);
         if (endImage != null) PlaceImage(endX, endY, endImage);
     }
@@ -473,7 +476,7 @@ public class Maze implements Serializable {
 
         // check if image fits within maze
         if (!CheckInBounds(xPos, yPos, mazeImage)) {
-            throw new MazeException("Maze.Maze image is out of bounds");
+            throw new MazeException("Maze image is out of bounds");
         }
 
         // if image is already placed, remove it
@@ -505,6 +508,8 @@ public class Maze implements Serializable {
                 cells[x][y].RemoveWall(2);
             }
         }
+
+        System.out.println("I REMOVED THE WALLS");
     }
 
     /**

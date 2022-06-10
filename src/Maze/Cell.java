@@ -129,7 +129,7 @@ public class Cell implements Serializable {
         int sizeX = parentMaze.getSizeX();
         int sizeY = parentMaze.getSizeY();
 
-        // Toggle this wall
+        // Remove this wall
         walls[i] = false;
 
         if (i == 0 && y > 0) cells[x][y-1].walls[2] = false;

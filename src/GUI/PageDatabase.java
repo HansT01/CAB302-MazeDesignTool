@@ -24,13 +24,14 @@ public class PageDatabase extends JFrame implements Runnable {
 
     JButton refreshButton = new JButton("Refresh table");
     /** JButton used for New */
-    JButton newButton = new JButton("New");
+    JButton newButton = new JButton("Create new maze");
     /** JButton used for Edit */
-    JButton editButton = new JButton("Edit");
+    JButton editButton = new JButton("Edit maze");
     /** JButton used for Delete */
-    JButton deleteButton = new JButton("Delete");
+    JButton deleteButton = new JButton("Delete maze");
     /** JButton used for Export */
-    JButton exportButton = new JButton("Export");
+    JButton exportButton = new JButton("Export to PNG");
+    JButton exportSolutionButton = new JButton("Export with solution");
 
     private final JTable mazesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"Title", "Author", "Date created", "Last edited", "SizeX", "SizeY", "Cell Size"})) {
         // make rows uneditable
@@ -51,28 +52,31 @@ public class PageDatabase extends JFrame implements Runnable {
      * Updates the table with new data
      */
     public void UpdateTable() {
-        // get current model
-        DefaultTableModel tm = (DefaultTableModel) mazesTable.getModel();
-        tm.setRowCount(0);
+        try {
+            // get current model
+            DefaultTableModel tm = (DefaultTableModel) mazesTable.getModel();
 
-        tableData = data.GetUserMazes();
-        String[][] rows = ParseData();
+            // clear rows and append new data
+            tm.setRowCount(0);
+            tableData = data.GetUserMazes();
+            String[][] rows = ParseData();
+            for (String[] row : rows) {
+                tm.addRow(row);
+            }
 
-        if (rows == null) return;
-        for (String[] row : rows) {
-            tm.addRow(row);
+            // update table model
+            mazesTable.setModel(tm);
+            tm.fireTableDataChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        // update table model
-        mazesTable.setModel(tm);
-        tm.fireTableDataChanged();
     }
 
     /**
      * Parses ResultSet object from tableData into strings
      * @return 2D array of strings to be displayed on a JTable
      */
-    private String[][] ParseData() {
+    private String[][] ParseData() throws InvalidInputException {
         try {
             tableData.last();
             int rowCount = tableData.getRow();
@@ -98,9 +102,8 @@ public class PageDatabase extends JFrame implements Runnable {
             }
             return result;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new InvalidInputException(ex.toString(), this);
         }
-        return null;
     }
 
     /**
@@ -110,14 +113,14 @@ public class PageDatabase extends JFrame implements Runnable {
     private JPanel CreateTablePanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
-        panel.setPreferredSize(new Dimension(1000, 600));
+        panel.setPreferredSize(new Dimension(800, 500));
 
         JScrollPane scrollPane = new JScrollPane(mazesTable);
 
         TableColumnModel tcm = mazesTable.getColumnModel();
 
-        tcm.getColumn(0).setPreferredWidth(400);
-        tcm.getColumn(1).setPreferredWidth(400);
+        tcm.getColumn(0).setPreferredWidth(200);
+        tcm.getColumn(1).setPreferredWidth(200);
         tcm.getColumn(2).setPreferredWidth(200);
         tcm.getColumn(3).setPreferredWidth(200);
         tcm.getColumn(4).setPreferredWidth(100);
@@ -141,10 +144,6 @@ public class PageDatabase extends JFrame implements Runnable {
     private JPanel CreateOptionsPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
-        /*panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder("???"),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5))
-        );*/
 
         panel.setPreferredSize(new Dimension(150, 300));
 
@@ -167,9 +166,13 @@ public class PageDatabase extends JFrame implements Runnable {
         gbc.gridwidth = 1;
         panel.add(deleteButton, gbc);
 
-        gbc = gbm.CreateInnerGBC(0, gridRow);
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 1;
         panel.add(exportButton, gbc);
+
+        gbc = gbm.CreateInnerGBC(0, gridRow);
+        gbc.gridwidth = 1;
+        panel.add(exportSolutionButton, gbc);
 
         return panel;
     }
@@ -214,27 +217,48 @@ public class PageDatabase extends JFrame implements Runnable {
             SwingUtilities.invokeLater(new PageCreate());
         });
         editButton.addActionListener(e -> {
-            EditMaze();
+            try {
+                EditMaze();
+            } catch (InvalidInputException ex) {
+                ex.printStackTrace();
+            }
         });
         deleteButton.addActionListener(e -> {
-            DeleteMaze();
+            try {
+                DeleteMaze();
+            } catch (InvalidInputException ex) {
+                ex.printStackTrace();
+            }
+        });
+        exportButton.addActionListener(e -> {
+            try {
+                ExportMazes();
+            } catch (InvalidInputException ex) {
+                ex.printStackTrace();
+            }
+        });
+        exportSolutionButton.addActionListener(e -> {
+            try {
+                ExportMazesWithSolution();
+            } catch (InvalidInputException ex) {
+                ex.printStackTrace();
+            }
         });
     }
 
     /**
      * Edit button event handler.
      */
-    public void EditMaze() {
+    public void EditMaze() throws InvalidInputException {
         int selectedRow = mazesTable.getSelectedRow();
         if (selectedRow != -1) {
             try {
                 tableData.absolute(selectedRow + 1);
                 int id = tableData.getInt("id");
-                Blob b = tableData.getBlob("serialization");
-                Maze maze = Maze.ByteArrayToMaze(b.getBytes(1, (int) b.length()));
+                Maze maze = data.GetMaze(id);
                 SwingUtilities.invokeLater(new PageEdit(maze, id));
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            } catch (Exception e) {
+                throw new InvalidInputException(e.toString(), this);
             }
         }
     }
@@ -242,15 +266,62 @@ public class PageDatabase extends JFrame implements Runnable {
     /**
      * Delete button event handler.
      */
-    public void DeleteMaze() {
+    public void DeleteMaze() throws InvalidInputException {
         int selectedRow = mazesTable.getSelectedRow();
         if (selectedRow != -1) {
             try {
                 tableData.absolute(selectedRow + 1);
                 int id = tableData.getInt("id");
                 data.DeleteMaze(id);
-            } catch (Exception ex) {
-                ex.printStackTrace();
+                UpdateTable();
+            } catch (Exception e) {
+                throw new InvalidInputException(e.toString(), this);
+            }
+        }
+    }
+
+    /**
+     * Export selected mazes to PNG file without solution
+     * @throws InvalidInputException
+     */
+    public void ExportMazes() throws InvalidInputException {
+        int[] selectedRows = mazesTable.getSelectedRows();
+        if (selectedRows.length != 0) {
+            try {
+                for (int row : selectedRows) {
+                    tableData.absolute(row + 1);
+                    Blob b = tableData.getBlob("serialization");
+                    Maze maze = Maze.ByteArrayToMaze(b.getBytes(1, (int) b.length()));
+                    MazePanel mp = new MazePanel(maze);
+                    mp.setDrawSolution(false);
+                    mp.repaint();
+                    mp.ExportToFile();
+                }
+            } catch (Exception e) {
+                throw new InvalidInputException(e.toString(), this);
+            }
+        }
+    }
+
+    /**
+     * Export selected mazes to PNG file with solution
+     * @throws InvalidInputException
+     */
+    public void ExportMazesWithSolution() throws InvalidInputException {
+        int[] selectedRows = mazesTable.getSelectedRows();
+        if (selectedRows.length != 0) {
+            try {
+                for (int row : selectedRows) {
+                    tableData.absolute(row + 1);
+                    Blob b = tableData.getBlob("serialization");
+                    Maze maze = Maze.ByteArrayToMaze(b.getBytes(1, (int) b.length()));
+                    MazePanel mp = new MazePanel(maze);
+                    mp.setDrawSolution(true);
+                    mp.repaint();
+                    mp.ExportToFile();
+                }
+            } catch (Exception e) {
+                throw new InvalidInputException(e.toString(), this);
             }
         }
     }

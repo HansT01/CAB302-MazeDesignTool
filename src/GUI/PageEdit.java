@@ -218,13 +218,6 @@ public class PageEdit extends JFrame implements Runnable {
                 throw new InvalidInputException("Ran out of iterations, unable to generate maze with given images");
             }
         }
-        else {
-            for (MazeImage mazeImage : maze.getImages()) {
-                if (mazeImage.isPlaced()) {
-                    maze.PlaceImage(mazeImage.getX(), mazeImage.getY(), mazeImage);
-                }
-            }
-        }
         maze.GenerateMaze();
         MazeUpdatedEvent();
     }
