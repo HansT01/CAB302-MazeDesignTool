@@ -5,10 +5,7 @@ import Database.JDBCDataSource;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.sql.*;
 
 /**
@@ -39,11 +36,7 @@ public class PageLogin extends JFrame implements Runnable {
     private JPanel CreateLoginPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
-        panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(""),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5))
-        );
-        panel.setPreferredSize(new Dimension(300, 150));
+        panel.setPreferredSize(new Dimension(300, 170));
 
         GridBagConstraints gbc;
         int gridRow = 0;
@@ -103,6 +96,50 @@ public class PageLogin extends JFrame implements Runnable {
      * Sets up listener events for all buttons
      */
     public void SetupListeners() {
+        usernameText.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    try {
+                        LoginHandler();
+                    } catch (InvalidInputException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+        passwordText.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    try {
+                        LoginHandler();
+                    } catch (InvalidInputException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
         login.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -146,13 +183,10 @@ public class PageLogin extends JFrame implements Runnable {
     public void RegisterHandler() throws InvalidInputException {
         DBConnection.setUsername(usernameText.getText());
         DBConnection.setPassword(passwordText.getText());
-        System.out.println("1");
         if (data.AddUser()) {
-            System.out.println("2");
             SwingUtilities.invokeLater(new PageDatabase());
             dispose();
         } else {
-            System.out.println("3");
             throw new InvalidInputException("Failed to register account...", this);
         }
     }
