@@ -8,6 +8,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -85,10 +87,9 @@ public class PageDatabase extends JFrame implements Runnable {
                 result[i][j++] = tableData.getString("title");
                 result[i][j++] = tableData.getString("author");
 
-                Date dateCreated = new Date(tableData.getDate("dateCreated").getTime());
-                Date dateLastEdited = new Date(tableData.getDate("dateLastEdited").getTime());
-                result[i][j++] = dateCreated.toString();
-                result[i][j++] = dateLastEdited.toString();
+                DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+                result[i][j++] = df.format(tableData.getDate("dateCreated").getTime());
+                result[i][j++] = df.format(tableData.getDate("dateLastEdited").getTime());
 
                 result[i][j++] = tableData.getString("sizeX");
                 result[i][j++] = tableData.getString("sizeY");
@@ -109,18 +110,19 @@ public class PageDatabase extends JFrame implements Runnable {
     private JPanel CreateTablePanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
+        panel.setPreferredSize(new Dimension(1000, 600));
 
         JScrollPane scrollPane = new JScrollPane(mazesTable);
 
         TableColumnModel tcm = mazesTable.getColumnModel();
 
-        tcm.getColumn(0).setPreferredWidth(300);
-        tcm.getColumn(1).setPreferredWidth(300);
+        tcm.getColumn(0).setPreferredWidth(400);
+        tcm.getColumn(1).setPreferredWidth(400);
         tcm.getColumn(2).setPreferredWidth(200);
         tcm.getColumn(3).setPreferredWidth(200);
-        tcm.getColumn(4).setPreferredWidth(50);
-        tcm.getColumn(5).setPreferredWidth(50);
-        tcm.getColumn(6).setPreferredWidth(50);
+        tcm.getColumn(4).setPreferredWidth(100);
+        tcm.getColumn(5).setPreferredWidth(100);
+        tcm.getColumn(6).setPreferredWidth(100);
 
         GridBagConstraints gbc;
         int gridRow = 0;
