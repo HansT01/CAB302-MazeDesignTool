@@ -24,6 +24,7 @@ public class JDBCDataSource {
                     + "sizeY INT ,"
                     + "cellSize INT ,"
                     + "serialization MEDIUMBLOB NOT NULL,"
+                    + "complete BOOLEAN,"
                     + "id int NOT NULL AUTO_INCREMENT,"
                     + "PRIMARY KEY (id)"
                     + ");";
@@ -34,9 +35,10 @@ public class JDBCDataSource {
             "PRIMARY KEY (`username`));";
     private static final String INSERT_MAZE =
             "INSERT INTO mazeStorage " +
-            "(title, author, dateCreated, dateLastEdited, sizeX, sizeY, cellSize, serialization) " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+            "(title, author, dateCreated, dateLastEdited, sizeX, sizeY, cellSize, serialization, complete) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, false);";
     private static final String DELETE_MAZE = "DELETE FROM mazeStorage WHERE id = ?;";
+    private static final String COMPLETE_MAZE = "UPDATE mazeStorage SET complete = true WHERE id = ? ;";
     private static final String UPDATE_MAZE =
             "UPDATE mazeStorage SET " +
             "title = ?," +
@@ -58,6 +60,7 @@ public class JDBCDataSource {
 
 
     private PreparedStatement addMaze;
+    private PreparedStatement completeMaze;
     private PreparedStatement deleteMaze;
     private PreparedStatement updateMaze;
     private PreparedStatement getMazeByID;
@@ -101,6 +104,7 @@ public class JDBCDataSource {
             st.execute(CREATE_USERS_TABLE);
 
             addMaze = connection.prepareStatement(INSERT_MAZE, Statement.RETURN_GENERATED_KEYS);
+            completeMaze = connection.prepareStatement(COMPLETE_MAZE);
             deleteMaze = connection.prepareStatement(DELETE_MAZE);
             updateMaze = connection.prepareStatement(UPDATE_MAZE);
             getMazeByID = connection.prepareStatement(GET_MAZE_BY_ID);
@@ -156,6 +160,15 @@ public class JDBCDataSource {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public void CompleteMaze(int id) {
+        try {
+            completeMaze.setInt(1, id);
+            completeMaze.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void DeleteMaze(int id) {
