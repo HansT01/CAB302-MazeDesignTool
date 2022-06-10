@@ -54,10 +54,18 @@ public class MazePanel extends JPanel {
         this.maze = maze;
     }
 
+    /**
+     * Setter for placingImage.
+     * @param placingImage
+     */
     public void setPlacingImage(boolean placingImage) {
         this.placingImage = placingImage;
     }
 
+    /**
+     * Paint method that is responsible for displaying the maze.
+     * @param g Instance of the Graphics class
+     */
     public void paint(Graphics g) {
         Cell[][] cells = maze.getCells();
         int cellSize = maze.getCellSize();

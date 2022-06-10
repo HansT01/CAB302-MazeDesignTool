@@ -4,9 +4,9 @@
     <property name="dist" location="dist"/>
     <property name="lib" location="lib"/>
 
-    <path id="junit.classpath">
+    <path id="class.path">
         <fileset dir="lib">
-            <include name="*.jar" />
+            <include name="**/*.jar" />
         </fileset>
     </path>
 
@@ -21,16 +21,11 @@
             description="compile the source">
         <!-- Compile the Java code from ${src} into ${build} -->
         <javac srcdir="${src}" destdir="${build}">
-            <classpath>
-                <fileset dir="${lib}">
-                    <include name="**/*.jar" />
-                </fileset>
-            </classpath>
+            <classpath refid="class.path"/>
         </javac>
     </target>
 
-    <target name="dist" depends="compile"
-            description="generate the distribution">
+    <target name="dist" depends="compile" description="generate the distribution">
         <!-- Create the distribution directory -->
         <mkdir dir="${dist}/lib"/>
 
@@ -49,8 +44,7 @@
         </jar>
     </target>
 
-    <target name="clean"
-            description="clean up">
+    <target name="clean" description="clean up">
         <!-- Delete the ${build} and ${dist} directory trees -->
         <delete dir="${build}"/>
         <delete dir="${dist}"/>

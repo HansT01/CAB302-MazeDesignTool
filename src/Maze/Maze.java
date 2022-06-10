@@ -218,6 +218,10 @@ public class Maze implements Serializable {
         }
     }
 
+    /**
+     * Removes specified MazeImage from this maze by setting its placed state as false and the corresponding cell properties.
+     * @param image MazeImage object to be removed.
+     */
     public void RemoveImage(MazeImage image) {
         image.setPlaced(false);
         int oldX = image.getX();

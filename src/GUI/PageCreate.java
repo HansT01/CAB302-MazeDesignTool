@@ -47,50 +47,19 @@ public class PageCreate extends JFrame implements Runnable {
     final JFileChooser fc = new JFileChooser();
 
     /**
-     * Constructor for the Pages.PageCreate
+     * Constructor for the PageCreate.
      */
     public PageCreate() {
         fc.setFileFilter(new FileNameExtensionFilter("Image Files", "jpeg", "jpg", "png", "gif"));
         fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
-
-        importStartImage.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                try {
-                    startImage = ImportImage();
-                } catch (InvalidInputException ex) {
-                    ex.printStackTrace();
-                }
-                UpdateLabels();
-            }
-        });
-        importEndImage.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                try {
-                    endImage = ImportImage();
-                } catch (InvalidInputException ex) {
-                    ex.printStackTrace();
-                }
-                UpdateLabels();
-            }
-        });
-        createMaze.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                try {
-                    CreateMaze();
-                } catch (IOException | InvalidInputException | MazeException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
+        SetupListeners();
     }
 
     /**
-     * Creates maze with the input fields. If any input fields are invalid, an Pages.InvalidInputException will be raised.
-     * @throws IOException Exception
-     * @throws InvalidInputException Exception
+     * Creates maze with the input fields. If any input fields are invalid, an InvalidInputException will be raised.
+     * @throws IOException Throws IOException.
+     * @throws InvalidInputException Throws InvalidInputException if any input fields are invalid.
+     * @throws MazeException Throws MazeException if maze was unsuccessfully created.
      */
     private void CreateMaze() throws IOException, InvalidInputException, MazeException {
         if (mazeTitle.getText().isEmpty()) {
@@ -179,6 +148,44 @@ public class PageCreate extends JFrame implements Runnable {
         PageEdit editPage = new PageEdit(maze);
         SwingUtilities.invokeLater(editPage);
         dispose();
+    }
+
+    /**
+     * Sets up listener events for all relevant JComponents.
+     */
+    private void SetupListeners() {
+        importStartImage.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                try {
+                    startImage = ImportImage();
+                } catch (InvalidInputException ex) {
+                    ex.printStackTrace();
+                }
+                UpdateLabels();
+            }
+        });
+        importEndImage.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                try {
+                    endImage = ImportImage();
+                } catch (InvalidInputException ex) {
+                    ex.printStackTrace();
+                }
+                UpdateLabels();
+            }
+        });
+        createMaze.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                try {
+                    CreateMaze();
+                } catch (IOException | InvalidInputException | MazeException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
