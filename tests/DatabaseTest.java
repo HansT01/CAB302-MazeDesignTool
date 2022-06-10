@@ -82,6 +82,15 @@ public class DatabaseTest {
     }
 
     @Test
+    public void AddUser() throws NoSuchAlgorithmException, InvalidKeySpecException {
+        DBConnection.setUsername("username");
+        DBConnection.setPassword("password");
+
+        data.AddUser();
+        assert (data.VerifyUser()) : "User is unverified";
+    }
+
+    @Test
     public void PasswordHash() throws NoSuchAlgorithmException, InvalidKeySpecException {
         DBConnection.setUsername("username");
         DBConnection.setPassword("password");

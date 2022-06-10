@@ -22,7 +22,7 @@ public class DBConnection {
             in.close();
 
             // Register JDBC driver
-            Class.forName("org.mariadb.jdbc.Driver");
+            // Class.forName("org.mariadb.jdbc.Driver");
 
             // specify the data source, username and password
             String url = props.getProperty("jdbc.url");

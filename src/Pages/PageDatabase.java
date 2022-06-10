@@ -40,7 +40,6 @@ public class PageDatabase extends JFrame implements Runnable {
 
     public PageDatabase() {
         listenerSetup();
-        UpdateTable();
     }
 
 
@@ -77,8 +76,8 @@ public class PageDatabase extends JFrame implements Runnable {
                 result[i][j++] = tableData.getString("title");
                 result[i][j++] = tableData.getString("author");
 
-                Date dateCreated = new Date(tableData.getLong("dateCreated"));
-                Date dateLastEdited = new Date(tableData.getLong("dateLastEdited"));
+                Date dateCreated = new Date(tableData.getDate("dateCreated").getTime());
+                Date dateLastEdited = new Date(tableData.getDate("dateLastEdited").getTime());
                 result[i][j++] = dateCreated.toString();
                 result[i][j++] = dateLastEdited.toString();
 
@@ -123,10 +122,10 @@ public class PageDatabase extends JFrame implements Runnable {
     private JPanel CreateOptionsPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
-        panel.setBorder(BorderFactory.createCompoundBorder(
+        /*panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder("???"),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5))
-        );
+        );*/
 
         panel.setPreferredSize(new Dimension(150, 300));
 
@@ -166,10 +165,12 @@ public class PageDatabase extends JFrame implements Runnable {
 
         // table panel
         gbc = gbm.CreateOuterGBC(0, gridRow);
+        gbc.anchor = GridBagConstraints.EAST;
         add(CreateTablePanel(), gbc);
 
         // options panel
         gbc = gbm.CreateOuterGBC(1, gridRow);
+        gbc.anchor = GridBagConstraints.WEST;
         add(CreateOptionsPanel(), gbc);
 
         // resizes window to preferred dimensions
@@ -233,6 +234,7 @@ public class PageDatabase extends JFrame implements Runnable {
     public void run() {
         CreateGUI();
         data = new JDBCDataSource();
+        UpdateTable();
     }
 
     public static void main(String[] args) {

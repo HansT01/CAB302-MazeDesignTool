@@ -113,7 +113,9 @@ public class PageLogin extends JFrame implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("HEY");
         CreateGUI();
+        System.out.println("HEY2");
         data = new JDBCDataSource();
     }
 

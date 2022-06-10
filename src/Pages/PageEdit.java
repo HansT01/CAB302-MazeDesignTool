@@ -523,7 +523,6 @@ public class PageEdit extends JFrame implements Runnable {
         gbc.gridwidth = 1;
         panel.add(exportMaze, gbc);
 
-
         return panel;
     }
 
