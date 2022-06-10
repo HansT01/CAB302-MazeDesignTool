@@ -21,16 +21,14 @@ public class DBConnection {
             props.load(in);
             in.close();
 
-            // Register JDBC driver
-            // Class.forName("org.mariadb.jdbc.Driver");
-
             // specify the data source, username and password
             String url = props.getProperty("jdbc.url");
-            String dbUser = props.getProperty("jdbc.username");
-            String dbPassword = props.getProperty("jdbc.password");
+            String schema = props.getProperty("jdbc.schema");
+            String user = props.getProperty("jdbc.username");
+            String pass = props.getProperty("jdbc.password");
 
             // get a connection
-            instance = DriverManager.getConnection(url + "/", dbUser, dbPassword);
+            instance = DriverManager.getConnection(url + "/" + schema, user, pass);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

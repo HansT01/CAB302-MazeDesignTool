@@ -26,11 +26,12 @@
     </target>
 
     <target name="dist" depends="compile" description="generate the distribution">
-        <!-- Create the distribution directory -->
-        <mkdir dir="${dist}/lib"/>
+        <copyfile src="lib/mariadb-java-client-3.0.5.jar" dest="${dist}/mariadb-java-client-3.0.5.jar"/>
+        <copyfile src="db.props" dest="${dist}/db.props"/>
+        <copyfile src="launch.bat" dest="${dist}/launch.bat"/>
 
         <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-        <jar jarfile="${dist}/lib/MazeDesignTool.jar" basedir="${build}">
+        <jar jarfile="${dist}/MazeDesignTool.jar" basedir="${build}">
             <manifest>
                 <!-- Who is building this jar? -->
                 <attribute name="Built-By" value="${user.name}"/>

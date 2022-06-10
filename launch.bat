@@ -1,0 +1,1 @@
+java -classpath MazeDesignTool.jar;mariadb-java-client-3.0.5.jar Main
