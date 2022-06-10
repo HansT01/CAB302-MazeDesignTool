@@ -30,8 +30,6 @@ public class PageLogin extends JFrame implements Runnable {
      * @return JPanel object
      */
     private JPanel CreateLoginPanel() {
-        data = new JDBCDataSource();
-
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         panel.setBorder(BorderFactory.createCompoundBorder(
@@ -116,27 +114,16 @@ public class PageLogin extends JFrame implements Runnable {
     @Override
     public void run() {
         CreateGUI();
+        data = new JDBCDataSource();
     }
+
     public static void main(String[] args) throws SQLException {
+        SwingUtilities.invokeLater(new PageLogin());
+
         JDBCDataSource data = new JDBCDataSource();
         data.DeleteUser("Test");
         DBConnection.setUsername("Test");
         DBConnection.setPassword("1234");
         data.AddUser();
-
-        // Setup Login DB
-        /*Connection connection = DBConnection.getInstance();
-        Statement statement = connection.createStatement();
-        statement.execute("CREATE DATABASE IF NOT EXISTS cab302;");
-        statement.execute("use cab302;");
-        statement.execute("DROP TABLE IF EXISTS user;");
-        statement.execute("CREATE TABLE user ( name varchar(45) NOT NULL," +
-                "password varchar(45) NOT NULL," +
-                "PRIMARY KEY (`name`));");
-        // Enter Accounts
-        statement.execute("INSERT IGNORE INTO user VALUES('Test', '1234');");
-        statement.execute("INSERT IGNORE INTO user VALUES('Test123', '1234');");
-        statement.execute("INSERT IGNORE INTO user VALUES('Test321', '1234');");*/
-        SwingUtilities.invokeLater(new PageLogin());
     }
 }

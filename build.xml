@@ -1,9 +1,8 @@
 <project name="CAB302-MazeDesignTool">
-    <target name="compile">
-        <mkdir dir="target" />
-        <javac srcdir="src" destdir="target" includeantruntime="false" />
-    </target>
-
+    <property name="src" location="src"/>
+    <property name="build" location="build"/>
+    <property name="dist" location="dist"/>
+    <property name="lib" location="lib"/>
 
     <path id="junit.classpath">
         <fileset dir="lib">
@@ -11,21 +10,49 @@
         </fileset>
     </path>
 
-    <target name="test">
-        <mkdir dir="testtarget" />
-        <javac srcdir="tests" destdir="testtarget" includeantruntime="false">
-            <classpath refid="junit.classpath" />
-            <classpath location="target" />
+    <target name="init">
+        <!-- Create the time stamp -->
+        <tstamp/>
+        <!-- Create the build directory structure used by compile -->
+        <mkdir dir="${build}"/>
+    </target>
+
+    <target name="compile" depends="init"
+            description="compile the source">
+        <!-- Compile the Java code from ${src} into ${build} -->
+        <javac srcdir="${src}" destdir="${build}">
+            <classpath>
+                <fileset dir="${lib}">
+                    <include name="**/*.jar" />
+                </fileset>
+            </classpath>
         </javac>
+    </target>
 
-<!--    <target name="test">-->
-<!--        <mkdir dir="testtarget" />-->
-<!--        <javac srcdir="tests" destdir="testtarget" includeantruntime="false">-->
-<!--            <classpath location="lib/junit-jupiter-api-5.4.2.jar" />-->
-<!--        </javac>-->
+    <target name="dist" depends="compile"
+            description="generate the distribution">
+        <!-- Create the distribution directory -->
+        <mkdir dir="${dist}/lib"/>
 
-<!--        <junitlauncher printsummary="true" failureproperty="junit.failure">-->
-<!--            <classpath refid="junit.classpath" />-->
-<!--        </junitlauncher>-->
+        <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
+        <jar jarfile="${dist}/lib/MazeDesignTool.jar" basedir="${build}">
+            <manifest>
+                <!-- Who is building this jar? -->
+                <attribute name="Built-By" value="${user.name}"/>
+                <!-- Information about the program itself -->
+                <attribute name="Implementation-Vendor" value="QUT"/>
+                <attribute name="Implementation-Title" value="CAB302 Exercise"/>
+                <attribute name="Implementation-Version" value="1.0.0"/>
+                <!-- The application entry point -->
+                <attribute name="Main-Class" value="Pages.PageLogin"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="clean"
+            description="clean up">
+        <!-- Delete the ${build} and ${dist} directory trees -->
+        <delete dir="${build}"/>
+        <delete dir="${dist}"/>
     </target>
 </project>

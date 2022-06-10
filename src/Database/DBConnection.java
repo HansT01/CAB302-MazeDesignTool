@@ -17,9 +17,12 @@ public class DBConnection {
         Properties props = new Properties();
         FileInputStream in = null;
         try {
-            in = new FileInputStream("./src/Database/db.props");
+            in = new FileInputStream("db.props");
             props.load(in);
             in.close();
+
+            // Register JDBC driver
+            Class.forName("org.mariadb.jdbc.Driver");
 
             // specify the data source, username and password
             String url = props.getProperty("jdbc.url");
@@ -28,7 +31,7 @@ public class DBConnection {
 
             // get a connection
             instance = DriverManager.getConnection(url + "/", dbUser, dbPassword);
-        } catch (SQLException | IOException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
