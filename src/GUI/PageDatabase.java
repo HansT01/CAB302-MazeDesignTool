@@ -290,8 +290,8 @@ public class PageDatabase extends JFrame implements Runnable {
             try {
                 for (int row : selectedRows) {
                     tableData.absolute(row + 1);
-                    Blob b = tableData.getBlob("serialization");
-                    Maze maze = Maze.ByteArrayToMaze(b.getBytes(1, (int) b.length()));
+                    int id = tableData.getInt("id");
+                    Maze maze = data.GetMaze(id);
                     MazePanel mp = new MazePanel(maze);
                     mp.setDrawSolution(false);
                     mp.repaint();
@@ -313,8 +313,8 @@ public class PageDatabase extends JFrame implements Runnable {
             try {
                 for (int row : selectedRows) {
                     tableData.absolute(row + 1);
-                    Blob b = tableData.getBlob("serialization");
-                    Maze maze = Maze.ByteArrayToMaze(b.getBytes(1, (int) b.length()));
+                    int id = tableData.getInt("id");
+                    Maze maze = data.GetMaze(id);
                     MazePanel mp = new MazePanel(maze);
                     mp.setDrawSolution(true);
                     mp.repaint();
