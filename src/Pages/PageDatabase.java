@@ -39,7 +39,6 @@ public class PageDatabase extends JFrame implements Runnable {
     };
 
     public PageDatabase() {
-        data = new JDBCDataSource();
         listenerSetup();
         UpdateTable();
     }
@@ -231,11 +230,13 @@ public class PageDatabase extends JFrame implements Runnable {
         }
     }
 
-    public void run() {CreateGUI();}
+    public void run() {
+        CreateGUI();
+        data = new JDBCDataSource();
+    }
 
     public static void main(String[] args) {
         new JDBCDataSource();
-        PageDatabase page = new PageDatabase();
-        SwingUtilities.invokeLater(page);
+        SwingUtilities.invokeLater(new PageDatabase());
     }
 }

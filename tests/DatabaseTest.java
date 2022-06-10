@@ -89,6 +89,6 @@ public class DatabaseTest {
         String hash = data.HashString(DBConnection.getPassword());
         System.out.println(hash);
 
-        assert (data.MatchHash(DBConnection.getPassword(), hash)) : "OH NO HASH WRONG";
+        assert (data.MatchHash(DBConnection.getPassword(), hash)) : "Hashes do not match";
     }
 }
