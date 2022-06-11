@@ -26,3 +26,6 @@ replay_pid*
 # Javadoc and related content
 javadoc
 *.props
+
+# Build files
+dist
