@@ -58,13 +58,13 @@ public class PageDatabase extends JFrame implements Runnable {
      * Default constructor for PageDatabase.
      */
     public PageDatabase() {
-        listenerSetup();
+        ListenerSetup();
     }
 
     /**
      * Updates the table with new data
      */
-    public void UpdateTable() {
+    public void UpdateTables() {
         try {
             // get current model
             DefaultTableModel tm1 = (DefaultTableModel) mazesInProgress.getModel();
@@ -116,7 +116,7 @@ public class PageDatabase extends JFrame implements Runnable {
                 row[j++] = rs.getString("title");
                 row[j++] = rs.getString("author");
 
-                DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 row[j++] = df.format(rs.getTimestamp("dateCreated").getTime());
                 row[j++] = df.format(rs.getTimestamp("dateLastEdited").getTime());
 
@@ -260,9 +260,9 @@ public class PageDatabase extends JFrame implements Runnable {
     /**
      * Adds listener for mousePressed event
      */
-    private void listenerSetup(){
+    private void ListenerSetup(){
         refreshButton.addActionListener(e -> {
-            UpdateTable();
+            UpdateTables();
         });
         newButton.addActionListener(e -> {
             SwingUtilities.invokeLater(new PageCreate());
@@ -298,37 +298,6 @@ public class PageDatabase extends JFrame implements Runnable {
         completeButton.addActionListener(e -> {
             CompleteMaze();
         });
-        tabbedPane.addChangeListener(e -> {
-            UpdateTable();
-        });
-    }
-
-    private int GetSelectedRow() {
-        int progressRow = mazesInProgress.getSelectedRow();
-        if (progressRow != -1) {
-            return progressRow;
-        }
-        int completeRow = mazesComplete.getSelectedRow();
-        if (completeRow != -1) {
-            return completeRow + mazesInProgress.getRowCount();
-        }
-        return -1;
-    }
-
-    private int[] GetSelectedRows() {
-        int[] progressRows = mazesInProgress.getSelectedRows();
-        if (progressRows.length != 0) {
-            return progressRows;
-        }
-        int[] completeRows = mazesComplete.getSelectedRows();
-        if (completeRows.length != 0) {
-            int rc = mazesInProgress.getRowCount();
-            for (int i = 0; i < completeRows.length; i++) {
-                completeRows[i] += rc;
-            }
-            return completeRows;
-        }
-        return new int[] {};
     }
 
     /**
@@ -347,7 +316,6 @@ public class PageDatabase extends JFrame implements Runnable {
                 ex.printStackTrace();
             }
         }
-
         if (srC != -1) {
             try {
                 dataComplete.absolute(srC + 1);
@@ -357,8 +325,7 @@ public class PageDatabase extends JFrame implements Runnable {
                 ex.printStackTrace();
             }
         }
-
-        UpdateTable();
+        UpdateTables();
     }
 
     /**
@@ -378,7 +345,6 @@ public class PageDatabase extends JFrame implements Runnable {
                 throw new InvalidInputException(e.toString(), this);
             }
         }
-
         if (srC != -1) {
             try {
                 dataComplete.absolute(srC + 1);
@@ -398,27 +364,35 @@ public class PageDatabase extends JFrame implements Runnable {
         int srIP = mazesInProgress.getSelectedRow();
         int srC = mazesComplete.getSelectedRow();
 
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to delete the maze?\n" +
+                        "This will remove maze from the database and can no longer be restored.",
+                "Confirm delete maze",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
         if (srIP != -1) {
             try {
                 dataInProgress.absolute(srIP + 1);
                 int id = dataInProgress.getInt("id");
                 data.DeleteMaze(id);
-                UpdateTable();
             } catch (Exception ex) {
                 throw new InvalidInputException(ex.toString(), this);
             }
         }
-
         if (srC != -1) {
             try {
                 dataComplete.absolute(srC + 1);
                 int id = dataComplete.getInt("id");
                 data.DeleteMaze(id);
-                UpdateTable();
             } catch (Exception ex) {
                 throw new InvalidInputException(ex.toString(), this);
             }
         }
+        UpdateTables();
     }
 
     /**
@@ -444,7 +418,6 @@ public class PageDatabase extends JFrame implements Runnable {
                 throw new InvalidInputException(e.toString(), this);
             }
         }
-
         if (srC.length != 0) {
             try {
                 for (int row : srC) {
@@ -485,7 +458,6 @@ public class PageDatabase extends JFrame implements Runnable {
                 throw new InvalidInputException(e.toString(), this);
             }
         }
-
         if (srC.length != 0) {
             try {
                 for (int row : srC) {
@@ -507,7 +479,7 @@ public class PageDatabase extends JFrame implements Runnable {
     public void run() {
         CreateGUI();
         data = new JDBCDataSource();
-        UpdateTable();
+        UpdateTables();
     }
 
     public static void main(String[] args) {

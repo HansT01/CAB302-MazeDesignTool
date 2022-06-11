@@ -94,10 +94,10 @@ public class PageCreate extends JFrame implements Runnable {
             endY = Integer.parseInt(endCellYField.getText()) - 1;
         }
         catch (Exception e) {
-            throw new InvalidInputException("Please input a number for start and end locations");
+            throw new InvalidInputException("Please input a number for start and end locations", this);
         }
         if (!maze.CheckInBounds(startX, startY) || !maze.CheckInBounds(endX, endY)) {
-            throw new InvalidInputException("Start and end locations must be within bounds");
+            throw new InvalidInputException("Start and end locations must be within bounds", this);
         }
         maze.setStartCell(startX, startY);
         maze.setEndCell(endX, endY);
@@ -112,12 +112,12 @@ public class PageCreate extends JFrame implements Runnable {
                 startImageHeight = Integer.parseInt(startImageHeightField.getText());
             }
             catch (Exception e) {
-                throw new InvalidInputException("Please input a number for start image dimensions");
+                throw new InvalidInputException("Please input a number for start image dimensions", this);
             }
 
             startMazeImage = new MazeImage(startImage.getImageTitle(), startImage.getImageData().getImage(), startImageWidth, startImageHeight);
             if (!maze.CheckInBounds(startX, startY, startMazeImage)) {
-                throw new InvalidInputException("Start image is out of bounds");
+                throw new InvalidInputException("Start image is out of bounds", this);
             }
             startMazeImage.setX(startX);
             startMazeImage.setY(startY);
@@ -132,12 +132,12 @@ public class PageCreate extends JFrame implements Runnable {
                 endImageHeight = Integer.parseInt(endImageHeightField.getText());
             }
             catch (Exception e) {
-                throw new InvalidInputException("Please input a number for end image dimensions");
+                throw new InvalidInputException("Please input a number for end image dimensions", this);
             }
 
             endMazeImage = new MazeImage(endImage.getImageTitle(), endImage.getImageData().getImage(), endImageWidth, endImageHeight);
             if (!maze.CheckInBounds(endX, endY, endMazeImage)) {
-                throw new InvalidInputException("Start image is out of bounds");
+                throw new InvalidInputException("Start image is out of bounds", this);
             }
             endMazeImage.setX(endX);
             endMazeImage.setY(endY);

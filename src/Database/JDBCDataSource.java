@@ -117,31 +117,8 @@ public class JDBCDataSource {
             getHash = connection.prepareStatement(GET_HASH);
             addUser = connection.prepareStatement(INSERT_USER);
             deleteUser = connection.prepareStatement(DELETE_USER);
-
-            // Create admin account with the password "password"
-            // TODO Change to something else
-            CreateAdminAccount("password");
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }
-    }
-
-    public void CreateAdminAccount(String password) {
-        try {
-            // Check if admin account already exists
-            getHash.setString(1, "admin");
-            ResultSet rs = getHash.executeQuery();
-            if (rs.next()) {
-                return;
-            }
-
-            // Check hash password and add admin user
-            String hash = HashString(password);
-            addUser.setString(1, "admin");
-            addUser.setString(2, hash);
-            addUser.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

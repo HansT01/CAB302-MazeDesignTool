@@ -182,11 +182,13 @@ public class MazePanel extends JPanel {
             outputDir.mkdir();
         }
 
-        File outputFile = new File("./export/" + maze.getAuthor() + "_" + maze.getTitle() + ".png");
+        String fileAuthor = maze.getAuthor();
+        String fileMazeTitle = "_" + maze.getTitle();
+        String fileSolution = drawSolution ? "_solution" : "";
+        File outputFile = new File("./export/" + fileAuthor + fileMazeTitle + fileSolution + ".png");
         if (!outputFile.exists()) {
             outputFile.delete();
         }
-
         ImageIO.write(PrintToImage(), "png", outputFile);
     }
 

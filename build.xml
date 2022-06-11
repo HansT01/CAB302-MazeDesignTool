@@ -29,16 +29,13 @@
         <copyfile src="lib/mariadb-java-client-3.0.5.jar" dest="${dist}/mariadb-java-client-3.0.5.jar"/>
         <copyfile src="db.props" dest="${dist}/db.props"/>
         <copyfile src="launch.bat" dest="${dist}/launch.bat"/>
+        <copyfile src="README.md" dest="${dist}/README.md"/>
 
         <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
         <jar jarfile="${dist}/MazeDesignTool.jar" basedir="${build}">
             <manifest>
                 <!-- Who is building this jar? -->
                 <attribute name="Built-By" value="${user.name}"/>
-                <!-- Information about the program itself -->
-                <attribute name="Implementation-Vendor" value="QUT"/>
-                <attribute name="Implementation-Title" value="CAB302 Exercise"/>
-                <attribute name="Implementation-Version" value="1.0.0"/>
                 <!-- The application entry point -->
                 <attribute name="Main-Class" value="GUI.PageLogin"/>
             </manifest>
@@ -46,8 +43,9 @@
     </target>
 
     <target name="clean" description="clean up">
-        <!-- Delete the ${build} and ${dist} directory trees -->
+        <!-- Delete the ${build}, ${dist}, and any generated images in export directory trees -->
         <delete dir="${build}"/>
         <delete dir="${dist}"/>
+        <delete dir="export"/>
     </target>
 </project>
