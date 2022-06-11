@@ -1,4 +1,4 @@
-<project name="CAB302-MazeDesignTool">
+<project name="CAB302-MazeDesignTool" default="dist" basedir=".">
     <property name="src" location="src"/>
     <property name="lib" location="lib"/>
     <property name="tests" location="tests"/>
@@ -87,7 +87,7 @@
 
 
     <!--Generate distribution files and folder-->
-    <target name="dist" depends="compile">
+    <target name="dist" depends="runTests">
         <!-- Make a copy of all relevant files -->
         <copyfile src="lib/mariadb-java-client-3.0.5.jar" dest="${dist}/mariadb-java-client-3.0.5.jar"/>
         <copyfile src="db.props" dest="${dist}/db.props"/>
