@@ -193,8 +193,8 @@ public class JDBCDataSource {
         try {
             updateMaze.setString(1, maze.getTitle());
             updateMaze.setString(2, maze.getAuthor());
-            updateMaze.setDate(3, new java.sql.Date(maze.getDateCreated().getTime()));
-            updateMaze.setDate(4, new java.sql.Date(maze.getDateLastEdited().getTime()));
+            updateMaze.setTimestamp(3, new java.sql.Timestamp(maze.getDateCreated().getTime()));
+            updateMaze.setTimestamp(4, new java.sql.Timestamp(maze.getDateLastEdited().getTime()));
             updateMaze.setInt(5, maze.getSizeX());
             updateMaze.setInt(6, maze.getSizeY());
             updateMaze.setInt(7, maze.getCellSize());
