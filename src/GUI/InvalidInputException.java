@@ -3,6 +3,9 @@ package GUI;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Handles exceptions raised in the GUI.
+ */
 public class InvalidInputException extends Exception {
     /**
      * Main constructor for InvalidInputException. If a valid Component is passed,

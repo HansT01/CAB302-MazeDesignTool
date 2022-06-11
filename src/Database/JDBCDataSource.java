@@ -13,6 +13,9 @@ import java.security.spec.KeySpec;
 import java.sql.*;
 import java.util.Base64;
 
+/**
+ * JDBCDataSource is a class for handling all database queries.
+ */
 public class JDBCDataSource {
     public static final String CREATE_MAZE_TABLE =
             "CREATE TABLE IF NOT EXISTS mazeStorage ("
@@ -122,6 +125,11 @@ public class JDBCDataSource {
         }
     }
 
+    /**
+     * Adds given maze to the database.
+     * @param maze Maze object
+     * @return The unique id of the new maze
+     */
     public int AddMaze(Maze maze) {
         try {
             addMaze.setString(1, maze.getTitle());
@@ -144,6 +152,10 @@ public class JDBCDataSource {
         return 0;
     }
 
+    /**
+     * Toggles the complete status of a maze with a given unique id.
+     * @param id Unique id of the maze
+     */
     public void ToggleCompleteMaze(int id) {
         try {
             completeMaze.setInt(1, id);
@@ -153,6 +165,10 @@ public class JDBCDataSource {
         }
     }
 
+    /**
+     * Deletes maze from the database given a unique id.
+     * @param id Unique id of the maze
+     */
     public void DeleteMaze(int id) {
         try {
             deleteMaze.setInt(1, id);
@@ -162,6 +178,11 @@ public class JDBCDataSource {
         }
     }
 
+    /**
+     * Updates a maze in the database with a given unique id.
+     * @param id Unique id of the maze
+     * @param maze New maze to replace existing maze
+     */
     public void UpdateMaze(int id, Maze maze) {
         try {
             updateMaze.setString(1, maze.getTitle());
@@ -179,6 +200,11 @@ public class JDBCDataSource {
         }
     }
 
+    /**
+     * Gets the maze object from the database with a given unique id.
+     * @param id Unique id of the maze
+     * @return the Maze object
+     */
     public Maze GetMaze(int id) {
         try {
             getMazeByID.setInt(1, id);
@@ -195,6 +221,12 @@ public class JDBCDataSource {
         return null;
     }
 
+    /**
+     * Gets all the mazes belonging to the current user specified in DBConnection.
+     * The method will perform a verification first before making an SQL query.
+     * @param complete Complete status of the returned mazes.
+     * @return ResultSet of all the maze rows, without the Maze Blob.
+     */
     public ResultSet GetUserMazes(boolean complete) {
         if (!VerifyUser()) {
             return null;
@@ -214,6 +246,10 @@ public class JDBCDataSource {
         return null;
     }
 
+    /**
+     * Adds the current user specified in DBConnection to the database.
+     * @return True if user was successfully added.
+     */
     public boolean AddUser() {
         try {
             String username = DBConnection.getUsername();
@@ -230,6 +266,10 @@ public class JDBCDataSource {
         return false;
     }
 
+    /**
+     * Deletes the user with the username parameter.
+     * @param username Username string
+     */
     public void DeleteUser(String username) {
         try {
             deleteUser.setString(1, username);
@@ -239,6 +279,10 @@ public class JDBCDataSource {
         }
     }
 
+    /**
+     * Compares the password specified in DBConnection with the password with the same username in the database.
+     * @return True if matching hash.
+     */
     public boolean VerifyUser() {
         try {
             getHash.setString(1, DBConnection.getUsername());
@@ -254,6 +298,13 @@ public class JDBCDataSource {
         return false;
     }
 
+    /**
+     * Hashes a string using PBKDF2, with 16 bytes of salt
+     * @param str String to be hashed
+     * @return Encoded string with the salt appended before the hash.
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
+     */
     public String HashString(String str) throws NoSuchAlgorithmException, InvalidKeySpecException {
         // https://stackoverflow.com/questions/2860943/how-can-i-hash-a-password-in-java
         SecureRandom r = new SecureRandom();
@@ -272,6 +323,14 @@ public class JDBCDataSource {
         return enc.encodeToString(salt) + ":" + enc.encodeToString(hash);
     }
 
+    /**
+     * Compares a string with a hash from the HashString method.
+     * @param str String to compare
+     * @param hash Hash to be compared with
+     * @return True if string matches the hash
+     * @throws InvalidKeySpecException
+     * @throws NoSuchAlgorithmException
+     */
     public boolean MatchHash(String str, String hash) throws InvalidKeySpecException, NoSuchAlgorithmException {
         Base64.Encoder enc = Base64.getEncoder();
         Base64.Decoder dec = Base64.getDecoder();

@@ -11,6 +11,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 
+/**
+ * MazeImage object that holds relevant information for an image located in a Maze object.
+ */
 public class MazeImage implements Serializable {
     private final ImageIcon imageData;
     private final String imageTitle;

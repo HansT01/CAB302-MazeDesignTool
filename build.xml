@@ -48,26 +48,13 @@
 
     <!--Compile unit test files-->
     <target name="compileTests" depends="compile">
-        <javac srcdir="${tests}" destdir="${testClasses}" classpath="${build}:${junitJar}:${junitPlatformJar}:${opentestJar}:${apiguardianJar}">
+        <javac srcdir="${tests}" destdir="${testClasses}" classpath="${build}:${junitJar}">
             <include name="CellNodeTest.java"/>
             <include name="CellTest.java"/>
             <include name="MazeTest.java"/>
             <!--Can't get database tests to compile properly without mariadb driver-->
             <!--<include name="DatabaseTest.java"/>-->
         </javac>
-    </target>
-
-    <!--Generate javadoc-->
-    <target name="generateDoc">
-        <javadoc packagenames="Database, GUI, Maze"
-                 sourcepath="${src}"
-                 destdir="${docs}"
-                 author="true"
-                 version="true"
-                 use="true"
-                 windowtitle="Maze Design Tool">
-            <doctitle><![CDATA[<h1>Maze Design Tool</h1>]]></doctitle>
-        </javadoc>
     </target>
 
     <!--Run unit tests-->
@@ -83,6 +70,19 @@
             </testclasses>
         </junitlauncher>
         <fail if="junit.failure" message="junit tests failed - aborting"/>
+    </target>
+
+    <!--Generate javadoc-->
+    <target name="generateDoc">
+        <javadoc packagenames="Database, GUI, Maze"
+                 sourcepath="${src}"
+                 destdir="${docs}"
+                 author="true"
+                 version="true"
+                 use="true"
+                 windowtitle="Maze Design Tool">
+            <doctitle><![CDATA[<h1>Maze Design Tool</h1>]]></doctitle>
+        </javadoc>
     </target>
 
 

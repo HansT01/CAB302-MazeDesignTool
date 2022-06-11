@@ -3,6 +3,9 @@ package Maze;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Exception class for handling all exceptions raised in Maze classes.
+ */
 public class MazeException extends Exception {
     /**
      * Main constructor for MazeException. Prints out the input message to the console.

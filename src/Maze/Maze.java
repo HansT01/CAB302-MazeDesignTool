@@ -3,6 +3,10 @@ package Maze;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Maze object that stores all details of a given maze.
+ * This class is also responsible for encoding all information into a byte array to be stored on the database.
+ */
 public class Maze implements Serializable {
     private final String title;
     private final String author;

@@ -2,6 +2,9 @@ package GUI;
 
 import java.awt.*;
 
+/**
+ * Manages the layout of JComponents by introducing padding and resetting weights.
+ */
 public class GridBagManager extends GridBagConstraints {
     public int outerPaddingSize = 20;
     public int innerPaddingSize = 5;

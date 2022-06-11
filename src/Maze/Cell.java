@@ -3,6 +3,9 @@ package Maze;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * Individual Cell objects that build the foundation of the Maze object.
+ */
 public class Cell implements Serializable {
     /** The maze that is containing this cell */
     private final Maze parentMaze;

@@ -17,6 +17,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Renders and handles JComponents to interact with edit a Maze object in various ways.
+ */
 public class PageEdit extends JFrame implements Runnable {
     private final MazePanel mazePanel;
     private final GridBagManager gbm = new GridBagManager();

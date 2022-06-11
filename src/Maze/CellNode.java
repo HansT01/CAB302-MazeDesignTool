@@ -1,5 +1,8 @@
 package Maze;
 
+/**
+ * CellNode acts as an intermediate for the Maze Solve method.
+ */
 public class CellNode implements Comparable<CellNode> {
     private final Cell cell;
     private CellNode parent = null;

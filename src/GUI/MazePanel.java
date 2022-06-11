@@ -12,6 +12,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * MazePanel's main responsibility is to display the given maze without any other elements present.
+ * This class also handles click events to build and destroy walls between cells.
+ */
 public class MazePanel extends JPanel {
     private Maze maze;
     private boolean drawSolution = true;
