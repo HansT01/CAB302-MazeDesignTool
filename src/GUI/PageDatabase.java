@@ -209,6 +209,10 @@ public class PageDatabase extends JFrame implements Runnable {
         return panel;
     }
 
+    /**
+     * Creates the tabbed panel JComponent containing the two JTables
+     * @return JPanel object
+     */
     private JPanel CreateTabbedPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -276,7 +280,7 @@ public class PageDatabase extends JFrame implements Runnable {
         });
         deleteButton.addActionListener(e -> {
             try {
-                DeleteMaze();
+                DeleteMazes();
             } catch (InvalidInputException ex) {
                 ex.printStackTrace();
             }
@@ -360,13 +364,13 @@ public class PageDatabase extends JFrame implements Runnable {
     /**
      * Delete button event handler.
      */
-    public void DeleteMaze() throws InvalidInputException {
-        int srIP = mazesInProgress.getSelectedRow();
-        int srC = mazesComplete.getSelectedRow();
+    public void DeleteMazes() throws InvalidInputException {
+        int[] srIP = mazesInProgress.getSelectedRows();
+        int[] srC = mazesComplete.getSelectedRows();
 
         int confirm = JOptionPane.showConfirmDialog(this,
-                "Are you sure you want to delete the maze?\n" +
-                        "This will remove maze from the database and can no longer be restored.",
+                "Are you sure you want to delete the selected mazes?\n" +
+                        "Deleted mazes can no longer be restored.",
                 "Confirm delete maze",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
@@ -374,22 +378,26 @@ public class PageDatabase extends JFrame implements Runnable {
             return;
         }
 
-        if (srIP != -1) {
+        if (srIP.length != 0) {
             try {
-                dataInProgress.absolute(srIP + 1);
-                int id = dataInProgress.getInt("id");
-                data.DeleteMaze(id);
+                for (int row : srIP) {
+                    dataInProgress.absolute(row + 1);
+                    int id = dataInProgress.getInt("id");
+                    data.DeleteMaze(id);
+                }
             } catch (Exception ex) {
                 throw new InvalidInputException(ex.toString(), this);
             }
         }
-        if (srC != -1) {
+        if (srC.length != 0) {
             try {
-                dataComplete.absolute(srC + 1);
-                int id = dataComplete.getInt("id");
-                data.DeleteMaze(id);
-            } catch (Exception ex) {
-                throw new InvalidInputException(ex.toString(), this);
+                for (int row : srC) {
+                    dataComplete.absolute(row + 1);
+                    int id = dataComplete.getInt("id");
+                    data.DeleteMaze(id);
+                }
+            } catch (Exception e) {
+                throw new InvalidInputException(e.toString(), this);
             }
         }
         UpdateTables();
