@@ -36,7 +36,7 @@ public class PageDatabase extends JFrame implements Runnable {
     JButton exportButton = new JButton("Export to PNG");
     JButton exportSolutionButton = new JButton("Export with solution");
     /** JButton used for Complete */
-    JButton completeButton = new JButton("Mark Complete");
+    JButton completeButton = new JButton("Toggle complete");
 
     JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
     private final JTable mazesInProgress = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"Title", "Author", "Date created", "Last edited", "SizeX", "SizeY", "Cell Size"})) {
@@ -116,9 +116,9 @@ public class PageDatabase extends JFrame implements Runnable {
                 row[j++] = rs.getString("title");
                 row[j++] = rs.getString("author");
 
-                DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-                row[j++] = df.format(rs.getDate("dateCreated").getTime());
-                row[j++] = df.format(rs.getDate("dateLastEdited").getTime());
+                DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                row[j++] = df.format(rs.getTimestamp("dateCreated").getTime());
+                row[j++] = df.format(rs.getTimestamp("dateLastEdited").getTime());
 
                 row[j++] = rs.getString("sizeX");
                 row[j++] = rs.getString("sizeY");
@@ -196,15 +196,15 @@ public class PageDatabase extends JFrame implements Runnable {
 
         gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 1;
+        panel.add(completeButton, gbc);
+
+        gbc = gbm.CreateInnerGBC(0, gridRow++);
+        gbc.gridwidth = 1;
         panel.add(exportButton, gbc);
 
         gbc = gbm.CreateInnerGBC(0, gridRow++);
         gbc.gridwidth = 1;
         panel.add(exportSolutionButton, gbc);
-
-        gbc = gbm.CreateInnerGBC(0, gridRow);
-        gbc.gridwidth = 1;
-        panel.add(completeButton, gbc);
 
         return panel;
     }

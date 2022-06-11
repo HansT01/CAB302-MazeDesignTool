@@ -18,8 +18,8 @@ public class JDBCDataSource {
             "CREATE TABLE IF NOT EXISTS mazeStorage ("
                     + "title VARCHAR(50) ,"
                     + "author VARCHAR(50) ,"
-                    + "dateCreated DATETIME ,"
-                    + "dateLastEdited DATETIME ,"
+                    + "dateCreated TIMESTAMP ,"
+                    + "dateLastEdited TIMESTAMP ,"
                     + "sizeX INT ,"
                     + "sizeY INT ,"
                     + "cellSize INT ,"
@@ -149,8 +149,8 @@ public class JDBCDataSource {
         try {
             addMaze.setString(1, maze.getTitle());
             addMaze.setString(2, maze.getAuthor());
-            addMaze.setDate(3, new java.sql.Date(maze.getDateCreated().getTime()));
-            addMaze.setDate(4, new java.sql.Date(maze.getDateLastEdited().getTime()));
+            addMaze.setTimestamp(3, new java.sql.Timestamp(maze.getDateCreated().getTime()));
+            addMaze.setTimestamp(4, new java.sql.Timestamp(maze.getDateLastEdited().getTime()));
             addMaze.setInt(5, maze.getSizeX());
             addMaze.setInt(6, maze.getSizeY());
             addMaze.setInt(7, maze.getCellSize());
