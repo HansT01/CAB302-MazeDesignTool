@@ -96,8 +96,32 @@ public class DatabaseTest {
         DBConnection.setPassword("password");
 
         String hash = data.HashString(DBConnection.getPassword());
-        System.out.println(hash);
 
         assert (data.MatchHash(DBConnection.getPassword(), hash)) : "Hashes do not match";
+    }
+
+    @Test
+    public void GetUserMaze() throws MazeException, IOException, SQLException {
+        // Add user to database
+        DBConnection.setUsername("USERNAME");
+        DBConnection.setPassword("PASSWORD");
+        data.AddUser();
+
+        // Initialize test maze
+        Maze testMaze = new Maze("test-maze-title", DBConnection.getUsername(), 10,10, 16);
+        byte[] ba = Maze.MazeToByteArray(testMaze);
+
+        // Add test maze to database
+        data.AddMaze(testMaze);
+
+        // Get user mazes
+        ResultSet rs = data.GetUserMazes();
+        rs.absolute(1);
+        int id = rs.getInt("id");
+
+        Maze maze = data.GetMaze(id);
+        byte[] ba2 = Maze.MazeToByteArray(maze);
+
+        assert (Arrays.equals(ba, ba2)) : "Byte arrays should be equal";
     }
 }
