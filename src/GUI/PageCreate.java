@@ -424,7 +424,7 @@ public class PageCreate extends JFrame implements Runnable {
      */
     private JPanel CreateMainPanel() {
         JPanel panel = new JPanel();
-        panel.setPreferredSize(new Dimension(500,630));
+        panel.setPreferredSize(new Dimension(250,630));
         panel.setLayout(new GridBagLayout());
 
         GridBagConstraints gbc;
