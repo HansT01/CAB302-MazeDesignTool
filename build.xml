@@ -48,7 +48,7 @@
 
     <!--Compile unit test files-->
     <target name="compileTests" depends="compile">
-        <javac srcdir="${tests}" destdir="${testClasses}" classpath="${build}:${junitJar}">
+        <javac srcdir="${tests}" destdir="${testClasses}" classpath="${build}:${junitJar}:${junitPlatformJar}:${opentestJar}:${apiguardianJar}">
             <include name="CellNodeTest.java"/>
             <include name="CellTest.java"/>
             <include name="MazeTest.java"/>
