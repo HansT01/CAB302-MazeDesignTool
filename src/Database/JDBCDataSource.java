@@ -54,8 +54,14 @@ public class JDBCDataSource {
             "serialization = ?" +
             "WHERE id = ?;";
     private static final String GET_MAZE_BY_ID = "SELECT (serialization) FROM mazeStorage WHERE id = ?;";
-    private static final String GET_MAZES_BY_USER = "SELECT title, author, dateCreated, dateLastEdited, sizeX, sizeY, cellSize, id FROM mazeStorage WHERE complete = ? AND author = ?;";
-    private static final String GET_ALL_MAZES = "SELECT title, author, dateCreated, dateLastEdited, sizeX, sizeY, cellSize, id FROM mazeStorage WHERE complete = ?;";
+    private static final String GET_MAZES_BY_USER = "SELECT title, author, dateCreated, dateLastEdited, sizeX, sizeY, cellSize, id " +
+            "FROM mazeStorage " +
+            "WHERE complete = ? AND author = ? " +
+            "ORDER BY dateLastEdited DESC;";
+    private static final String GET_ALL_MAZES = "SELECT title, author, dateCreated, dateLastEdited, sizeX, sizeY, cellSize, id " +
+            "FROM mazeStorage " +
+            "WHERE complete = ? " +
+            "ORDER BY dateLastEdited DESC;";
 
     private static final String GET_HASH = "SELECT hash FROM users WHERE username = ?;";
     private static final String INSERT_USER = "INSERT INTO users (username, hash) VALUES (?, ?);";
