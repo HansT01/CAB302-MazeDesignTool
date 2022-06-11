@@ -356,21 +356,13 @@ public class PageDatabase extends JFrame implements Runnable {
      * Delete button event handler.
      */
     public void DeleteMaze() throws InvalidInputException {
+        int selectedRow;
         if (complete == false) {
-            int selectedRow = mazesTable.getSelectedRow();
-            if (selectedRow != -1) {
-                try {
-                    tableData.absolute(selectedRow + 1);
-                    int id = tableData.getInt("id");
-                    data.DeleteMaze(id);
-                    UpdateTable();
-                } catch (Exception ex) {
-                    throw new InvalidInputException(ex.toString(), this);
-                }
-            }
+            selectedRow = mazesTable.getSelectedRow();
         }
         else {
-            int selectedRow = mazesTable2.getSelectedRow();
+            selectedRow = mazesTable2.getSelectedRow();
+            }
             if (selectedRow != -1) {
                 try {
                     tableData.absolute(selectedRow + 1);
@@ -382,7 +374,6 @@ public class PageDatabase extends JFrame implements Runnable {
                 }
             }
         }
-    }
 
     /**
      * Export selected mazes to PNG file without solution
