@@ -215,7 +215,7 @@ public class PageEdit extends JFrame implements Runnable {
         Maze maze = mazePanel.getMaze();
         if (toggleRandomizeImages.isSelected()) {
             if (!maze.PlaceImagesRandom(50)) {
-                throw new InvalidInputException("Ran out of iterations, unable to generate maze with given images");
+                throw new InvalidInputException("Ran out of iterations, unable to generate maze with given images", this);
             }
         }
         maze.GenerateMaze();

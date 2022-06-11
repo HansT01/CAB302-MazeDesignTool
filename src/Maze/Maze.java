@@ -508,8 +508,6 @@ public class Maze implements Serializable {
                 cells[x][y].RemoveWall(2);
             }
         }
-
-        System.out.println("I REMOVED THE WALLS");
     }
 
     /**

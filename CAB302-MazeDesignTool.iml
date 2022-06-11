@@ -42,5 +42,6 @@
     </orderEntry>
     <orderEntry type="library" name="junit.jupiter" level="project" />
     <orderEntry type="library" name="mariadb.jdbc.java.client" level="project" />
+    <orderEntry type="library" name="junit.platform.launcher" level="project" />
   </component>
 </module>

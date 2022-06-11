@@ -1,51 +1,96 @@
 <project name="CAB302-MazeDesignTool">
     <property name="src" location="src"/>
+    <property name="lib" location="lib"/>
+    <property name="tests" location="tests"/>
+
     <property name="build" location="build"/>
     <property name="dist" location="dist"/>
-    <property name="lib" location="lib"/>
+    <property name="testClasses" location="testClasses"/>
+    <property name="testOut" location="testOut"/>
 
-    <path id="class.path">
+    <!--JUnit path variables-->
+    <property name="junitJar" value="lib/junit-jupiter-api-5.4.2.jar" />
+    <property name="junitPlatformJar" value="lib/junit-platform-commons-1.4.2.jar" />
+    <property name="opentestJar" value="lib/opentest4j-1.1.1.jar" />
+    <property name="apiguardianJar" value="lib/apiguardian-api-1.0.0.jar" />
+    <property name="junitJar" value="${junitJar}:${junitPlatformJar}:${opentestJar}:${apiguardianJar}" />
+
+    <!--Class path for compiling-->
+    <path id="compile.path">
         <fileset dir="lib">
-            <include name="**/*.jar" />
+            <include name="*.jar" />
         </fileset>
     </path>
 
+    <!--Class path for compiling unit tests-->
+    <path id="unit.test.path">
+        <path refid="compile.path"/>
+        <pathelement path="test"/>
+    </path>
+
+    <!--Creates directories-->
     <target name="init">
-        <!-- Create the time stamp -->
-        <tstamp/>
-        <!-- Create the build directory structure used by compile -->
         <mkdir dir="${build}"/>
+        <mkdir dir="${testClasses}"/>
+        <mkdir dir="${testOut}"/>
     </target>
 
-    <target name="compile" depends="init"
-            description="compile the source">
-        <!-- Compile the Java code from ${src} into ${build} -->
-        <javac srcdir="${src}" destdir="${build}">
-            <classpath refid="class.path"/>
+    <!--Compiles src files-->
+    <target name="compile" depends="init">
+        <javac srcdir="${src}" classpath="${build}:${junitJar}" destdir="${build}" includeantruntime="false">
+            <include name="Main.java"/>
+            <include name="Maze/*.java"/>
+            <include name="GUI/*.java"/>
+            <include name="Database/*.java"/>
         </javac>
     </target>
 
-    <target name="dist" depends="compile" description="generate the distribution">
+    <!--Compile unit test files-->
+    <target name="compileTests" depends="compile">
+        <javac srcdir="${tests}" destdir="${testClasses}" classpath="${build}:${junitJar}">
+            <include name="*.java"/>
+        </javac>
+    </target>
+
+    <!--Run unit tests-->
+    <target name="runTests" depends="compileTests">
+        <junitlauncher printSummary="true" failureProperty="junit.failure">
+            <classpath>
+                <pathelement path="${testClasses}:${build}" />
+                <pathelement path="${junitJar}" />
+            </classpath>
+            <testclasses outputDir="${testClasses}">
+                <fileset dir="${testClasses}"/>
+                <listener type="legacy-xml"/>
+            </testclasses>
+        </junitlauncher>
+        <fail if="junit.failure" message="junit tests failed - aborting"/>
+    </target>
+
+
+    <target name="dist" depends="compile">
+        <!-- Make a copy of all relevant files -->
         <copyfile src="lib/mariadb-java-client-3.0.5.jar" dest="${dist}/mariadb-java-client-3.0.5.jar"/>
         <copyfile src="db.props" dest="${dist}/db.props"/>
         <copyfile src="launch.bat" dest="${dist}/launch.bat"/>
         <copyfile src="README.md" dest="${dist}/README.md"/>
 
-        <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
         <jar jarfile="${dist}/MazeDesignTool.jar" basedir="${build}">
             <manifest>
-                <!-- Who is building this jar? -->
                 <attribute name="Built-By" value="${user.name}"/>
-                <!-- The application entry point -->
-                <attribute name="Main-Class" value="GUI.PageLogin"/>
+                <!-- Application entry point - maybe redundant -->
+                <attribute name="Main-Class" value="Main"/>
             </manifest>
         </jar>
     </target>
 
     <target name="clean" description="clean up">
-        <!-- Delete the ${build}, ${dist}, and any generated images in export directory trees -->
+        <!-- Delete the generated directory trees -->
         <delete dir="${build}"/>
         <delete dir="${dist}"/>
+        <delete dir="${testClasses}"/>
         <delete dir="export"/>
     </target>
+
+
 </project>

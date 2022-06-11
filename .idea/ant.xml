@@ -10,7 +10,7 @@
         <entry path="file://$PROJECT_DIR$/lib/junit-jupiter-params-5.4.2.jar" />
         <entry path="file://$PROJECT_DIR$/lib/junit-platform-commons-1.4.2.jar" />
         <entry path="file://$PROJECT_DIR$/lib/junit-platform-engine-1.4.2.jar" />
-        <!--<entry path="file://$PROJECT_DIR$/lib/junit-platform-launcher-1.4.2.jar" />-->
+        <entry path="file://$PROJECT_DIR$/lib/junit-platform-launcher-1.4.2.jar" />
         <entry path="file://$PROJECT_DIR$/lib/mariadb-java-client-3.0.5.jar" />
         <entry path="file://$PROJECT_DIR$/lib/opentest4j-1.1.1.jar" />
       </additionalClassPath>
