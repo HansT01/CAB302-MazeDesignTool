@@ -115,7 +115,7 @@ public class DatabaseTest {
         data.AddMaze(testMaze);
 
         // Get user mazes
-        ResultSet rs = data.GetUserMazes();
+        ResultSet rs = data.GetUserMazes(false);
         rs.absolute(1);
         int id = rs.getInt("id");
 
@@ -123,5 +123,55 @@ public class DatabaseTest {
         byte[] ba2 = Maze.MazeToByteArray(maze);
 
         assert (Arrays.equals(ba, ba2)) : "Byte arrays should be equal";
+    }
+
+    @Test
+    public void GetAllMazes() throws IOException, MazeException, SQLException {
+        DBConnection.setUsername("admin");
+        DBConnection.setPassword("password");
+
+        Maze testMaze = new Maze("test-maze-title", DBConnection.getUsername(), 10,10, 16);
+        byte[] ba = Maze.MazeToByteArray(testMaze);
+        int id1 = data.AddMaze(testMaze);
+
+        ResultSet rs = data.GetUserMazes(false);
+        rs.last();
+        int id2 = rs.getInt("id");
+
+        assert(id1 == id2) : "Maze id should be equal";
+    }
+
+    @Test
+    public void ToggleCompleteMaze() throws MazeException, IOException, SQLException {
+        // Add user to database
+        DBConnection.setUsername("USERNAME");
+        DBConnection.setPassword("PASSWORD");
+        data.AddUser();
+
+        // Initialize test maze
+        Maze testMaze = new Maze("test-maze-title", DBConnection.getUsername(), 10,10, 16);
+
+        // Add test maze to database
+        int id = data.AddMaze(testMaze);
+
+        // Get first complete value
+        ResultSet rs1 = data.GetUserMazes(false);
+        rs1.last();
+        int c1 = rs1.getRow();
+
+        // Get second complete value
+        data.ToggleCompleteMaze(id);
+        ResultSet rs2 = data.GetUserMazes(true);
+        rs2.last();
+        int c2 = rs2.getRow();
+
+        // Get third complete value
+        ResultSet rs3 = data.GetUserMazes(false);
+        rs3.last();
+        int c3 = rs3.getRow();
+
+        assert (c1 == 1) : "There should be one maze in progress";
+        assert (c2 == 1) : "There should be one complete maze";
+        assert (c3 == 0) : "There should be no mazes in progress";
     }
 }

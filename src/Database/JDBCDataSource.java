@@ -38,7 +38,7 @@ public class JDBCDataSource {
             "(title, author, dateCreated, dateLastEdited, sizeX, sizeY, cellSize, serialization, complete) " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, false);";
     private static final String DELETE_MAZE = "DELETE FROM mazeStorage WHERE id = ?;";
-    private static final String COMPLETE_MAZE = "UPDATE mazeStorage SET complete = true WHERE id = ? ;";
+    private static final String TOGGLE_COMPLETE_MAZE = "UPDATE mazeStorage SET complete = !complete WHERE id = ? ;";
     private static final String UPDATE_MAZE =
             "UPDATE mazeStorage SET " +
             "title = ?," +
@@ -51,8 +51,8 @@ public class JDBCDataSource {
             "serialization = ?" +
             "WHERE id = ?;";
     private static final String GET_MAZE_BY_ID = "SELECT (serialization) FROM mazeStorage WHERE id = ?;";
-    private static final String GET_MAZES_BY_USER = "SELECT title, author, dateCreated, dateLastEdited, sizeX, sizeY, cellSize, complete, id FROM mazeStorage WHERE author = ?;";
-    private static final String GET_ALL_MAZES = "SELECT title, author, dateCreated, dateLastEdited, sizeX, sizeY, cellSize, complete, id FROM mazeStorage;";
+    private static final String GET_MAZES_BY_USER = "SELECT title, author, dateCreated, dateLastEdited, sizeX, sizeY, cellSize, id FROM mazeStorage WHERE complete = ? AND author = ?;";
+    private static final String GET_ALL_MAZES = "SELECT title, author, dateCreated, dateLastEdited, sizeX, sizeY, cellSize, id FROM mazeStorage WHERE complete = ?;";
 
     private static final String GET_HASH = "SELECT hash FROM users WHERE username = ?;";
     private static final String INSERT_USER = "INSERT INTO users (username, hash) VALUES (?, ?);";
@@ -107,7 +107,7 @@ public class JDBCDataSource {
 
             // Set up prepared statements
             addMaze = connection.prepareStatement(INSERT_MAZE, Statement.RETURN_GENERATED_KEYS);
-            completeMaze = connection.prepareStatement(COMPLETE_MAZE);
+            completeMaze = connection.prepareStatement(TOGGLE_COMPLETE_MAZE);
             deleteMaze = connection.prepareStatement(DELETE_MAZE);
             updateMaze = connection.prepareStatement(UPDATE_MAZE);
             getMazeByID = connection.prepareStatement(GET_MAZE_BY_ID);
@@ -167,7 +167,7 @@ public class JDBCDataSource {
         return 0;
     }
 
-    public void CompleteMaze(int id) {
+    public void ToggleCompleteMaze(int id) {
         try {
             completeMaze.setInt(1, id);
             completeMaze.execute();
@@ -218,15 +218,17 @@ public class JDBCDataSource {
         return null;
     }
 
-    public ResultSet GetUserMazes() {
+    public ResultSet GetUserMazes(boolean complete) {
         if (!VerifyUser()) {
             return null;
         }
         try {
             if (DBConnection.getUsername().equals("admin")) {
+                getAllMazes.setBoolean(1, complete);
                 return getAllMazes.executeQuery();
             } else {
-                getUserMazes.setString(1, DBConnection.getUsername());
+                getUserMazes.setBoolean(1, complete);
+                getUserMazes.setString(2, DBConnection.getUsername());
                 return getUserMazes.executeQuery();
             }
         } catch (Exception ex) {

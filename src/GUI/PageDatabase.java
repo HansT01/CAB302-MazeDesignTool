@@ -1,12 +1,9 @@
 package GUI;
 
-import Database.DBConnection;
 import Database.JDBCDataSource;
 import Maze.Maze;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
@@ -14,7 +11,7 @@ import java.awt.event.KeyEvent;
 import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 
 
 /**
@@ -22,7 +19,8 @@ import java.util.Date;
  */
 public class PageDatabase extends JFrame implements Runnable {
     JDBCDataSource data;
-    ResultSet tableData;
+    ResultSet dataInProgress;
+    ResultSet dataComplete;
     public boolean complete;
 
     GridBagManager gbm = new GridBagManager();
@@ -40,15 +38,15 @@ public class PageDatabase extends JFrame implements Runnable {
     /** JButton used for Complete */
     JButton completeButton = new JButton("Mark Complete");
 
-    private final JTable mazesTable = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"Title", "Author", "Date created", "Last edited", "SizeX", "SizeY", "Cell Size"})) {
+    JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+    private final JTable mazesInProgress = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"Title", "Author", "Date created", "Last edited", "SizeX", "SizeY", "Cell Size"})) {
         // make rows uneditable
         @Override
         public boolean isCellEditable(int row, int column) {
             return false;
         }
     };
-
-    private final JTable mazesTable2 = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"Title", "Author", "Date created", "Last edited", "SizeX", "SizeY", "Cell Size"})) {
+    private final JTable mazesComplete = new JTable(new DefaultTableModel(new String[][] {}, new String[] {"Title", "Author", "Date created", "Last edited", "SizeX", "SizeY", "Cell Size"})) {
         // make rows uneditable
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -69,23 +67,30 @@ public class PageDatabase extends JFrame implements Runnable {
     public void UpdateTable() {
         try {
             // get current model
-            DefaultTableModel tm = (DefaultTableModel) mazesTable.getModel();
-            DefaultTableModel tm2 = (DefaultTableModel) mazesTable2.getModel();
+            DefaultTableModel tm1 = (DefaultTableModel) mazesInProgress.getModel();
+            DefaultTableModel tm2 = (DefaultTableModel) mazesComplete.getModel();
 
             // clear rows and append new data
-            tm.setRowCount(0);
+            tm1.setRowCount(0);
             tm2.setRowCount(0);
-            tableData = data.GetUserMazes();
-            String[][] rows = ParseData();
-            for (String[] row : rows) {
-                tm.addRow(row);
+
+            dataInProgress = data.GetUserMazes(false);
+            ArrayList<String[]> rowsInProgress = ParseData(dataInProgress);
+            for (String[] row : rowsInProgress) {
+                tm1.addRow(row);
+            }
+
+            dataComplete = data.GetUserMazes(true);
+            ArrayList<String[]> rowsComplete = ParseData(dataComplete);
+            for (String[] row : rowsComplete) {
                 tm2.addRow(row);
             }
 
+
             // update table model
-            mazesTable.setModel(tm);
-            mazesTable2.setModel(tm2);
-            tm.fireTableDataChanged();
+            mazesInProgress.setModel(tm1);
+            mazesComplete.setModel(tm2);
+            tm1.fireTableDataChanged();
             tm2.fireTableDataChanged();
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,38 +101,33 @@ public class PageDatabase extends JFrame implements Runnable {
      * Parses ResultSet object from tableData into strings
      * @return 2D array of strings to be displayed on a JTable
      */
-    private String[][] ParseData() throws InvalidInputException {
+    private ArrayList<String[]> ParseData(ResultSet rs) throws InvalidInputException {
         try {
-            Connection connection = DBConnection.getInstance();
-            Statement st = connection.createStatement();
-            if (complete == true) {
-                tableData = st.executeQuery("SELECT * FROM mazeStorage WHERE complete IS true;");
-            }
-            else {
-                tableData = st.executeQuery("SELECT * FROM mazeStorage WHERE complete IS false;");
-            }
-            tableData.last();
-            int rowCount = tableData.getRow();
-            int colCount = tableData.getMetaData().getColumnCount();
+            // Get column count
+            rs.last();
+            int colCount = rs.getMetaData().getColumnCount();
+            ArrayList<String[]> result = new ArrayList<>();
 
-            String[][] result = new String[rowCount][colCount];
-
-            int i = 0;
-            tableData.beforeFirst();
-            while(tableData.next()) {
+            // Iterate through result set
+            rs.beforeFirst();
+            while(rs.next()) {
                 int j = 0;
-                result[i][j++] = tableData.getString("title");
-                result[i][j++] = tableData.getString("author");
+                String[] row = new String[colCount];
+                row[j++] = rs.getString("title");
+                row[j++] = rs.getString("author");
 
                 DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-                result[i][j++] = df.format(tableData.getDate("dateCreated").getTime());
-                result[i][j++] = df.format(tableData.getDate("dateLastEdited").getTime());
+                row[j++] = df.format(rs.getDate("dateCreated").getTime());
+                row[j++] = df.format(rs.getDate("dateLastEdited").getTime());
 
-                result[i][j++] = tableData.getString("sizeX");
-                result[i][j++] = tableData.getString("sizeY");
-                result[i][j] = tableData.getString("cellSize");
-                i++;
+                row[j++] = rs.getString("sizeX");
+                row[j++] = rs.getString("sizeY");
+                row[j] = rs.getString("cellSize");
+
+                // Add row to ArrayList
+                result.add(row);
             }
+            // return ArrayList
             return result;
         } catch (Exception ex) {
             throw new InvalidInputException(ex.toString(), this);
@@ -209,40 +209,21 @@ public class PageDatabase extends JFrame implements Runnable {
         return panel;
     }
 
-    private JPanel TabbedPane() {
+    private JPanel CreateTabbedPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
-        JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 
-        tabbedPane.addTab("In Progress", CreateTablePanel(mazesTable));
+        tabbedPane.addTab("In Progress", CreateTablePanel(mazesInProgress));
         tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
-        tabbedPane.addTab("Complete", CreateTablePanel(mazesTable2));
+        tabbedPane.addTab("Complete", CreateTablePanel(mazesComplete));
         tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
 
         GridBagConstraints gbc;
         int gridRow = 0;
 
-        gbc = gbm.CreateInnerGBC(0, gridRow++);
+        gbc = gbm.CreateInnerGBC(0, gridRow);
         gbc.gridwidth = 1;
         panel.add(tabbedPane, gbc);
-
-        ChangeListener changeListener = new ChangeListener() {
-            public void stateChanged(ChangeEvent changeEvent) {
-                JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
-                int index = sourceTabbedPane.getSelectedIndex();
-                System.out.println("Tab changed to: " + sourceTabbedPane.getTitleAt(index));
-                if (sourceTabbedPane.getTitleAt(index) == "Complete") {
-                    complete = true;
-                    UpdateTable();
-                    System.out.println(complete);
-                } else {
-                    complete = false;
-                    UpdateTable();
-                    System.out.println(complete);
-                }
-            }
-        };
-        tabbedPane.addChangeListener(changeListener);
 
         return panel;
     }
@@ -258,7 +239,7 @@ public class PageDatabase extends JFrame implements Runnable {
         // table panel
         gbc = gbm.CreateOuterGBC(0, gridRow);
         gbc.anchor = GridBagConstraints.EAST;
-        add(TabbedPane(), gbc);
+        add(CreateTabbedPanel(), gbc);
 
         // options panel
         gbc = gbm.CreateOuterGBC(1, gridRow);
@@ -317,33 +298,91 @@ public class PageDatabase extends JFrame implements Runnable {
         completeButton.addActionListener(e -> {
             CompleteMaze();
         });
+        tabbedPane.addChangeListener(e -> {
+            UpdateTable();
+        });
+    }
+
+    private int GetSelectedRow() {
+        int progressRow = mazesInProgress.getSelectedRow();
+        if (progressRow != -1) {
+            return progressRow;
+        }
+        int completeRow = mazesComplete.getSelectedRow();
+        if (completeRow != -1) {
+            return completeRow + mazesInProgress.getRowCount();
+        }
+        return -1;
+    }
+
+    private int[] GetSelectedRows() {
+        int[] progressRows = mazesInProgress.getSelectedRows();
+        if (progressRows.length != 0) {
+            return progressRows;
+        }
+        int[] completeRows = mazesComplete.getSelectedRows();
+        if (completeRows.length != 0) {
+            int rc = mazesInProgress.getRowCount();
+            for (int i = 0; i < completeRows.length; i++) {
+                completeRows[i] += rc;
+            }
+            return completeRows;
+        }
+        return new int[] {};
     }
 
     /**
      * Complete button event handler.
      */
     private void CompleteMaze() {
-        int selectedRow = mazesTable.getSelectedRow();
-        if (selectedRow != -1) {
+        int srIP = mazesInProgress.getSelectedRow();
+        int srC = mazesComplete.getSelectedRow();
+
+        if (srIP != -1) {
             try {
-                tableData.absolute(selectedRow + 1);
-                int id = tableData.getInt("id");
-                data.CompleteMaze(id);
+                dataInProgress.absolute(srIP + 1);
+                int id = dataInProgress.getInt("id");
+                data.ToggleCompleteMaze(id);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+
+        if (srC != -1) {
+            try {
+                dataComplete.absolute(srC + 1);
+                int id = dataComplete.getInt("id");
+                data.ToggleCompleteMaze(id);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        UpdateTable();
     }
 
     /**
      * Edit button event handler.
      */
     public void EditMaze() throws InvalidInputException {
-        int selectedRow = mazesTable.getSelectedRow();
-        if (selectedRow != -1) {
+        int srIP = mazesInProgress.getSelectedRow();
+        int srC = mazesComplete.getSelectedRow();
+
+        if (srIP != -1) {
             try {
-                tableData.absolute(selectedRow + 1);
-                int id = tableData.getInt("id");
+                dataInProgress.absolute(srIP + 1);
+                int id = dataInProgress.getInt("id");
+                Maze maze = data.GetMaze(id);
+                SwingUtilities.invokeLater(new PageEdit(maze, id));
+            } catch (Exception e) {
+                throw new InvalidInputException(e.toString(), this);
+            }
+        }
+
+        if (srC != -1) {
+            try {
+                dataComplete.absolute(srC + 1);
+                int id = dataComplete.getInt("id");
                 Maze maze = data.GetMaze(id);
                 SwingUtilities.invokeLater(new PageEdit(maze, id));
             } catch (Exception e) {
@@ -356,36 +395,61 @@ public class PageDatabase extends JFrame implements Runnable {
      * Delete button event handler.
      */
     public void DeleteMaze() throws InvalidInputException {
-        int selectedRow;
-        if (complete == false) {
-            selectedRow = mazesTable.getSelectedRow();
-        }
-        else {
-            selectedRow = mazesTable2.getSelectedRow();
-            }
-            if (selectedRow != -1) {
-                try {
-                    tableData.absolute(selectedRow + 1);
-                    int id = tableData.getInt("id");
-                    data.DeleteMaze(id);
-                    UpdateTable();
-                } catch (Exception ex) {
-                    throw new InvalidInputException(ex.toString(), this);
-                }
+        int srIP = mazesInProgress.getSelectedRow();
+        int srC = mazesComplete.getSelectedRow();
+
+        if (srIP != -1) {
+            try {
+                dataInProgress.absolute(srIP + 1);
+                int id = dataInProgress.getInt("id");
+                data.DeleteMaze(id);
+                UpdateTable();
+            } catch (Exception ex) {
+                throw new InvalidInputException(ex.toString(), this);
             }
         }
+
+        if (srC != -1) {
+            try {
+                dataComplete.absolute(srC + 1);
+                int id = dataComplete.getInt("id");
+                data.DeleteMaze(id);
+                UpdateTable();
+            } catch (Exception ex) {
+                throw new InvalidInputException(ex.toString(), this);
+            }
+        }
+    }
 
     /**
      * Export selected mazes to PNG file without solution
      * @throws InvalidInputException
      */
     public void ExportMazes() throws InvalidInputException {
-        int[] selectedRows = mazesTable.getSelectedRows();
-        if (selectedRows.length != 0) {
+        int[] srIP = mazesInProgress.getSelectedRows();
+        int[] srC = mazesComplete.getSelectedRows();
+
+        if (srIP.length != 0) {
             try {
-                for (int row : selectedRows) {
-                    tableData.absolute(row + 1);
-                    int id = tableData.getInt("id");
+                for (int row : srIP) {
+                    dataInProgress.absolute(row + 1);
+                    int id = dataInProgress.getInt("id");
+                    Maze maze = data.GetMaze(id);
+                    MazePanel mp = new MazePanel(maze);
+                    mp.setDrawSolution(false);
+                    mp.repaint();
+                    mp.ExportToFile();
+                }
+            } catch (Exception e) {
+                throw new InvalidInputException(e.toString(), this);
+            }
+        }
+
+        if (srC.length != 0) {
+            try {
+                for (int row : srC) {
+                    dataComplete.absolute(row + 1);
+                    int id = dataComplete.getInt("id");
                     Maze maze = data.GetMaze(id);
                     MazePanel mp = new MazePanel(maze);
                     mp.setDrawSolution(false);
@@ -403,12 +467,30 @@ public class PageDatabase extends JFrame implements Runnable {
      * @throws InvalidInputException
      */
     public void ExportMazesWithSolution() throws InvalidInputException {
-        int[] selectedRows = mazesTable.getSelectedRows();
-        if (selectedRows.length != 0) {
+        int[] srIP = mazesInProgress.getSelectedRows();
+        int[] srC = mazesComplete.getSelectedRows();
+
+        if (srIP.length != 0) {
             try {
-                for (int row : selectedRows) {
-                    tableData.absolute(row + 1);
-                    int id = tableData.getInt("id");
+                for (int row : srIP) {
+                    dataInProgress.absolute(row + 1);
+                    int id = dataInProgress.getInt("id");
+                    Maze maze = data.GetMaze(id);
+                    MazePanel mp = new MazePanel(maze);
+                    mp.setDrawSolution(true);
+                    mp.repaint();
+                    mp.ExportToFile();
+                }
+            } catch (Exception e) {
+                throw new InvalidInputException(e.toString(), this);
+            }
+        }
+
+        if (srC.length != 0) {
+            try {
+                for (int row : srC) {
+                    dataComplete.absolute(row + 1);
+                    int id = dataComplete.getInt("id");
                     Maze maze = data.GetMaze(id);
                     MazePanel mp = new MazePanel(maze);
                     mp.setDrawSolution(true);
