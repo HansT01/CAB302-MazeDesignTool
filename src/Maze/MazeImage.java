@@ -101,7 +101,7 @@ public class MazeImage implements Serializable {
     }
 
     /**
-     * Maze.Maze image constructor
+     * Maze image constructor
      * @param imageTitle Title of the image
      * @param imageData Image object containing the image data
      * @param sizeX width of the image in cells

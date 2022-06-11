@@ -25,14 +25,14 @@ public class Maze implements Serializable {
     private MazeImage selectedImage;
 
     /**
-     * Constructs and initialises a new Maze.Maze.
+     * Constructs and initialises a new Maze.
      * @param sizeX The width of the maze in cells.
      * @param sizeY The height of the maze in cells.
      * @throws MazeException Throws maze exception if dimensions are not positive non-zero integers
      */
     public Maze(String title, String author, int sizeX, int sizeY, int cellSize) throws MazeException {
         if (sizeX < 1 || sizeY < 1) {
-            throw new MazeException("Maze.Maze must have positive non-zero dimensions");
+            throw new MazeException("Maze must have positive non-zero dimensions");
         }
         this.title = title;
         this.author = author;
@@ -165,7 +165,7 @@ public class Maze implements Serializable {
 
     /**
      * Getter for images in maze.
-     * @return ArrayList of Maze.MazeImage.
+     * @return ArrayList of MazeImage.
      */
     public ArrayList<MazeImage> getImages() {
         return images;
@@ -516,7 +516,7 @@ public class Maze implements Serializable {
      * Checks if image at input x and y location remains in bounds
      * @param xPos x position of image
      * @param yPos y position of image
-     * @param mazeImage Maze.MazeImage object
+     * @param mazeImage MazeImage object
      * @return true if image is in bounds, false otherwise
      */
     public boolean CheckInBounds(int xPos, int yPos, MazeImage mazeImage) {
@@ -616,7 +616,7 @@ public class Maze implements Serializable {
     /**
      * Deserializes a byte array into a maze object
      * @param byteArr Input byte array
-     * @return Maze.Maze object
+     * @return Maze object
      */
     public static Maze ByteArrayToMaze(byte[] byteArr) throws IOException, ClassNotFoundException {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArr);

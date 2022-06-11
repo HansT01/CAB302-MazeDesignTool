@@ -50,11 +50,11 @@ public class JDBCDataSource {
             "cellSize = ?," +
             "serialization = ?" +
             "WHERE id = ?;";
-    private static final String GET_MAZE_BY_ID = "SELECT * FROM mazeStorage WHERE id = ?;";
-    private static final String GET_MAZES_BY_USER = "SELECT * FROM mazeStorage WHERE author = ?;";
-    private static final String GET_ALL_MAZES = "SELECT * FROM mazeStorage;";
+    private static final String GET_MAZE_BY_ID = "SELECT (serialization) FROM mazeStorage WHERE id = ?;";
+    private static final String GET_MAZES_BY_USER = "SELECT (title, author, dateCreated, dateLastEdited, sizeX, sizeY, cellSize, complete) FROM mazeStorage WHERE author = ?;";
+    private static final String GET_ALL_MAZES = "SELECT (title, author, dateCreated, dateLastEdited, sizeX, sizeY, cellSize, complete) FROM mazeStorage;";
 
-    private static final String GET_HASH = "SELECT hash FROM users WHERE username = ?";
+    private static final String GET_HASH = "SELECT hash FROM users WHERE username = ?;";
     private static final String INSERT_USER = "INSERT INTO users (username, hash) VALUES (?, ?);";
     private static final String DELETE_USER = "DELETE FROM users WHERE username = ?;";
 
@@ -75,18 +75,20 @@ public class JDBCDataSource {
     private Connection connection;
 
     /**
-     * Default constructor using database named cab302.
+     * Default constructor using database schema from db.props
      */
     public JDBCDataSource() {
-        SetupConnection("cab302");
+        connection = DBConnection.getInstance();
+        SetupConnection(DBConnection.getSchema());
     }
 
     /**
-     * Alternative constructor for custom database name
-     * @param database Name of new database
+     * Alternative constructor for custom database schema name
+     * @param schema Name of new database
      */
-    public JDBCDataSource(String database) {
-        SetupConnection(database);
+    public JDBCDataSource(String schema) {
+        connection = DBConnection.getInstance();
+        SetupConnection(schema);
     }
 
     /**
@@ -94,15 +96,16 @@ public class JDBCDataSource {
      * @param database Input database name
      */
     public void SetupConnection(String database) {
-        connection = DBConnection.getInstance();
         try {
             Statement st = connection.createStatement();
-            st.execute("CREATE DATABASE IF NOT EXISTS " + database + ";");
-            st.execute("use " + database + ";");
 
+            // Create databases and tables (if not exists)
+            st.execute("CREATE DATABASE IF NOT EXISTS " + database + ";");
+            st.execute("USE " + database + ";");
             st.execute(CREATE_MAZE_TABLE);
             st.execute(CREATE_USERS_TABLE);
 
+            // Set up prepared statements
             addMaze = connection.prepareStatement(INSERT_MAZE, Statement.RETURN_GENERATED_KEYS);
             completeMaze = connection.prepareStatement(COMPLETE_MAZE);
             deleteMaze = connection.prepareStatement(DELETE_MAZE);
@@ -115,6 +118,8 @@ public class JDBCDataSource {
             addUser = connection.prepareStatement(INSERT_USER);
             deleteUser = connection.prepareStatement(DELETE_USER);
 
+            // Create admin account with the password "password"
+            // TODO Change to something else
             CreateAdminAccount("password");
         } catch (SQLException ex) {
             ex.printStackTrace();

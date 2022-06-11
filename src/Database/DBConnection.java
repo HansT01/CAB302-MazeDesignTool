@@ -10,6 +10,7 @@ import java.util.Properties;
 
 public class DBConnection {
     private static Connection instance = null;
+    private static String schema;
     private static String username;
     private static String password;
 
@@ -23,12 +24,12 @@ public class DBConnection {
 
             // specify the data source, username and password
             String url = props.getProperty("jdbc.url");
-            String schema = props.getProperty("jdbc.schema");
             String user = props.getProperty("jdbc.username");
             String pass = props.getProperty("jdbc.password");
+            schema = props.getProperty("jdbc.schema");
 
             // get a connection
-            instance = DriverManager.getConnection(url + "/" + schema, user, pass);
+            instance = DriverManager.getConnection(url + "/", user, pass);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -40,6 +41,10 @@ public class DBConnection {
 
     public static String getPassword() {
         return password;
+    }
+
+    public static String getSchema() {
+        return schema;
     }
 
     public static void setUsername(String s) {
@@ -56,6 +61,7 @@ public class DBConnection {
         }
         return instance;
     }
+
 
 
     //testing
