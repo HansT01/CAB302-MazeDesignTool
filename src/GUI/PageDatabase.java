@@ -300,36 +300,12 @@ public class PageDatabase extends JFrame implements Runnable {
             }
         });
         completeButton.addActionListener(e -> {
-            CompleteMaze();
+            try {
+                CompleteMaze();
+            } catch (InvalidInputException ex) {
+                ex.printStackTrace();
+            }
         });
-    }
-
-    /**
-     * Complete button event handler.
-     */
-    private void CompleteMaze() {
-        int srIP = mazesInProgress.getSelectedRow();
-        int srC = mazesComplete.getSelectedRow();
-
-        if (srIP != -1) {
-            try {
-                dataInProgress.absolute(srIP + 1);
-                int id = dataInProgress.getInt("id");
-                data.ToggleCompleteMaze(id);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        if (srC != -1) {
-            try {
-                dataComplete.absolute(srC + 1);
-                int id = dataComplete.getInt("id");
-                data.ToggleCompleteMaze(id);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        UpdateTables();
     }
 
     /**
@@ -359,6 +335,38 @@ public class PageDatabase extends JFrame implements Runnable {
                 throw new InvalidInputException(e.toString(), this);
             }
         }
+    }
+
+    /**
+     * Complete button event handler.
+     */
+    private void CompleteMaze() throws InvalidInputException {
+        int[] srIP = mazesInProgress.getSelectedRows();
+        int[] srC = mazesComplete.getSelectedRows();
+
+        if (srIP.length != 0) {
+            try {
+                for (int row : srIP) {
+                    dataInProgress.absolute(row + 1);
+                    int id = dataInProgress.getInt("id");
+                    data.ToggleCompleteMaze(id);
+                }
+            } catch (Exception ex) {
+                throw new InvalidInputException(ex.toString(), this);
+            }
+        }
+        if (srC.length != 0) {
+            try {
+                for (int row : srC) {
+                    dataComplete.absolute(row + 1);
+                    int id = dataComplete.getInt("id");
+                    data.ToggleCompleteMaze(id);
+                }
+            } catch (Exception e) {
+                throw new InvalidInputException(e.toString(), this);
+            }
+        }
+        UpdateTables();
     }
 
     /**
