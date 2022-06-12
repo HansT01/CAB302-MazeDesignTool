@@ -46,7 +46,6 @@ public class DatabaseTest {
     @Test
     public void DeleteMaze() throws MazeException, IOException {
         Maze testMaze = new Maze("test-maze-title", "test-maze-author", 10,10, 16);
-        byte[] ba = Maze.MazeToByteArray(testMaze);
 
         // Add maze to database
         int id = data.AddMaze(testMaze);

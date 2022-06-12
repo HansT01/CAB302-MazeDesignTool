@@ -9,7 +9,11 @@ Step 1: Generate the distribution files from the build.xml
 
 Step 2: Navigate to the dist folder.
 
-Step 3: Change the db.props file according to your needs
+Step 3: Change the db.props file according to your needs using this template:
+jdbc.url=jdbc:mariadb://localhost:3306
+jdbc.schema=cab302
+jdbc.username=root
+jdbc.password=password
 
 Step 4: Run launch.bat
 

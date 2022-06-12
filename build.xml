@@ -90,9 +90,9 @@
     <target name="dist" depends="runTests">
         <!-- Make a copy of all relevant files -->
         <copyfile src="lib/mariadb-java-client-3.0.5.jar" dest="${dist}/mariadb-java-client-3.0.5.jar"/>
-        <copyfile src="db.props" dest="${dist}/db.props"/>
         <copyfile src="launch.bat" dest="${dist}/launch.bat"/>
         <copyfile src="README.md" dest="${dist}/README.md"/>
+        <touch file="${dist}/db.props"/>
 
         <jar jarfile="${dist}/MazeDesignTool.jar" basedir="${build}">
             <manifest>
